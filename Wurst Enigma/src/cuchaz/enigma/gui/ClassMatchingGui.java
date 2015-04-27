@@ -22,8 +22,6 @@ import java.util.Map;
 
 import javax.swing.*;
 
-import jsyntaxpane.DefaultSyntaxKit;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -41,6 +39,7 @@ import cuchaz.enigma.gui.ClassSelector.ClassSelectionListener;
 import cuchaz.enigma.mapping.ClassEntry;
 import cuchaz.enigma.mapping.Mappings;
 import cuchaz.enigma.mapping.MappingsChecker;
+import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 
 public class ClassMatchingGui {

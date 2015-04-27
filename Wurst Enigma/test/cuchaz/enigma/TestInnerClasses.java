@@ -10,14 +10,16 @@
  ******************************************************************************/
 package cuchaz.enigma;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static cuchaz.enigma.TestEntryFactory.newClass;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.jar.JarFile;
 
 import org.junit.Test;
-
-import static cuchaz.enigma.TestEntryFactory.*;
 
 import cuchaz.enigma.analysis.JarIndex;
 import cuchaz.enigma.mapping.ClassEntry;

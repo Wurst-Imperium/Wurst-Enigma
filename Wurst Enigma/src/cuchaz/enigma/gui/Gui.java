@@ -35,8 +35,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import jsyntaxpane.DefaultSyntaxKit;
-
 import com.google.common.collect.Lists;
 
 import cuchaz.enigma.Constants;
@@ -44,6 +42,7 @@ import cuchaz.enigma.ExceptionIgnorer;
 import cuchaz.enigma.analysis.*;
 import cuchaz.enigma.gui.ClassSelector.ClassSelectionListener;
 import cuchaz.enigma.mapping.*;
+import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 public class Gui {
 	

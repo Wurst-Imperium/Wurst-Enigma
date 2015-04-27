@@ -10,9 +10,11 @@
  ******************************************************************************/
 package cuchaz.enigma;
 
-import static cuchaz.enigma.TestEntryFactory.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static cuchaz.enigma.TestEntryFactory.newClass;
+import static cuchaz.enigma.TestEntryFactory.newField;
+import static cuchaz.enigma.TestEntryFactory.newMethod;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

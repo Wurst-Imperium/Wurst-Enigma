@@ -25,8 +25,6 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.text.Highlighter.HighlightPainter;
 
-import jsyntaxpane.DefaultSyntaxKit;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -40,6 +38,7 @@ import cuchaz.enigma.convert.MemberMatches;
 import cuchaz.enigma.gui.ClassSelector.ClassSelectionListener;
 import cuchaz.enigma.mapping.ClassEntry;
 import cuchaz.enigma.mapping.Entry;
+import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 
 public class MemberMatchingGui<T extends Entry> {

@@ -22,8 +22,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter.HighlightPainter;
 
-import jsyntaxpane.DefaultSyntaxKit;
-
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 
 import cuchaz.enigma.Deobfuscator;
@@ -32,6 +30,7 @@ import cuchaz.enigma.analysis.SourceIndex;
 import cuchaz.enigma.analysis.Token;
 import cuchaz.enigma.mapping.ClassEntry;
 import cuchaz.enigma.mapping.Entry;
+import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 
 public class CodeReader extends JEditorPane {
