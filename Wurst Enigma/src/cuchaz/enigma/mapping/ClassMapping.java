@@ -30,14 +30,18 @@ public class ClassMapping implements Serializable, Comparable<ClassMapping> {
 	private Map<String,MethodMapping> m_methodsByObf;
 	private Map<String,MethodMapping> m_methodsByDeobf;
 	
-	public ClassMapping(String obfFullName) {
+	public ClassMapping(String obfFullName)
+	{
 		this(obfFullName, null);
 	}
 	
-	public ClassMapping(String obfFullName, String deobfName) {
+	public ClassMapping(String obfFullName, String deobfName)
+	{
 		m_obfFullName = obfFullName;
 		ClassEntry classEntry = new ClassEntry(obfFullName);
-		m_obfSimpleName = classEntry.isInnerClass() ? classEntry.getInnermostClassName() : classEntry.getSimpleName();
+		m_obfSimpleName =
+			classEntry.isInnerClass() ? classEntry.getInnermostClassName()
+				: classEntry.getSimpleName();
 		m_deobfName = NameValidator.validateClassName(deobfName, false);
 		m_innerClassesByObfSimple = Maps.newHashMap();
 		m_innerClassesByDeobf = Maps.newHashMap();
@@ -55,7 +59,8 @@ public class ClassMapping implements Serializable, Comparable<ClassMapping> {
 		return m_obfSimpleName;
 	}
 	
-	public String getDeobfName() {
+	public String getDeobfName()
+	{
 		return m_deobfName;
 	}
 	

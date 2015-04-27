@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
 
 import com.google.common.collect.Lists;
@@ -37,6 +38,7 @@ public class GuiController {
 	private ClassEntry m_currentObfClass;
 	private boolean m_isDirty;
 	private Deque<EntryReference<Entry,Entry>> m_referenceStack;
+	private static final AtomicInteger counter = new AtomicInteger();
 	
 	public GuiController(Gui gui) {
 		m_gui = gui;
@@ -209,6 +211,28 @@ public class GuiController {
 		m_isDirty = true;
 		refreshClasses();
 		refreshCurrentClass(obfReference);
+	}
+	
+	public void fixClasses()
+	{
+		for(ClassEntry entry : m_deobfuscator.getJarIndex()
+			.getObfClassEntries())
+		{
+			String name = entry.getName();
+			System.out.println(name);
+			if(entry.isInnerClass())
+				name = "Class" + counter.incrementAndGet();
+			else
+				name =
+					name.substring(0, name.lastIndexOf("/") + 1)
+						+ Character.toUpperCase(name.charAt(name
+							.lastIndexOf("/") + 1))
+						+ name.substring(name.lastIndexOf("/") + 2);
+			if(!name.equals(entry.getName()))
+				rename(
+					new EntryReference<Entry, Entry>(entry, entry.getName()),
+					name);
+		}
 	}
 	
 	public void removeMapping(EntryReference<Entry,Entry> deobfReference) {

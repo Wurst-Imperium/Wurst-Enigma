@@ -578,7 +578,8 @@ public class Gui {
 				item.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent event) {
-						close();
+						//close(); TODO
+						m_controller.fixClasses();
 					}
 				});
 			}
