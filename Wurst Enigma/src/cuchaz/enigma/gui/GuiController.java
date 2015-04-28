@@ -215,24 +215,33 @@ public class GuiController {
 	
 	public void fixClasses()
 	{
-		for(ClassEntry entry : m_deobfuscator.getJarIndex()
-			.getObfClassEntries())
+		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
 		{
-			String name = entry.getName();
-			System.out.println(name);
-			if(entry.isInnerClass())
-				name = "Class" + counter.incrementAndGet();
-			else
-				name =
-					name.substring(0, name.lastIndexOf("/") + 1)
-						+ Character.toUpperCase(name.charAt(name
-							.lastIndexOf("/") + 1))
-						+ name.substring(name.lastIndexOf("/") + 2);
-			if(!name.equals(entry.getName()))
-				rename(
-					new EntryReference<Entry, Entry>(entry, entry.getName()),
-					name);
-		}
+			@Override
+			public void run(ProgressListener progress) throws Exception
+			{
+				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries().size(), "Fixing class names...");
+				int i = 0;
+				for(ClassEntry entry : m_deobfuscator.getJarIndex()
+					.getObfClassEntries())
+				{
+					String name = entry.getName();
+					if(entry.isInnerClass())
+						name = "Class" + counter.incrementAndGet();
+					else
+						name =
+							name.substring(0, name.lastIndexOf("/") + 1)
+								+ Character.toUpperCase(name.charAt(name
+									.lastIndexOf("/") + 1))
+								+ name.substring(name.lastIndexOf("/") + 2);
+					if(!name.equals(entry.getName()))
+						rename(
+							new EntryReference<Entry, Entry>(entry, entry
+								.getName()), name);
+					progress.onProgress(i++, name);
+				}
+			}
+		});
 	}
 	
 	public void removeMapping(EntryReference<Entry,Entry> deobfReference) {
