@@ -4,9 +4,9 @@
  * are made available under the terms of the GNU Lesser General Public
  * License v3.0 which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * Contributors:
- *     Jeff Martin - initial API and implementation
+ * Jeff Martin - initial API and implementation
  ******************************************************************************/
 package cuchaz.enigma.gui;
 
@@ -20,10 +20,13 @@ import java.awt.Shape;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 
-public class SelectionHighlightPainter implements Highlighter.HighlightPainter {
-	
+public class SelectionHighlightPainter implements Highlighter.HighlightPainter
+{
+
 	@Override
-	public void paint(Graphics g, int start, int end, Shape shape, JTextComponent text) {
+	public void paint(Graphics g, int start, int end, Shape shape,
+		JTextComponent text)
+	{
 		// draw a thick border
 		Graphics2D g2d = (Graphics2D)g;
 		Rectangle bounds = BoxHighlightPainter.getBounds(text, start, end);

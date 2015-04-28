@@ -4,22 +4,25 @@
  * are made available under the terms of the GNU Lesser General Public
  * License v3.0 which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * Contributors:
- *     Jeff Martin - initial API and implementation
+ * Jeff Martin - initial API and implementation
  ******************************************************************************/
 package cuchaz.enigma.inputs.constructors;
 
 // none/a
-public class BaseClass {
-	
+public class BaseClass
+{
+
 	// <init>()V
-	public BaseClass() {
+	public BaseClass()
+	{
 		System.out.println("Default constructor");
 	}
-	
+
 	// <init>(I)V
-	public BaseClass(int i) {
+	public BaseClass(int i)
+	{
 		System.out.println("Int constructor " + i);
 	}
 }

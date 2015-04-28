@@ -4,12 +4,11 @@
  * are made available under the terms of the GNU Lesser General Public
  * License v3.0 which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * Contributors:
- *     Jeff Martin - initial API and implementation
+ * Jeff Martin - initial API and implementation
  ******************************************************************************/
 package cuchaz.enigma;
-
 
 import static cuchaz.enigma.TestEntryFactory.newClass;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,52 +21,40 @@ import org.junit.Test;
 
 import cuchaz.enigma.analysis.JarIndex;
 
-
-public class TestDeobfed {
-
+public class TestDeobfed
+{
+	
 	private static JarFile m_jar;
 	private static JarIndex m_index;
-	
+
 	@BeforeClass
-	public static void beforeClass()
-	throws Exception {
+	public static void beforeClass() throws Exception
+	{
 		m_jar = new JarFile("build/testTranslation.deobf.jar");
 		m_index = new JarIndex();
 		m_index.indexJar(m_jar, true);
 	}
-	
+
 	@Test
-	public void obfEntries() {
-		assertThat(m_index.getObfClassEntries(), containsInAnyOrder(
-			newClass("cuchaz/enigma/inputs/Keep"),
-			newClass("none/a"),
-			newClass("none/b"),
-			newClass("none/c"),
-			newClass("none/d"),
-			newClass("none/d$1"),
-			newClass("none/e"),
-			newClass("none/f"),
-			newClass("none/g"),
-			newClass("none/g$a"),
-			newClass("none/g$a$a"),
-			newClass("none/g$b"),
-			newClass("none/g$b$a"),
-			newClass("none/h"),
-			newClass("none/h$a"),
-			newClass("none/h$a$a"),
-			newClass("none/h$b"),
-			newClass("none/h$b$a"),
-			newClass("none/h$b$a$a"),
-			newClass("none/h$b$a$b"),
-			newClass("none/i"),
-			newClass("none/i$a"),
-			newClass("none/i$b")
-		));
+	public void obfEntries()
+	{
+		assertThat(
+			m_index.getObfClassEntries(),
+			containsInAnyOrder(newClass("cuchaz/enigma/inputs/Keep"),
+				newClass("none/a"), newClass("none/b"), newClass("none/c"),
+				newClass("none/d"), newClass("none/d$1"), newClass("none/e"),
+				newClass("none/f"), newClass("none/g"), newClass("none/g$a"),
+				newClass("none/g$a$a"), newClass("none/g$b"),
+				newClass("none/g$b$a"), newClass("none/h"),
+				newClass("none/h$a"), newClass("none/h$a$a"),
+				newClass("none/h$b"), newClass("none/h$b$a"),
+				newClass("none/h$b$a$a"), newClass("none/h$b$a$b"),
+				newClass("none/i"), newClass("none/i$a"), newClass("none/i$b")));
 	}
-	
+
 	@Test
-	public void decompile()
-	throws Exception {
+	public void decompile() throws Exception
+	{
 		Deobfuscator deobfuscator = new Deobfuscator(m_jar);
 		deobfuscator.getSourceTree("none/a");
 		deobfuscator.getSourceTree("none/b");

@@ -4,21 +4,24 @@
  * are made available under the terms of the GNU Lesser General Public
  * License v3.0 which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * Contributors:
- *     Jeff Martin - initial API and implementation
+ * Jeff Martin - initial API and implementation
  ******************************************************************************/
 package cuchaz.enigma.inputs.loneClass;
 
-public class LoneClass {
-	
+public class LoneClass
+{
+
 	private String m_name;
-	
-	public LoneClass(String name) {
+
+	public LoneClass(String name)
+	{
 		m_name = name;
 	}
-	
-	public String getName() {
+
+	public String getName()
+	{
 		return m_name;
 	}
 }
