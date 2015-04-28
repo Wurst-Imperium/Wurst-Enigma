@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
 
+import javax.swing.JOptionPane;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
@@ -32,7 +34,7 @@ import cuchaz.enigma.mapping.*;
 
 public class GuiController
 {
-
+	
 	private Deobfuscator m_deobfuscator;
 	private Gui m_gui;
 	private SourceIndex m_index;
@@ -40,7 +42,7 @@ public class GuiController
 	private boolean m_isDirty;
 	private Deque<EntryReference<Entry, Entry>> m_referenceStack;
 	private static final AtomicInteger counter = new AtomicInteger();
-
+	
 	public GuiController(Gui gui)
 	{
 		m_gui = gui;
@@ -50,12 +52,12 @@ public class GuiController
 		m_isDirty = false;
 		m_referenceStack = Queues.newArrayDeque();
 	}
-
+	
 	public boolean isDirty()
 	{
 		return m_isDirty;
 	}
-
+	
 	public void openJar(final JarFile jar) throws IOException
 	{
 		m_gui.onStartOpenJar();
@@ -63,13 +65,13 @@ public class GuiController
 		m_gui.onFinishOpenJar(m_deobfuscator.getJarName());
 		refreshClasses();
 	}
-
+	
 	public void closeJar()
 	{
 		m_deobfuscator = null;
 		m_gui.onCloseJar();
 	}
-
+	
 	public void openMappings(File file) throws IOException,
 		MappingParseException
 	{
@@ -81,7 +83,7 @@ public class GuiController
 		refreshClasses();
 		refreshCurrentClass();
 	}
-
+	
 	public void saveMappings(File file) throws IOException
 	{
 		FileWriter out = new FileWriter(file);
@@ -89,7 +91,7 @@ public class GuiController
 		out.close();
 		m_isDirty = false;
 	}
-
+	
 	public void closeMappings()
 	{
 		m_deobfuscator.setMappings(null);
@@ -97,7 +99,7 @@ public class GuiController
 		refreshClasses();
 		refreshCurrentClass();
 	}
-
+	
 	public void exportSource(final File dirOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
@@ -109,7 +111,7 @@ public class GuiController
 			}
 		});
 	}
-
+	
 	public void exportJar(final File fileOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
@@ -121,21 +123,21 @@ public class GuiController
 			}
 		});
 	}
-
+	
 	public Token getToken(int pos)
 	{
 		if(m_index == null)
 			return null;
 		return m_index.getReferenceToken(pos);
 	}
-
+	
 	public EntryReference<Entry, Entry> getDeobfReference(Token token)
 	{
 		if(m_index == null)
 			return null;
 		return m_index.getDeobfReference(token);
 	}
-
+	
 	public ReadableToken getReadableToken(Token token)
 	{
 		if(m_index == null)
@@ -144,26 +146,26 @@ public class GuiController
 			m_index.getColumnNumber(token.start),
 			m_index.getColumnNumber(token.end));
 	}
-
+	
 	public boolean entryHasDeobfuscatedName(Entry deobfEntry)
 	{
 		return m_deobfuscator.hasDeobfuscatedName(m_deobfuscator
 			.obfuscateEntry(deobfEntry));
 	}
-
+	
 	public boolean entryIsInJar(Entry deobfEntry)
 	{
 		return m_deobfuscator.isObfuscatedIdentifier(m_deobfuscator
 			.obfuscateEntry(deobfEntry));
 	}
-
+	
 	public boolean referenceIsRenameable(
 		EntryReference<Entry, Entry> deobfReference)
 	{
 		return m_deobfuscator.isRenameable(m_deobfuscator
 			.obfuscateReference(deobfReference));
 	}
-
+	
 	public ClassInheritanceTreeNode getClassInheritance(
 		ClassEntry deobfClassEntry)
 	{
@@ -178,7 +180,7 @@ public class GuiController
 					obfClassEntry);
 		return ClassInheritanceTreeNode.findNode(rootNode, obfClassEntry);
 	}
-
+	
 	public ClassImplementationsTreeNode getClassImplementations(
 		ClassEntry deobfClassEntry)
 	{
@@ -188,7 +190,7 @@ public class GuiController
 			m_deobfuscator.getTranslator(TranslationDirection.Deobfuscating),
 			obfClassEntry);
 	}
-
+	
 	public MethodInheritanceTreeNode getMethodInheritance(
 		MethodEntry deobfMethodEntry)
 	{
@@ -203,7 +205,7 @@ public class GuiController
 					obfMethodEntry);
 		return MethodInheritanceTreeNode.findNode(rootNode, obfMethodEntry);
 	}
-
+	
 	public MethodImplementationsTreeNode getMethodImplementations(
 		MethodEntry deobfMethodEntry)
 	{
@@ -224,7 +226,7 @@ public class GuiController
 		return MethodImplementationsTreeNode.findNode(rootNodes.get(0),
 			obfMethodEntry);
 	}
-
+	
 	public FieldReferenceTreeNode getFieldReferences(FieldEntry deobfFieldEntry)
 	{
 		FieldEntry obfFieldEntry =
@@ -237,7 +239,7 @@ public class GuiController
 		rootNode.load(m_deobfuscator.getJarIndex(), true);
 		return rootNode;
 	}
-
+	
 	public BehaviorReferenceTreeNode getMethodReferences(
 		BehaviorEntry deobfBehaviorEntry)
 	{
@@ -251,7 +253,7 @@ public class GuiController
 		rootNode.load(m_deobfuscator.getJarIndex(), true);
 		return rootNode;
 	}
-
+	
 	public void rename(EntryReference<Entry, Entry> deobfReference,
 		String newName)
 	{
@@ -262,9 +264,16 @@ public class GuiController
 		refreshClasses();
 		refreshCurrentClass(obfReference);
 	}
-
+	
 	public void fixClasses()
 	{
+		if(m_deobfuscator == null)
+		{
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				"Cannot fix class names because no classes are present.",
+				"No classes", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		m_currentObfClass = null;
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
 		{
@@ -282,10 +291,10 @@ public class GuiController
 						name = "Class" + counter.incrementAndGet();
 					else
 						name =
-						name.substring(0, name.lastIndexOf("/") + 1)
-						+ Character.toUpperCase(name.charAt(name
-							.lastIndexOf("/") + 1))
-							+ name.substring(name.lastIndexOf("/") + 2);
+							name.substring(0, name.lastIndexOf("/") + 1)
+								+ Character.toUpperCase(name.charAt(name
+									.lastIndexOf("/") + 1))
+								+ name.substring(name.lastIndexOf("/") + 2);
 					if(!name.equals(entry.getName()))
 						rename(
 							new EntryReference<Entry, Entry>(entry, entry
@@ -295,7 +304,7 @@ public class GuiController
 			}
 		});
 	}
-
+	
 	public void removeMapping(EntryReference<Entry, Entry> deobfReference)
 	{
 		EntryReference<Entry, Entry> obfReference =
@@ -305,7 +314,7 @@ public class GuiController
 		refreshClasses();
 		refreshCurrentClass(obfReference);
 	}
-
+	
 	public void markAsDeobfuscated(EntryReference<Entry, Entry> deobfReference)
 	{
 		EntryReference<Entry, Entry> obfReference =
@@ -315,7 +324,7 @@ public class GuiController
 		refreshClasses();
 		refreshCurrentClass(obfReference);
 	}
-
+	
 	public void openDeclaration(Entry deobfEntry)
 	{
 		if(deobfEntry == null)
@@ -323,12 +332,12 @@ public class GuiController
 		openReference(new EntryReference<Entry, Entry>(deobfEntry,
 			deobfEntry.getName()));
 	}
-
+	
 	public void openReference(EntryReference<Entry, Entry> deobfReference)
 	{
 		if(deobfReference == null)
 			throw new IllegalArgumentException("Reference cannot be null!");
-
+		
 		// get the reference target class
 		EntryReference<Entry, Entry> obfReference =
 			m_deobfuscator.obfuscateReference(deobfReference);
@@ -346,7 +355,7 @@ public class GuiController
 		}else
 			showReference(obfReference);
 	}
-
+	
 	private void showReference(EntryReference<Entry, Entry> obfReference)
 	{
 		EntryReference<Entry, Entry> deobfReference =
@@ -360,26 +369,26 @@ public class GuiController
 		else
 			m_gui.showTokens(tokens);
 	}
-
+	
 	public void savePreviousReference(
 		EntryReference<Entry, Entry> deobfReference)
 	{
 		m_referenceStack
 			.push(m_deobfuscator.obfuscateReference(deobfReference));
 	}
-
+	
 	public void openPreviousReference()
 	{
 		if(hasPreviousLocation())
 			openReference(m_deobfuscator.deobfuscateReference(m_referenceStack
 				.pop()));
 	}
-
+	
 	public boolean hasPreviousLocation()
 	{
 		return !m_referenceStack.isEmpty();
 	}
-
+	
 	private void refreshClasses()
 	{
 		List<ClassEntry> obfClasses = Lists.newArrayList();
@@ -388,24 +397,24 @@ public class GuiController
 		m_gui.setObfClasses(obfClasses);
 		m_gui.setDeobfClasses(deobfClasses);
 	}
-
+	
 	private void refreshCurrentClass()
 	{
 		refreshCurrentClass(null);
 	}
-
+	
 	private void refreshCurrentClass(EntryReference<Entry, Entry> obfReference)
 	{
 		if(m_currentObfClass != null)
 			deobfuscate(m_currentObfClass, obfReference);
 	}
-
+	
 	private void deobfuscate(final ClassEntry classEntry,
 		final EntryReference<Entry, Entry> obfReference)
 	{
-
+		
 		m_gui.setSource("(deobfuscating...)");
-
+		
 		// run the deobfuscator in a separate thread so we don't block the GUI
 		// event queue
 		new Thread()
@@ -427,7 +436,7 @@ public class GuiController
 				m_gui.setSource(m_index.getSource());
 				if(obfReference != null)
 					showReference(obfReference);
-
+				
 				// set the highlighted tokens
 				List<Token> obfuscatedTokens = Lists.newArrayList();
 				List<Token> deobfuscatedTokens = Lists.newArrayList();
