@@ -46,9 +46,9 @@ import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 public class Gui
 {
-
+	
 	private GuiController m_controller;
-
+	
 	// controls
 	private JFrame m_frame;
 	private ClassSelector m_obfClasses;
@@ -66,7 +66,7 @@ public class Gui
 	private JTree m_callsTree;
 	private JList<Token> m_tokens;
 	private JTabbedPane m_tabs;
-
+	
 	// dynamic menu items
 	private JMenuItem m_closeJarMenu;
 	private JMenuItem m_openMappingsMenu;
@@ -82,22 +82,22 @@ public class Gui
 	private JMenuItem m_toggleMappingMenu;
 	private JMenuItem m_exportSourceMenu;
 	private JMenuItem m_exportJarMenu;
-
+	
 	// state
 	private EntryReference<Entry, Entry> m_reference;
 	private JFileChooser m_jarFileChooser;
 	private JFileChooser m_mappingsFileChooser;
 	private JFileChooser m_exportSourceFileChooser;
 	private JFileChooser m_exportJarFileChooser;
-
+	
 	public Gui()
 	{
-
+		
 		// init frame
 		m_frame = new JFrame(Constants.Name);
 		final Container pane = m_frame.getContentPane();
 		pane.setLayout(new BorderLayout());
-
+		
 		if(Boolean.parseBoolean(System.getProperty("enigma.catchExceptions",
 			"true")))
 		{
@@ -115,9 +115,9 @@ public class Gui
 					}
 				});
 		}
-
+		
 		m_controller = new GuiController(this);
-
+		
 		// init file choosers
 		m_jarFileChooser = new JFileChooser();
 		m_mappingsFileChooser = new JFileChooser();
@@ -125,7 +125,7 @@ public class Gui
 		m_exportSourceFileChooser
 			.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		m_exportJarFileChooser = new JFileChooser();
-
+		
 		// init obfuscated classes list
 		m_obfClasses =
 			new ClassSelector(ClassSelector.ObfuscatedClassEntryComparator);
@@ -142,7 +142,7 @@ public class Gui
 		obfPanel.setLayout(new BorderLayout());
 		obfPanel.add(new JLabel("Obfuscated Classes"), BorderLayout.NORTH);
 		obfPanel.add(obfScroller, BorderLayout.CENTER);
-
+		
 		// init deobfuscated classes list
 		m_deobfClasses =
 			new ClassSelector(ClassSelector.DeobfuscatedClassEntryComparator);
@@ -159,7 +159,7 @@ public class Gui
 		deobfPanel.setLayout(new BorderLayout());
 		deobfPanel.add(new JLabel("De-obfuscated Classes"), BorderLayout.NORTH);
 		deobfPanel.add(deobfScroller, BorderLayout.CENTER);
-
+		
 		// set up classes panel (don't add the splitter yet)
 		m_splitClasses =
 			new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, obfPanel,
@@ -168,7 +168,7 @@ public class Gui
 		m_classesPanel = new JPanel();
 		m_classesPanel.setLayout(new BorderLayout());
 		m_classesPanel.setPreferredSize(new Dimension(250, 0));
-
+		
 		// init info panel
 		m_infoPanel = new JPanel();
 		m_infoPanel.setLayout(new GridLayout(4, 1, 0, 0));
@@ -176,7 +176,7 @@ public class Gui
 		m_infoPanel.setBorder(BorderFactory
 			.createTitledBorder("Identifier Info"));
 		clearReference();
-
+		
 		// init editor
 		DefaultSyntaxKit.initKit();
 		m_obfuscatedHighlightPainter = new ObfuscatedHighlightPainter();
@@ -206,39 +206,39 @@ public class Gui
 					case KeyEvent.VK_R:
 						m_renameMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_I:
 						m_showInheritanceMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_M:
 						m_showImplementationsMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_N:
 						m_openEntryMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_P:
 						m_openPreviousMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_C:
 						m_showCallsMenu.doClick();
 						break;
-
+					
 					case KeyEvent.VK_T:
 						m_toggleMappingMenu.doClick();
 						break;
 				}
 			}
 		});
-
+		
 		// turn off token highlighting (it's wrong most of the time anyway...)
 		DefaultSyntaxKit kit = (DefaultSyntaxKit)m_editor.getEditorKit();
 		kit.toggleComponent(m_editor,
 			"de.sciss.syntaxpane.components.TokenMarker");
-
+		
 		// init editor popup menu
 		JPopupMenu popupMenu = new JPopupMenu();
 		m_editor.setComponentPopupMenu(popupMenu);
@@ -347,7 +347,7 @@ public class Gui
 			popupMenu.add(menu);
 			m_toggleMappingMenu = menu;
 		}
-
+		
 		// init inheritance panel
 		m_inheritanceTree = new JTree();
 		m_inheritanceTree.setModel(null);
@@ -362,7 +362,7 @@ public class Gui
 					TreePath path = m_inheritanceTree.getSelectionPath();
 					if(path == null)
 						return;
-
+					
 					Object node = path.getLastPathComponent();
 					if(node instanceof ClassInheritanceTreeNode)
 					{
@@ -382,7 +382,7 @@ public class Gui
 		JPanel inheritancePanel = new JPanel();
 		inheritancePanel.setLayout(new BorderLayout());
 		inheritancePanel.add(new JScrollPane(m_inheritanceTree));
-
+		
 		// init implementations panel
 		m_implementationsTree = new JTree();
 		m_implementationsTree.setModel(null);
@@ -397,7 +397,7 @@ public class Gui
 					TreePath path = m_implementationsTree.getSelectionPath();
 					if(path == null)
 						return;
-
+					
 					Object node = path.getLastPathComponent();
 					if(node instanceof ClassImplementationsTreeNode)
 					{
@@ -416,7 +416,7 @@ public class Gui
 		JPanel implementationsPanel = new JPanel();
 		implementationsPanel.setLayout(new BorderLayout());
 		implementationsPanel.add(new JScrollPane(m_implementationsTree));
-
+		
 		// init call panel
 		m_callsTree = new JTree();
 		m_callsTree.setModel(null);
@@ -432,7 +432,7 @@ public class Gui
 					TreePath path = m_callsTree.getSelectionPath();
 					if(path == null)
 						return;
-
+					
 					Object node = path.getLastPathComponent();
 					if(node instanceof ReferenceTreeNode)
 					{
@@ -470,7 +470,7 @@ public class Gui
 				m_callsTree), new JScrollPane(m_tokens));
 		callPanel.setResizeWeight(1); // let the top side take all the slack
 		callPanel.resetToPreferredSizes();
-
+		
 		// layout controls
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout());
@@ -491,7 +491,7 @@ public class Gui
 				splitRight);
 		splitCenter.setResizeWeight(0); // let the right side take all the slack
 		pane.add(splitCenter, BorderLayout.CENTER);
-
+		
 		// init menus
 		JMenuBar menuBar = new JMenuBar();
 		m_frame.setJMenuBar(menuBar);
@@ -510,21 +510,21 @@ public class Gui
 							// load the jar in a separate thread
 							new Thread()
 							{
-							@Override
-							public void run()
+								@Override
+								public void run()
 								{
-								try
+									try
 									{
-									m_controller
+										m_controller
 											.openJar(new JarFile(
 												m_jarFileChooser
 													.getSelectedFile()));
-								}catch(IOException ex)
+									}catch(IOException ex)
 									{
-									throw new Error(ex);
+										throw new Error(ex);
+									}
 								}
-							}
-						}.start();
+							}.start();
 					}
 				});
 			}
@@ -666,8 +666,7 @@ public class Gui
 					@Override
 					public void actionPerformed(ActionEvent event)
 					{
-						// close(); TODO
-						m_controller.fixClasses();
+						close();
 					}
 				});
 			}
@@ -678,6 +677,7 @@ public class Gui
 			{
 				JMenuItem item = new JMenuItem("About");
 				menu.add(item);
+				
 				item.addActionListener(new ActionListener()
 				{
 					@Override
@@ -688,10 +688,26 @@ public class Gui
 				});
 			}
 		}
-
+		{
+			JMenu mnWurst = new JMenu("Wurst");
+			menuBar.add(mnWurst);
+			{
+				JMenuItem mntmFixClassNames = new JMenuItem("Fix Class Names");
+				mntmFixClassNames.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						m_controller.fixClasses();
+					}
+				});
+				mnWurst.add(mntmFixClassNames);
+			}
+		}
+		
 		// init state
 		onCloseJar();
-
+		
 		m_frame.addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -700,7 +716,7 @@ public class Gui
 				close();
 			}
 		});
-
+		
 		// show the frame
 		pane.doLayout();
 		m_frame.setSize(1024, 576);
@@ -708,17 +724,17 @@ public class Gui
 		m_frame.setVisible(true);
 		m_frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
-
+	
 	public JFrame getFrame()
 	{
 		return m_frame;
 	}
-
+	
 	public GuiController getController()
 	{
 		return m_controller;
 	}
-
+	
 	public void onStartOpenJar()
 	{
 		m_classesPanel.removeAll();
@@ -728,7 +744,7 @@ public class Gui
 		m_classesPanel.add(panel);
 		redraw();
 	}
-
+	
 	public void onFinishOpenJar(String jarName)
 	{
 		// update gui
@@ -736,7 +752,7 @@ public class Gui
 		m_classesPanel.removeAll();
 		m_classesPanel.add(m_splitClasses);
 		setSource(null);
-
+		
 		// update menu
 		m_closeJarMenu.setEnabled(true);
 		m_openMappingsMenu.setEnabled(true);
@@ -745,10 +761,10 @@ public class Gui
 		m_closeMappingsMenu.setEnabled(true);
 		m_exportSourceMenu.setEnabled(true);
 		m_exportJarMenu.setEnabled(true);
-
+		
 		redraw();
 	}
-
+	
 	public void onCloseJar()
 	{
 		// update gui
@@ -757,7 +773,7 @@ public class Gui
 		setDeobfClasses(null);
 		setSource(null);
 		m_classesPanel.removeAll();
-
+		
 		// update menu
 		m_closeJarMenu.setEnabled(false);
 		m_openMappingsMenu.setEnabled(false);
@@ -766,32 +782,32 @@ public class Gui
 		m_closeMappingsMenu.setEnabled(false);
 		m_exportSourceMenu.setEnabled(false);
 		m_exportJarMenu.setEnabled(false);
-
+		
 		redraw();
 	}
-
+	
 	public void setObfClasses(Collection<ClassEntry> obfClasses)
 	{
 		m_obfClasses.setClasses(obfClasses);
 	}
-
+	
 	public void setDeobfClasses(Collection<ClassEntry> deobfClasses)
 	{
 		m_deobfClasses.setClasses(deobfClasses);
 	}
-
+	
 	public void setMappingsFile(File file)
 	{
 		m_mappingsFileChooser.setSelectedFile(file);
 		m_saveMappingsMenu.setEnabled(file != null);
 	}
-
+	
 	public void setSource(String source)
 	{
 		m_editor.getHighlighter().removeAllHighlights();
 		m_editor.setText(source);
 	}
-
+	
 	public void showToken(final Token token)
 	{
 		if(token == null)
@@ -800,7 +816,7 @@ public class Gui
 			.navigateToToken(m_editor, token, m_selectionHighlightPainter);
 		redraw();
 	}
-
+	
 	public void showTokens(Collection<Token> tokens)
 	{
 		Vector<Token> sortedTokens = new Vector<Token>(tokens);
@@ -812,18 +828,18 @@ public class Gui
 			m_tokens.setSelectedIndex(0);
 		}else
 			m_tokens.setListData(new Vector<Token>());
-
+		
 		// show the first token
 		showToken(sortedTokens.get(0));
 	}
-
+	
 	public void setHighlightedTokens(Iterable<Token> obfuscatedTokens,
 		Iterable<Token> deobfuscatedTokens, Iterable<Token> otherTokens)
 	{
-
+		
 		// remove any old highlighters
 		m_editor.getHighlighter().removeAllHighlights();
-
+		
 		// color things based on the index
 		if(obfuscatedTokens != null)
 			setHighlightedTokens(obfuscatedTokens, m_obfuscatedHighlightPainter);
@@ -832,10 +848,10 @@ public class Gui
 				m_deobfuscatedHighlightPainter);
 		if(otherTokens != null)
 			setHighlightedTokens(otherTokens, m_otherHighlightPainter);
-
+		
 		redraw();
 	}
-
+	
 	private void setHighlightedTokens(Iterable<Token> tokens,
 		Highlighter.HighlightPainter painter)
 	{
@@ -849,7 +865,7 @@ public class Gui
 				throw new IllegalArgumentException(ex);
 			}
 	}
-
+	
 	private void clearReference()
 	{
 		m_infoPanel.removeAll();
@@ -857,10 +873,10 @@ public class Gui
 		GuiTricks.unboldLabel(label);
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		m_infoPanel.add(label);
-
+		
 		redraw();
 	}
-
+	
 	private void showReference(EntryReference<Entry, Entry> reference)
 	{
 		if(reference == null)
@@ -868,9 +884,9 @@ public class Gui
 			clearReference();
 			return;
 		}
-
+		
 		m_reference = reference;
-
+		
 		m_infoPanel.removeAll();
 		if(reference.entry instanceof ClassEntry)
 			showClassEntry((ClassEntry)m_reference.entry);
@@ -885,29 +901,29 @@ public class Gui
 		else
 			throw new Error("Unknown entry type: "
 				+ m_reference.entry.getClass().getName());
-
+		
 		redraw();
 	}
-
+	
 	private void showClassEntry(ClassEntry entry)
 	{
 		addNameValue(m_infoPanel, "Class", entry.getName());
 	}
-
+	
 	private void showFieldEntry(FieldEntry entry)
 	{
 		addNameValue(m_infoPanel, "Field", entry.getName());
 		addNameValue(m_infoPanel, "Class", entry.getClassEntry().getName());
 		addNameValue(m_infoPanel, "Type", entry.getType().toString());
 	}
-
+	
 	private void showMethodEntry(MethodEntry entry)
 	{
 		addNameValue(m_infoPanel, "Method", entry.getName());
 		addNameValue(m_infoPanel, "Class", entry.getClassEntry().getName());
 		addNameValue(m_infoPanel, "Signature", entry.getSignature().toString());
 	}
-
+	
 	private void showConstructorEntry(ConstructorEntry entry)
 	{
 		addNameValue(m_infoPanel, "Constructor", entry.getClassEntry()
@@ -916,7 +932,7 @@ public class Gui
 			addNameValue(m_infoPanel, "Signature", entry.getSignature()
 				.toString());
 	}
-
+	
 	private void showArgumentEntry(ArgumentEntry entry)
 	{
 		addNameValue(m_infoPanel, "Argument", entry.getName());
@@ -924,28 +940,28 @@ public class Gui
 		addNameValue(m_infoPanel, "Method", entry.getBehaviorEntry().getName());
 		addNameValue(m_infoPanel, "Index", Integer.toString(entry.getIndex()));
 	}
-
+	
 	private void addNameValue(JPanel container, String name, String value)
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
 		container.add(panel);
-
+		
 		JLabel label = new JLabel(name + ":", SwingConstants.RIGHT);
 		label.setPreferredSize(new Dimension(100,
 			label.getPreferredSize().height));
 		panel.add(label);
-
+		
 		panel
 			.add(GuiTricks.unboldLabel(new JLabel(value, SwingConstants.LEFT)));
 	}
-
+	
 	private void onCaretMove(int pos)
 	{
-
+		
 		Token token = m_controller.getToken(pos);
 		boolean isToken = token != null;
-
+		
 		m_reference = m_controller.getDeobfReference(token);
 		boolean isClassEntry =
 			isToken && m_reference.entry instanceof ClassEntry;
@@ -959,12 +975,12 @@ public class Gui
 			isToken && m_controller.entryIsInJar(m_reference.entry);
 		boolean isRenameable =
 			isToken && m_controller.referenceIsRenameable(m_reference);
-
+		
 		if(isToken)
 			showReference(m_reference);
 		else
 			clearReference();
-
+		
 		m_renameMenu.setEnabled(isRenameable && isToken);
 		m_showInheritanceMenu.setEnabled(isClassEntry || isMethodEntry
 			|| isConstructorEntry);
@@ -976,13 +992,13 @@ public class Gui
 				&& (isClassEntry || isFieldEntry || isMethodEntry || isConstructorEntry));
 		m_openPreviousMenu.setEnabled(m_controller.hasPreviousLocation());
 		m_toggleMappingMenu.setEnabled(isRenameable && isToken);
-
+		
 		if(isToken && m_controller.entryHasDeobfuscatedName(m_reference.entry))
 			m_toggleMappingMenu.setText("Reset to obfuscated");
 		else
 			m_toggleMappingMenu.setText("Mark as deobfuscated");
 	}
-
+	
 	private void navigateTo(Entry entry)
 	{
 		if(!m_controller.entryIsInJar(entry))
@@ -992,7 +1008,7 @@ public class Gui
 			m_controller.savePreviousReference(m_reference);
 		m_controller.openDeclaration(entry);
 	}
-
+	
 	private void navigateTo(EntryReference<Entry, Entry> reference)
 	{
 		if(!m_controller.entryIsInJar(reference.getLocationClassEntry()))
@@ -1002,10 +1018,10 @@ public class Gui
 			m_controller.savePreviousReference(m_reference);
 		m_controller.openReference(reference);
 	}
-
+	
 	private void startRename()
 	{
-
+		
 		// init the text box
 		final JTextField text = new JTextField();
 		text.setText(m_reference.getNamableName());
@@ -1020,24 +1036,24 @@ public class Gui
 					case KeyEvent.VK_ENTER:
 						finishRename(text, true);
 						break;
-
+					
 					case KeyEvent.VK_ESCAPE:
 						finishRename(text, false);
 						break;
 				}
 			}
 		});
-
+		
 		// find the label with the name and replace it with the text box
 		JPanel panel = (JPanel)m_infoPanel.getComponent(0);
 		panel.remove(panel.getComponentCount() - 1);
 		panel.add(text);
 		text.grabFocus();
 		text.selectAll();
-
+		
 		redraw();
 	}
-
+	
 	private void finishRename(JTextField text, boolean saveName)
 	{
 		String newName = text.getText();
@@ -1054,32 +1070,32 @@ public class Gui
 			}
 			return;
 		}
-
+		
 		// abort the rename
 		JPanel panel = (JPanel)m_infoPanel.getComponent(0);
 		panel.remove(panel.getComponentCount() - 1);
 		panel.add(GuiTricks.unboldLabel(new JLabel(
 			m_reference.getNamableName(), SwingConstants.LEFT)));
-
+		
 		m_editor.grabFocus();
-
+		
 		redraw();
 	}
-
+	
 	private void showInheritance()
 	{
-
+		
 		if(m_reference == null)
 			return;
-
+		
 		m_inheritanceTree.setModel(null);
-
+		
 		if(m_reference.entry instanceof ClassEntry)
 		{
 			// get the class inheritance
 			ClassInheritanceTreeNode classNode =
 				m_controller.getClassInheritance((ClassEntry)m_reference.entry);
-
+			
 			// show the tree at the root
 			TreePath path = getPathToRoot(classNode);
 			m_inheritanceTree.setModel(new DefaultTreeModel((TreeNode)path
@@ -1093,7 +1109,7 @@ public class Gui
 			MethodInheritanceTreeNode classNode =
 				m_controller
 					.getMethodInheritance((MethodEntry)m_reference.entry);
-
+			
 			// show the tree at the root
 			TreePath path = getPathToRoot(classNode);
 			m_inheritanceTree.setModel(new DefaultTreeModel((TreeNode)path
@@ -1102,19 +1118,19 @@ public class Gui
 			m_inheritanceTree.setSelectionRow(m_inheritanceTree
 				.getRowForPath(path));
 		}
-
+		
 		m_tabs.setSelectedIndex(0);
 		redraw();
 	}
-
+	
 	private void showImplementations()
 	{
-
+		
 		if(m_reference == null)
 			return;
-
+		
 		m_implementationsTree.setModel(null);
-
+		
 		if(m_reference.entry instanceof ClassEntry)
 		{
 			// get the class implementations
@@ -1148,17 +1164,17 @@ public class Gui
 					.getRowForPath(path));
 			}
 		}
-
+		
 		m_tabs.setSelectedIndex(1);
 		redraw();
 	}
-
+	
 	private void showCalls()
 	{
-
+		
 		if(m_reference == null)
 			return;
-
+		
 		if(m_reference.entry instanceof ClassEntry)
 		{
 			// look for calls to the default constructor
@@ -1186,11 +1202,11 @@ public class Gui
 					.getMethodReferences((ConstructorEntry)m_reference.entry);
 			m_callsTree.setModel(new DefaultTreeModel(node));
 		}
-
+		
 		m_tabs.setSelectedIndex(2);
 		redraw();
 	}
-
+	
 	private void toggleMapping()
 	{
 		if(m_controller.entryHasDeobfuscatedName(m_reference.entry))
@@ -1198,7 +1214,7 @@ public class Gui
 		else
 			m_controller.markAsDeobfuscated(m_reference);
 	}
-
+	
 	private TreePath getPathToRoot(TreeNode node)
 	{
 		List<TreeNode> nodes = Lists.newArrayList();
@@ -1211,7 +1227,7 @@ public class Gui
 		Collections.reverse(nodes);
 		return new TreePath(nodes.toArray());
 	}
-
+	
 	private void close()
 	{
 		if(!m_controller.isDirty())
@@ -1243,7 +1259,7 @@ public class Gui
 							throw new Error(ex);
 						}
 					break;
-
+				
 				case JOptionPane.NO_OPTION:
 					// don't save, exit
 					m_frame.dispose();
@@ -1253,7 +1269,7 @@ public class Gui
 			}
 		}
 	}
-
+	
 	private void redraw()
 	{
 		m_frame.validate();
