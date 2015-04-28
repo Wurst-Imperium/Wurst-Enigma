@@ -215,6 +215,7 @@ public class GuiController {
 	
 	public void fixClasses()
 	{
+		m_currentObfClass = null;
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
 		{
 			@Override
