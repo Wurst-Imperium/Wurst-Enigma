@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
 
@@ -275,6 +276,7 @@ public class GuiController
 			return;
 		}
 		m_currentObfClass = null;
+		final AtomicBoolean problems = new AtomicBoolean();
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
 		{
 			@Override
@@ -296,13 +298,22 @@ public class GuiController
 									.lastIndexOf("/") + 1))
 								+ name.substring(name.lastIndexOf("/") + 2);
 					if(!name.equals(entry.getName()))
-						rename(
-							new EntryReference<Entry, Entry>(entry, entry
-								.getName()), name);
+						try
+						{
+							rename(new EntryReference<Entry, Entry>(entry,
+								entry.getName()), name);
+						}catch(IllegalNameException e)
+						{
+							problems.compareAndSet(false, true);
+						}
 					progress.onProgress(i++, name);
 				}
 			}
 		});
+		if(problems.get())
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				"Some classes could not be renamed.", "Warning",
+				JOptionPane.WARNING_MESSAGE);
 	}
 	
 	public void removeMapping(EntryReference<Entry, Entry> deobfReference)
