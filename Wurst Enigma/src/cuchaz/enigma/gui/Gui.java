@@ -89,6 +89,7 @@ public class Gui
 	private JFileChooser m_mappingsFileChooser;
 	private JFileChooser m_exportSourceFileChooser;
 	private JFileChooser m_exportJarFileChooser;
+	private JMenuItem mntmExportSource;
 	
 	public Gui()
 	{
@@ -702,6 +703,19 @@ public class Gui
 					}
 				});
 				mnWurst.add(mntmFixClassNames);
+				mntmExportSource = new JMenuItem("Export Source...");
+				mntmExportSource.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(m_exportSourceFileChooser.showSaveDialog(m_frame) == JFileChooser.APPROVE_OPTION)
+							m_controller
+								.wurstExportSource(m_exportSourceFileChooser
+									.getSelectedFile());
+					}
+				});
+				mnWurst.add(mntmExportSource);
 			}
 		}
 		
@@ -760,6 +774,7 @@ public class Gui
 		m_saveMappingsAsMenu.setEnabled(true);
 		m_closeMappingsMenu.setEnabled(true);
 		m_exportSourceMenu.setEnabled(true);
+		mntmExportSource.setEnabled(true);
 		m_exportJarMenu.setEnabled(true);
 		
 		redraw();
@@ -781,6 +796,7 @@ public class Gui
 		m_saveMappingsAsMenu.setEnabled(false);
 		m_closeMappingsMenu.setEnabled(false);
 		m_exportSourceMenu.setEnabled(false);
+		mntmExportSource.setEnabled(false);
 		m_exportJarMenu.setEnabled(false);
 		
 		redraw();

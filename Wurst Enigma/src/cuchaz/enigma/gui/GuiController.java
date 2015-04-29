@@ -113,6 +113,19 @@ public class GuiController
 		});
 	}
 	
+	public void wurstExportSource(final File dirOut)
+	{
+		m_currentObfClass = null;
+		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
+		{
+			@Override
+			public void run(ProgressListener progress) throws Exception
+			{
+				m_deobfuscator.wurstWriteSources(dirOut, progress);
+			}
+		});
+	}
+	
 	public void exportJar(final File fileOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
