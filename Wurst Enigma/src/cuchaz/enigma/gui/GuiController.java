@@ -282,6 +282,7 @@ public class GuiController
 			@Override
 			public void run(ProgressListener progress) throws Exception
 			{
+				counter.set(0);
 				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
 					.size(), "Fixing class names...");
 				int i = 0;
