@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
@@ -25,6 +26,7 @@ import javax.swing.JOptionPane;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 
 import cuchaz.enigma.Deobfuscator;
@@ -121,7 +123,128 @@ public class GuiController
 			@Override
 			public void run(ProgressListener progress) throws Exception
 			{
-				m_deobfuscator.wurstWriteSources(dirOut, progress);
+				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
+					.size(), "Fixing inner class references...");
+				int i = 0;
+				for(ClassEntry entry : m_deobfuscator.getJarIndex()
+					.getObfClassEntries())
+				{
+					if(!entry.isInnerClass())
+					{
+						progress.onProgress(i++, entry.getName());
+						continue;
+					}
+					// That string will likely never occur anywhere
+					// TODO: Allow the user to specify a custom string
+					String name =
+						"WurstWurstWurstAllesWirdAusWurstGemacht"
+							+ entry.getInnermostClassName();
+					try
+					{
+						EntryReference<Entry, Entry> obfReference =
+							m_deobfuscator
+								.obfuscateReference(new EntryReference<Entry, Entry>(
+									entry, entry.getName()));
+						m_deobfuscator.rename(obfReference.getNameableEntry(),
+							name);
+					}catch(IllegalNameException e)
+					{
+						e.printStackTrace();
+					}
+					progress.onProgress(i++, entry.getName());
+				}
+				// get the classes to decompile
+				Set<ClassEntry> classEntries = Sets.newHashSet();
+				for(ClassEntry obfClassEntry : m_deobfuscator.getJarIndex()
+					.getObfClassEntries())
+				{
+					// skip inner classes
+					if(obfClassEntry.isInnerClass())
+						continue;
+					
+					classEntries.add(obfClassEntry);
+				}
+				
+				if(progress != null)
+					progress.init(classEntries.size(), "Decompiling classes...");
+				
+				// DEOBFUSCATE ALL THE THINGS!! @_@
+				i = 0;
+				for(ClassEntry obfClassEntry : classEntries)
+				{
+					ClassEntry deobfClassEntry =
+						m_deobfuscator.deobfuscateEntry(new ClassEntry(
+							obfClassEntry));
+					if(progress != null)
+						progress.onProgress(i++, deobfClassEntry.toString());
+					
+					try
+					{
+						// get the source
+						String source =
+							m_deobfuscator.getSource(m_deobfuscator
+								.getSourceTree(obfClassEntry.getName()));
+						
+						// fix inner class references
+						source =
+							source
+								.replace(
+									"$WurstWurstWurstAllesWirdAusWurstGemacht",
+									".");
+						source =
+							source.replace(
+								"WurstWurstWurstAllesWirdAusWurstGemacht", "");
+						
+						// write the file
+						File file =
+							new File(dirOut, deobfClassEntry.getName().replace(
+								'.', '/')
+								+ ".java");
+						file.getParentFile().mkdirs();
+						try(FileWriter out = new FileWriter(file))
+						{
+							out.write(source);
+						}
+					}catch(Throwable t)
+					{
+						throw new Error("Unable to deobfuscate class "
+							+ deobfClassEntry.toString() + " ("
+							+ obfClassEntry.toString() + ")", t);
+					}
+				}
+				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
+					.size(), "Renaming inner classes back...");
+				i = 0;
+				for(ClassEntry entry : m_deobfuscator.getJarIndex()
+					.getObfClassEntries())
+				{
+					if(!entry.isInnerClass())
+					{
+						progress.onProgress(i++, entry.getName());
+						continue;
+					}
+					String name = entry.getInnermostClassName();
+					if(name
+						.startsWith("WurstWurstWurstAllesWirdAusWurstGemacht"))
+						name =
+							name.substring("WurstWurstWurstAllesWirdAusWurstGemacht"
+								.length());
+					try
+					{
+						EntryReference<Entry, Entry> obfReference =
+							m_deobfuscator
+								.obfuscateReference(new EntryReference<Entry, Entry>(
+									entry, entry.getName()));
+						m_deobfuscator.rename(obfReference.getNameableEntry(),
+							name);
+					}catch(IllegalNameException e)
+					{
+						e.printStackTrace();
+					}
+					progress.onProgress(i++, name);
+				}
+				if(progress != null)
+					progress.onProgress(i, "Done!");
 			}
 		});
 	}
