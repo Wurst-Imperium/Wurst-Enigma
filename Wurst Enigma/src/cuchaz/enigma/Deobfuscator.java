@@ -78,7 +78,7 @@ public class Deobfuscator
 		m_settings.setMergeVariables(true);
 		m_settings.setForceExplicitImports(true);
 		m_settings.setForceExplicitTypeArguments(true);
-		m_settings.setShowDebugLineNumbers(true);
+		// m_settings.setShowDebugLineNumbers(true);
 		// DEBUG
 		// m_settings.setShowSyntheticMembers(true);
 		
