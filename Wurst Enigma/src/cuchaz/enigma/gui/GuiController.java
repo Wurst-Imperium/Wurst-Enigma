@@ -136,9 +136,19 @@ public class GuiController
 					}
 					// That string will likely never occur anywhere
 					// TODO: Allow the user to specify a custom string
-					String name =
-						"WurstWurstWurstAllesWirdAusWurstGemacht"
-							+ entry.getInnermostClassName();
+					String name = "WurstWurstWurstAllesWirdAusWurstGemacht";
+					try
+					{
+						name +=
+							m_deobfuscator
+								.getMappings()
+								.getClassByObf(entry.getOuterClassName())
+								.getDeobfInnerClassName(
+									entry.getInnermostClassName());
+					}catch(Exception e1)
+					{
+						name += entry.getInnermostClassName();
+					}
 					try
 					{
 						EntryReference<Entry, Entry> obfReference =
