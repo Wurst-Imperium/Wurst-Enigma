@@ -455,12 +455,12 @@ public class GuiController
 						}
 					progress.onProgress(i++, name);
 				}
+				if(problems.get())
+					JOptionPane.showMessageDialog(m_gui.getFrame(),
+						"Some classes could not be renamed.", "Warning",
+						JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		if(problems.get())
-			JOptionPane.showMessageDialog(m_gui.getFrame(),
-				"Some classes could not be renamed.", "Warning",
-				JOptionPane.WARNING_MESSAGE);
 	}
 	
 	public void removeMapping(EntryReference<Entry, Entry> deobfReference)
