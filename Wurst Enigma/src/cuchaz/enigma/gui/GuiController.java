@@ -125,7 +125,7 @@ public class GuiController
 			public void run(ProgressListener progress) throws Exception
 			{
 				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
-					.size(), "Fixing inner class references...");
+					.size(), "Preparing classes...");
 				int i = 0;
 				for(ClassEntry entry : m_deobfuscator.getJarIndex()
 					.getObfClassEntries())
