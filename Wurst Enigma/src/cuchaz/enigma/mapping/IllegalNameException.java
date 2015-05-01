@@ -12,28 +12,28 @@ package cuchaz.enigma.mapping;
 
 public class IllegalNameException extends RuntimeException
 {
-
+	
 	private static final long serialVersionUID = -2279910052561114323L;
-
+	
 	private String m_name;
 	private String m_reason;
-
+	
 	public IllegalNameException(String name)
 	{
 		this(name, null);
 	}
-
+	
 	public IllegalNameException(String name, String reason)
 	{
 		m_name = name;
 		m_reason = reason;
 	}
-
+	
 	public String getReason()
 	{
 		return m_reason;
 	}
-
+	
 	@Override
 	public String getMessage()
 	{

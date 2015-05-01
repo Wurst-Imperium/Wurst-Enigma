@@ -16,13 +16,13 @@ import cuchaz.enigma.Util;
 
 public class MethodEntry implements BehaviorEntry, Serializable
 {
-
+	
 	private static final long serialVersionUID = 4770915224467247458L;
-
+	
 	private ClassEntry m_classEntry;
 	private String m_name;
 	private Signature m_signature;
-
+	
 	public MethodEntry(ClassEntry classEntry, String name, Signature signature)
 	{
 		if(classEntry == null)
@@ -35,62 +35,62 @@ public class MethodEntry implements BehaviorEntry, Serializable
 		if(name.startsWith("<"))
 			throw new IllegalArgumentException(
 				"Don't use MethodEntry for a constructor!");
-
+		
 		m_classEntry = classEntry;
 		m_name = name;
 		m_signature = signature;
 	}
-
+	
 	public MethodEntry(MethodEntry other)
 	{
 		m_classEntry = new ClassEntry(other.m_classEntry);
 		m_name = other.m_name;
 		m_signature = other.m_signature;
 	}
-
+	
 	public MethodEntry(MethodEntry other, String newClassName)
 	{
 		m_classEntry = new ClassEntry(newClassName);
 		m_name = other.m_name;
 		m_signature = other.m_signature;
 	}
-
+	
 	@Override
 	public ClassEntry getClassEntry()
 	{
 		return m_classEntry;
 	}
-
+	
 	@Override
 	public String getName()
 	{
 		return m_name;
 	}
-
+	
 	@Override
 	public Signature getSignature()
 	{
 		return m_signature;
 	}
-
+	
 	@Override
 	public String getClassName()
 	{
 		return m_classEntry.getName();
 	}
-
+	
 	@Override
 	public MethodEntry cloneToNewClass(ClassEntry classEntry)
 	{
 		return new MethodEntry(this, classEntry.getName());
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
 		return Util.combineHashesOrdered(m_classEntry, m_name, m_signature);
 	}
-
+	
 	@Override
 	public boolean equals(Object other)
 	{
@@ -98,14 +98,14 @@ public class MethodEntry implements BehaviorEntry, Serializable
 			return equals((MethodEntry)other);
 		return false;
 	}
-
+	
 	public boolean equals(MethodEntry other)
 	{
 		return m_classEntry.equals(other.m_classEntry)
 			&& m_name.equals(other.m_name)
 			&& m_signature.equals(other.m_signature);
 	}
-
+	
 	@Override
 	public String toString()
 	{

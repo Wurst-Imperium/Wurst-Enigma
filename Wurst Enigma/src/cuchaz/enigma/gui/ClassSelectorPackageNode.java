@@ -14,27 +14,27 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ClassSelectorPackageNode extends DefaultMutableTreeNode
 {
-
+	
 	private static final long serialVersionUID = -3730868701219548043L;
-
+	
 	private String m_packageName;
-
+	
 	public ClassSelectorPackageNode(String packageName)
 	{
 		m_packageName = packageName;
 	}
-
+	
 	public String getPackageName()
 	{
 		return m_packageName;
 	}
-
+	
 	@Override
 	public String toString()
 	{
 		return m_packageName;
 	}
-
+	
 	@Override
 	public boolean equals(Object other)
 	{
@@ -42,7 +42,7 @@ public class ClassSelectorPackageNode extends DefaultMutableTreeNode
 			return equals((ClassSelectorPackageNode)other);
 		return false;
 	}
-
+	
 	public boolean equals(ClassSelectorPackageNode other)
 	{
 		return m_packageName.equals(other.m_packageName);

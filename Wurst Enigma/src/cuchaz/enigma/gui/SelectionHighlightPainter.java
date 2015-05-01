@@ -22,7 +22,7 @@ import javax.swing.text.JTextComponent;
 
 public class SelectionHighlightPainter implements Highlighter.HighlightPainter
 {
-
+	
 	@Override
 	public void paint(Graphics g, int start, int end, Shape shape,
 		JTextComponent text)

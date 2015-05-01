@@ -21,7 +21,7 @@ import cuchaz.enigma.bytecode.accessors.*;
 
 public enum InfoType
 {
-
+	
 	Utf8Info(1, 0),
 	IntegerInfo(3, 0),
 	FloatInfo(4, 0),
@@ -29,7 +29,7 @@ public enum InfoType
 	DoubleInfo(6, 0),
 	ClassInfo(7, 1)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -37,7 +37,7 @@ public enum InfoType
 			ClassInfoAccessor accessor = new ClassInfoAccessor(entry.getItem());
 			gatherIndexTree(indices, editor, accessor.getNameIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -45,7 +45,7 @@ public enum InfoType
 			ClassInfoAccessor accessor = new ClassInfoAccessor(entry.getItem());
 			accessor.setNameIndex(remapIndex(map, accessor.getNameIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -57,7 +57,7 @@ public enum InfoType
 	},
 	StringInfo(8, 1)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -66,7 +66,7 @@ public enum InfoType
 				new StringInfoAccessor(entry.getItem());
 			gatherIndexTree(indices, editor, accessor.getStringIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -75,7 +75,7 @@ public enum InfoType
 				new StringInfoAccessor(entry.getItem());
 			accessor.setStringIndex(remapIndex(map, accessor.getStringIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -90,7 +90,7 @@ public enum InfoType
 	},
 	FieldRefInfo(9, 2)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -100,7 +100,7 @@ public enum InfoType
 			gatherIndexTree(indices, editor, accessor.getClassIndex());
 			gatherIndexTree(indices, editor, accessor.getNameAndTypeIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -111,7 +111,7 @@ public enum InfoType
 			accessor.setNameAndTypeIndex(remapIndex(map,
 				accessor.getNameAndTypeIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -131,21 +131,21 @@ public enum InfoType
 	// same as FieldRefInfo
 	MethodRefInfo(10, 2)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
 		{
 			FieldRefInfo.gatherIndexTree(indices, editor, entry);
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
 		{
 			FieldRefInfo.remapIndices(map, entry);
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -156,21 +156,21 @@ public enum InfoType
 	// same as FieldRefInfo
 	InterfaceMethodRefInfo(11, 2)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
 		{
 			FieldRefInfo.gatherIndexTree(indices, editor, entry);
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
 		{
 			FieldRefInfo.remapIndices(map, entry);
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -180,7 +180,7 @@ public enum InfoType
 	},
 	NameAndTypeInfo(12, 1)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -190,7 +190,7 @@ public enum InfoType
 			gatherIndexTree(indices, editor, accessor.getNameIndex());
 			gatherIndexTree(indices, editor, accessor.getTypeIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -200,7 +200,7 @@ public enum InfoType
 			accessor.setNameIndex(remapIndex(map, accessor.getNameIndex()));
 			accessor.setTypeIndex(remapIndex(map, accessor.getTypeIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -215,7 +215,7 @@ public enum InfoType
 	},
 	MethodHandleInfo(15, 3)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -225,7 +225,7 @@ public enum InfoType
 			gatherIndexTree(indices, editor, accessor.getTypeIndex());
 			gatherIndexTree(indices, editor, accessor.getMethodRefIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -236,7 +236,7 @@ public enum InfoType
 			accessor.setMethodRefIndex(remapIndex(map,
 				accessor.getMethodRefIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -253,7 +253,7 @@ public enum InfoType
 	},
 	MethodTypeInfo(16, 1)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -262,7 +262,7 @@ public enum InfoType
 				new MethodTypeInfoAccessor(entry.getItem());
 			gatherIndexTree(indices, editor, accessor.getTypeIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -271,7 +271,7 @@ public enum InfoType
 				new MethodTypeInfoAccessor(entry.getItem());
 			accessor.setTypeIndex(remapIndex(map, accessor.getTypeIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -284,7 +284,7 @@ public enum InfoType
 	},
 	InvokeDynamicInfo(18, 2)
 	{
-
+		
 		@Override
 		public void gatherIndexTree(Collection<Integer> indices,
 			ConstPoolEditor editor, ConstInfoAccessor entry)
@@ -294,7 +294,7 @@ public enum InfoType
 			gatherIndexTree(indices, editor, accessor.getBootstrapIndex());
 			gatherIndexTree(indices, editor, accessor.getNameAndTypeIndex());
 		}
-
+		
 		@Override
 		public void remapIndices(Map<Integer, Integer> map,
 			ConstInfoAccessor entry)
@@ -306,7 +306,7 @@ public enum InfoType
 			accessor.setNameAndTypeIndex(remapIndex(map,
 				accessor.getNameAndTypeIndex()));
 		}
-
+		
 		@Override
 		public boolean subIndicesAreValid(ConstInfoAccessor entry,
 			ConstPoolEditor pool)
@@ -323,53 +323,53 @@ public enum InfoType
 				&& nameAndTypeEntry.getTag() == NameAndTypeInfo.getTag();
 		}
 	};
-
+	
 	private static Map<Integer, InfoType> m_types;
-
+	
 	static
 	{
 		m_types = Maps.newTreeMap();
 		for(InfoType type : values())
 			m_types.put(type.getTag(), type);
 	}
-
+	
 	private int m_tag;
 	private int m_level;
-
+	
 	private InfoType(int tag, int level)
 	{
 		m_tag = tag;
 		m_level = level;
 	}
-
+	
 	public int getTag()
 	{
 		return m_tag;
 	}
-
+	
 	public int getLevel()
 	{
 		return m_level;
 	}
-
+	
 	public void gatherIndexTree(Collection<Integer> indices,
 		ConstPoolEditor editor, ConstInfoAccessor entry)
 	{
 		// by default, do nothing
 	}
-
+	
 	public void remapIndices(Map<Integer, Integer> map, ConstInfoAccessor entry)
 	{
 		// by default, do nothing
 	}
-
+	
 	public boolean subIndicesAreValid(ConstInfoAccessor entry,
 		ConstPoolEditor pool)
 	{
 		// by default, everything is good
 		return true;
 	}
-
+	
 	public boolean selfIndexIsValid(ConstInfoAccessor entry,
 		ConstPoolEditor pool)
 	{
@@ -378,12 +378,12 @@ public enum InfoType
 			return false;
 		return entryCheck.getItem().equals(entry.getItem());
 	}
-
+	
 	public static InfoType getByTag(int tag)
 	{
 		return m_types.get(tag);
 	}
-
+	
 	public static List<InfoType> getByLevel(int level)
 	{
 		List<InfoType> types = Lists.newArrayList();
@@ -392,7 +392,7 @@ public enum InfoType
 				types.add(type);
 		return types;
 	}
-
+	
 	public static List<InfoType> getSortedByLevel()
 	{
 		List<InfoType> types = Lists.newArrayList();
@@ -402,18 +402,18 @@ public enum InfoType
 		types.addAll(getByLevel(3));
 		return types;
 	}
-
+	
 	public static void gatherIndexTree(Collection<Integer> indices,
 		ConstPoolEditor editor, int index)
 	{
 		// add own index
 		indices.add(index);
-
+		
 		// recurse
 		ConstInfoAccessor entry = editor.getItem(index);
 		entry.getType().gatherIndexTree(indices, editor, entry);
 	}
-
+	
 	private static int remapIndex(Map<Integer, Integer> map, int index)
 	{
 		Integer newIndex = map.get(index);

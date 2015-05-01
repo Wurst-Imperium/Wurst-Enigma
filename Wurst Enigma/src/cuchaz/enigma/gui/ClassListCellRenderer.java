@@ -21,14 +21,14 @@ import javax.swing.ListCellRenderer;
 
 public class ClassListCellRenderer implements ListCellRenderer<String>
 {
-
+	
 	private DefaultListCellRenderer m_defaultRenderer;
-
+	
 	public ClassListCellRenderer()
 	{
 		m_defaultRenderer = new DefaultListCellRenderer();
 	}
-
+	
 	@Override
 	public Component getListCellRendererComponent(JList<? extends String> list,
 		String className, int index, boolean isSelected, boolean hasFocus)

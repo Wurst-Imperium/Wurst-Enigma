@@ -14,7 +14,7 @@ import java.awt.Color;
 
 public class ObfuscatedHighlightPainter extends BoxHighlightPainter
 {
-
+	
 	public ObfuscatedHighlightPainter()
 	{
 		// red ish

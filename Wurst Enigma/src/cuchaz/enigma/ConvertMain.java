@@ -28,7 +28,7 @@ public class ConvertMain
 	public static void main(String[] args) throws IOException,
 		MappingParseException
 	{
-
+		
 		// init files
 		File home = new File(System.getProperty("user.home"));
 		JarFile sourceJar =
@@ -51,7 +51,7 @@ public class ConvertMain
 		// editClasssMatches(classMatchesFile, sourceJar, destJar, mappings);
 		// convertMappings(outMappingsFile, sourceJar, destJar, mappings,
 		// classMatchesFile);
-
+		
 		// match fields
 		// computeFieldMatches(fieldMatchesFile, destJar, outMappingsFile,
 		// classMatchesFile);
@@ -59,7 +59,7 @@ public class ConvertMain
 		// classMatchesFile, fieldMatchesFile);
 		// convertMappings(outMappingsFile, sourceJar, destJar, mappings,
 		// classMatchesFile, fieldMatchesFile);
-
+		
 		// match methods/constructors
 		// computeMethodMatches(methodMatchesFile, destJar, outMappingsFile,
 		// classMatchesFile);
@@ -68,13 +68,13 @@ public class ConvertMain
 		convertMappings(outMappingsFile, sourceJar, destJar, mappings,
 			classMatchesFile, fieldMatchesFile, methodMatchesFile);
 	}
-
+	
 	private static void convertMappings(File outMappingsFile,
 		JarFile sourceJar, JarFile destJar, Mappings mappings,
 		File classMatchesFile, File fieldMatchesFile, File methodMatchesFile)
 		throws IOException
 	{
-
+		
 		System.out.println("Reading matches...");
 		ClassMatches classMatches = MatchesReader.readClasses(classMatchesFile);
 		MemberMatches<FieldEntry> fieldMatches =
@@ -84,7 +84,7 @@ public class ConvertMain
 		
 		Deobfuscators deobfuscators = new Deobfuscators(sourceJar, destJar);
 		deobfuscators.source.setMappings(mappings);
-
+		
 		// apply matches
 		Mappings newMappings =
 			MappingsConverter.newMappings(classMatches, mappings,
@@ -93,12 +93,12 @@ public class ConvertMain
 			fieldMatches, MappingsConverter.getFieldDoer());
 		MappingsConverter.applyMemberMatches(newMappings, classMatches,
 			methodMatches, MappingsConverter.getMethodDoer());
-
+		
 		// check the final mappings
 		MappingsChecker checker =
 			new MappingsChecker(deobfuscators.dest.getJarIndex());
 		checker.dropBrokenMappings(newMappings);
-
+		
 		for(java.util.Map.Entry<ClassEntry, ClassMapping> mapping : checker
 			.getDroppedClassMappings().entrySet())
 			System.out.println("WARNING: Broken class entry "
@@ -119,7 +119,7 @@ public class ConvertMain
 			System.out.println("WARNING: Broken behavior entry "
 				+ mapping.getKey() + " (" + mapping.getValue().getDeobfName()
 				+ ")");
-
+		
 		// write out the converted mappings
 		try(FileWriter out = new FileWriter(outMappingsFile))
 		{
@@ -131,10 +131,10 @@ public class ConvertMain
 	
 	private static class Deobfuscators
 	{
-
+		
 		public Deobfuscator source;
 		public Deobfuscator dest;
-
+		
 		public Deobfuscators(JarFile sourceJar, JarFile destJar)
 		{
 			System.out.println("Indexing source jar...");
@@ -149,19 +149,19 @@ public class ConvertMain
 			dest = destIndexer.deobfuscator;
 		}
 	}
-
+	
 	private static class IndexerThread extends Thread
 	{
-
+		
 		private JarFile m_jarFile;
 		public Deobfuscator deobfuscator;
-
+		
 		public IndexerThread(JarFile jarFile)
 		{
 			m_jarFile = jarFile;
 			deobfuscator = null;
 		}
-
+		
 		public void joinOrBail()
 		{
 			try

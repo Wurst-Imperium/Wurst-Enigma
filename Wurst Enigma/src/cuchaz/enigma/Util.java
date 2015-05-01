@@ -30,12 +30,12 @@ import com.google.common.io.CharStreams;
 
 public class Util
 {
-
+	
 	public static int combineHashesOrdered(Object... objs)
 	{
 		return combineHashesOrdered(Arrays.asList(objs));
 	}
-
+	
 	public static int combineHashesOrdered(Iterable<Object> objs)
 	{
 		final int prime = 67;
@@ -48,7 +48,7 @@ public class Util
 		}
 		return result;
 	}
-
+	
 	public static void closeQuietly(Closeable closeable)
 	{
 		if(closeable != null)
@@ -60,7 +60,7 @@ public class Util
 				// just ignore any further exceptions
 			}
 	}
-
+	
 	public static void closeQuietly(JarFile jarFile)
 	{
 		// silly library should implement Closeable...
@@ -73,12 +73,12 @@ public class Util
 				// just ignore any further exceptions
 			}
 	}
-
+	
 	public static String readStreamToString(InputStream in) throws IOException
 	{
 		return CharStreams.toString(new InputStreamReader(in, "UTF-8"));
 	}
-
+	
 	public static String readResourceToString(String path) throws IOException
 	{
 		InputStream in = Util.class.getResourceAsStream(path);
@@ -86,7 +86,7 @@ public class Util
 			throw new IllegalArgumentException("Resource not found! " + path);
 		return readStreamToString(in);
 	}
-
+	
 	public static void openUrl(String url)
 	{
 		if(Desktop.isDesktopSupported())
@@ -104,7 +104,7 @@ public class Util
 			}
 		}
 	}
-
+	
 	public static void writeClass(CtClass c)
 	{
 		String name = Descriptor.toJavaName(c.getName());

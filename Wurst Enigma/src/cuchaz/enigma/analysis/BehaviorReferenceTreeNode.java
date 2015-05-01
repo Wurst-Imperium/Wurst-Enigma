@@ -24,14 +24,14 @@ import cuchaz.enigma.mapping.Translator;
 public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 	ReferenceTreeNode<BehaviorEntry, BehaviorEntry>
 {
-
+	
 	private static final long serialVersionUID = -3658163700783307520L;
-
+	
 	private Translator m_deobfuscatingTranslator;
 	private BehaviorEntry m_entry;
 	private EntryReference<BehaviorEntry, BehaviorEntry> m_reference;
 	private Access m_access;
-
+	
 	public BehaviorReferenceTreeNode(Translator deobfuscatingTranslator,
 		BehaviorEntry entry)
 	{
@@ -39,7 +39,7 @@ public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 		m_entry = entry;
 		m_reference = null;
 	}
-
+	
 	public BehaviorReferenceTreeNode(Translator deobfuscatingTranslator,
 		EntryReference<BehaviorEntry, BehaviorEntry> reference, Access access)
 	{
@@ -48,19 +48,19 @@ public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 		m_reference = reference;
 		m_access = access;
 	}
-
+	
 	@Override
 	public BehaviorEntry getEntry()
 	{
 		return m_entry;
 	}
-
+	
 	@Override
 	public EntryReference<BehaviorEntry, BehaviorEntry> getReference()
 	{
 		return m_reference;
 	}
-
+	
 	@Override
 	public String toString()
 	{
@@ -70,7 +70,7 @@ public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 				m_access);
 		return m_deobfuscatingTranslator.translateEntry(m_entry).toString();
 	}
-
+	
 	public void load(JarIndex index, boolean recurse)
 	{
 		// get all the child nodes
@@ -78,14 +78,14 @@ public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 			.getBehaviorReferences(m_entry))
 			add(new BehaviorReferenceTreeNode(m_deobfuscatingTranslator,
 				reference, index.getAccess(m_entry)));
-
+		
 		if(recurse && children != null)
 			for(Object child : children)
 				if(child instanceof BehaviorReferenceTreeNode)
 				{
 					BehaviorReferenceTreeNode node =
 						(BehaviorReferenceTreeNode)child;
-
+					
 					// don't recurse into ancestor
 					Set<Entry> ancestors = Sets.newHashSet();
 					TreeNode n = node;
@@ -98,7 +98,7 @@ public class BehaviorReferenceTreeNode extends DefaultMutableTreeNode implements
 					}
 					if(ancestors.contains(node.getEntry()))
 						continue;
-
+					
 					node.load(index, true);
 				}
 	}

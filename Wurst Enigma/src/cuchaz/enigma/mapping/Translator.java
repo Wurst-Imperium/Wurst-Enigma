@@ -20,11 +20,11 @@ import cuchaz.enigma.analysis.TranslationIndex;
 
 public class Translator
 {
-
+	
 	private TranslationDirection m_direction;
 	private Map<String, ClassMapping> m_classes;
 	private TranslationIndex m_index;
-
+	
 	private ClassNameReplacer m_classNameReplacer = new ClassNameReplacer()
 	{
 		@Override
@@ -33,14 +33,14 @@ public class Translator
 			return translateEntry(new ClassEntry(className)).getName();
 		}
 	};
-
+	
 	public Translator()
 	{
 		m_direction = null;
 		m_classes = Maps.newHashMap();
 		m_index = new TranslationIndex();
 	}
-
+	
 	public Translator(TranslationDirection direction,
 		Map<String, ClassMapping> classes, TranslationIndex index)
 	{
@@ -48,17 +48,17 @@ public class Translator
 		m_classes = classes;
 		m_index = index;
 	}
-
+	
 	public TranslationDirection getDirection()
 	{
 		return m_direction;
 	}
-
+	
 	public TranslationIndex getTranslationIndex()
 	{
 		return m_index;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public <T extends Entry> T translateEntry(T entry)
 	{
@@ -75,7 +75,7 @@ public class Translator
 		else
 			throw new Error("Unknown entry type: " + entry.getClass().getName());
 	}
-
+	
 	public <T extends Entry> String translate(T entry)
 	{
 		if(entry instanceof ClassEntry)
@@ -91,7 +91,7 @@ public class Translator
 		else
 			throw new Error("Unknown entry type: " + entry.getClass().getName());
 	}
-
+	
 	public String translate(ClassEntry in)
 	{
 		ClassEntry translated = translateEntry(in);
@@ -99,18 +99,18 @@ public class Translator
 			return null;
 		return translated.getName();
 	}
-
+	
 	public String translateClass(String className)
 	{
 		return translate(new ClassEntry(className));
 	}
-
+	
 	public ClassEntry translateEntry(ClassEntry in)
 	{
-
+		
 		if(in.isInnerClass())
 		{
-
+			
 			// translate as much of the class chain as we can
 			List<ClassMapping> mappingsChain = getClassMappingChain(in);
 			String[] obfClassNames = in.getName().split("\\$");
@@ -132,23 +132,23 @@ public class Translator
 				buf.append(className);
 			}
 			return new ClassEntry(buf.toString());
-
+			
 		}else
 		{
-
+			
 			// normal classes are easy
 			ClassMapping classMapping = m_classes.get(in.getName());
 			if(classMapping == null)
 				return in;
 			return m_direction.choose(classMapping.getDeobfName() != null
 				? new ClassEntry(classMapping.getDeobfName()) : in,
-					new ClassEntry(classMapping.getObfFullName()));
+				new ClassEntry(classMapping.getObfFullName()));
 		}
 	}
-
+	
 	public String translate(FieldEntry in)
 	{
-
+		
 		// resolve the class entry
 		ClassEntry resolvedClassEntry = m_index.resolveEntryClass(in);
 		if(resolvedClassEntry != null)
@@ -158,7 +158,7 @@ public class Translator
 			ClassMapping classMapping = findClassMapping(resolvedClassEntry);
 			if(classMapping != null)
 			{
-
+				
 				// look for the field
 				String translatedName =
 					m_direction.choose(classMapping.getDeobfFieldName(
@@ -171,7 +171,7 @@ public class Translator
 		}
 		return null;
 	}
-
+	
 	public FieldEntry translateEntry(FieldEntry in)
 	{
 		String name = translate(in);
@@ -180,10 +180,10 @@ public class Translator
 		return new FieldEntry(translateEntry(in.getClassEntry()), name,
 			translateType(in.getType()));
 	}
-
+	
 	public String translate(MethodEntry in)
 	{
-
+		
 		// resolve the class entry
 		ClassEntry resolvedClassEntry = m_index.resolveEntryClass(in);
 		if(resolvedClassEntry != null)
@@ -193,7 +193,7 @@ public class Translator
 			ClassMapping classMapping = findClassMapping(resolvedClassEntry);
 			if(classMapping != null)
 			{
-
+				
 				// look for the method
 				MethodMapping methodMapping =
 					m_direction.choose(classMapping.getMethodByObf(
@@ -207,7 +207,7 @@ public class Translator
 		}
 		return null;
 	}
-
+	
 	public MethodEntry translateEntry(MethodEntry in)
 	{
 		String name = translate(in);
@@ -216,7 +216,7 @@ public class Translator
 		return new MethodEntry(translateEntry(in.getClassEntry()), name,
 			translateSignature(in.getSignature()));
 	}
-
+	
 	public ConstructorEntry translateEntry(ConstructorEntry in)
 	{
 		if(in.isStatic())
@@ -225,7 +225,7 @@ public class Translator
 			return new ConstructorEntry(translateEntry(in.getClassEntry()),
 				translateSignature(in.getSignature()));
 	}
-
+	
 	public BehaviorEntry translateEntry(BehaviorEntry in)
 	{
 		if(in instanceof MethodEntry)
@@ -234,15 +234,15 @@ public class Translator
 			return translateEntry((ConstructorEntry)in);
 		throw new Error("Wrong entry type!");
 	}
-
+	
 	public String translate(ArgumentEntry in)
 	{
-
+		
 		// look for the class
 		ClassMapping classMapping = findClassMapping(in.getClassEntry());
 		if(classMapping != null)
 		{
-
+			
 			// look for the method
 			MethodMapping methodMapping =
 				m_direction.choose(classMapping.getMethodByObf(
@@ -256,7 +256,7 @@ public class Translator
 		}
 		return null;
 	}
-
+	
 	public ArgumentEntry translateEntry(ArgumentEntry in)
 	{
 		String name = translate(in);
@@ -265,37 +265,37 @@ public class Translator
 		return new ArgumentEntry(translateEntry(in.getBehaviorEntry()),
 			in.getIndex(), name);
 	}
-
+	
 	public Type translateType(Type type)
 	{
 		return new Type(type, m_classNameReplacer);
 	}
-
+	
 	public Signature translateSignature(Signature signature)
 	{
 		return new Signature(signature, m_classNameReplacer);
 	}
-
+	
 	private ClassMapping findClassMapping(ClassEntry in)
 	{
 		List<ClassMapping> mappingChain = getClassMappingChain(in);
 		return mappingChain.get(mappingChain.size() - 1);
 	}
-
+	
 	private List<ClassMapping> getClassMappingChain(ClassEntry in)
 	{
-
+		
 		// get a list of all the classes in the hierarchy
 		String[] parts = in.getName().split("\\$");
 		List<ClassMapping> mappingsChain = Lists.newArrayList();
-
+		
 		// get mappings for the outer class
 		ClassMapping outerClassMapping = m_classes.get(parts[0]);
 		mappingsChain.add(outerClassMapping);
-
+		
 		for(int i = 1; i < parts.length; i++)
 		{
-
+			
 			// get mappings for the inner class
 			ClassMapping innerClassMapping = null;
 			if(outerClassMapping != null)
@@ -306,7 +306,7 @@ public class Translator
 			mappingsChain.add(innerClassMapping);
 			outerClassMapping = innerClassMapping;
 		}
-
+		
 		assert mappingsChain.size() == parts.length;
 		return mappingsChain;
 	}

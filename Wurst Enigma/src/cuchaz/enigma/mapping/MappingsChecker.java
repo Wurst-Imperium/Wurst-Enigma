@@ -20,14 +20,14 @@ import cuchaz.enigma.analysis.RelatedMethodChecker;
 
 public class MappingsChecker
 {
-
+	
 	private JarIndex m_index;
 	private RelatedMethodChecker m_relatedMethodChecker;
 	private Map<ClassEntry, ClassMapping> m_droppedClassMappings;
 	private Map<ClassEntry, ClassMapping> m_droppedInnerClassMappings;
 	private Map<FieldEntry, FieldMapping> m_droppedFieldMappings;
 	private Map<BehaviorEntry, MethodMapping> m_droppedMethodMappings;
-
+	
 	public MappingsChecker(JarIndex index)
 	{
 		m_index = index;
@@ -37,32 +37,32 @@ public class MappingsChecker
 		m_droppedFieldMappings = Maps.newHashMap();
 		m_droppedMethodMappings = Maps.newHashMap();
 	}
-
+	
 	public RelatedMethodChecker getRelatedMethodChecker()
 	{
 		return m_relatedMethodChecker;
 	}
-
+	
 	public Map<ClassEntry, ClassMapping> getDroppedClassMappings()
 	{
 		return m_droppedClassMappings;
 	}
-
+	
 	public Map<ClassEntry, ClassMapping> getDroppedInnerClassMappings()
 	{
 		return m_droppedInnerClassMappings;
 	}
-
+	
 	public Map<FieldEntry, FieldMapping> getDroppedFieldMappings()
 	{
 		return m_droppedFieldMappings;
 	}
-
+	
 	public Map<BehaviorEntry, MethodMapping> getDroppedMethodMappings()
 	{
 		return m_droppedMethodMappings;
 	}
-
+	
 	public void dropBrokenMappings(Mappings mappings)
 	{
 		for(ClassMapping classMapping : Lists.newArrayList(mappings.classes()))
@@ -74,16 +74,16 @@ public class MappingsChecker
 					classMapping);
 			}
 	}
-
+	
 	private boolean checkClassMapping(ClassMapping classMapping)
 	{
-
+		
 		// check the class
 		ClassEntry classEntry =
 			EntryFactory.getObfClassEntry(m_index, classMapping);
 		if(!m_index.getObfClassEntries().contains(classEntry))
 			return false;
-
+		
 		// check the fields
 		for(FieldMapping fieldMapping : Lists.newArrayList(classMapping
 			.fields()))
@@ -96,7 +96,7 @@ public class MappingsChecker
 				m_droppedFieldMappings.put(obfFieldEntry, fieldMapping);
 			}
 		}
-
+		
 		// check methods
 		for(MethodMapping methodMapping : Lists.newArrayList(classMapping
 			.methods()))
@@ -108,10 +108,10 @@ public class MappingsChecker
 				classMapping.removeMethodMapping(methodMapping);
 				m_droppedMethodMappings.put(obfBehaviorEntry, methodMapping);
 			}
-
+			
 			m_relatedMethodChecker.checkMethod(classEntry, methodMapping);
 		}
-
+		
 		// check inner classes
 		for(ClassMapping innerClassMapping : Lists.newArrayList(classMapping
 			.innerClasses()))
@@ -122,7 +122,7 @@ public class MappingsChecker
 					EntryFactory.getObfClassEntry(m_index, innerClassMapping),
 					innerClassMapping);
 			}
-
+		
 		return true;
 	}
 }

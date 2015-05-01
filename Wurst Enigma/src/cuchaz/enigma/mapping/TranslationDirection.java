@@ -12,7 +12,7 @@ package cuchaz.enigma.mapping;
 
 public enum TranslationDirection
 {
-
+	
 	Deobfuscating
 	{
 		@Override
@@ -29,6 +29,6 @@ public enum TranslationDirection
 			return obfChoice;
 		}
 	};
-
+	
 	public abstract <T> T choose(T deobfChoice, T obfChoice);
 }

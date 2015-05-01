@@ -34,12 +34,12 @@ public class ClassMatches implements Iterable<ClassMatch>
 	Map<ClassEntry, ClassMatch> m_ambiguousMatchesByDest;
 	Set<ClassEntry> m_unmatchedSourceClasses;
 	Set<ClassEntry> m_unmatchedDestClasses;
-
+	
 	public ClassMatches()
 	{
 		this(new ArrayList<ClassMatch>());
 	}
-
+	
 	public ClassMatches(Collection<ClassMatch> matches)
 	{
 		m_matches = matches;
@@ -50,7 +50,7 @@ public class ClassMatches implements Iterable<ClassMatch>
 		m_ambiguousMatchesByDest = Maps.newHashMap();
 		m_unmatchedSourceClasses = Sets.newHashSet();
 		m_unmatchedDestClasses = Sets.newHashSet();
-
+		
 		for(ClassMatch match : matches)
 			indexMatch(match);
 	}
@@ -60,7 +60,7 @@ public class ClassMatches implements Iterable<ClassMatch>
 		m_matches.add(match);
 		indexMatch(match);
 	}
-
+	
 	public void remove(ClassMatch match)
 	{
 		for(ClassEntry sourceClass : match.sourceClasses)
@@ -90,7 +90,7 @@ public class ClassMatches implements Iterable<ClassMatch>
 	{
 		return m_matches.iterator();
 	}
-
+	
 	private void indexMatch(ClassMatch match)
 	{
 		if(!match.isMatched())
@@ -113,17 +113,17 @@ public class ClassMatches implements Iterable<ClassMatch>
 		for(ClassEntry entry : match.destClasses)
 			m_matchesByDest.put(entry, match);
 	}
-
+	
 	public BiMap<ClassEntry, ClassEntry> getUniqueMatches()
 	{
 		return m_uniqueMatches;
 	}
-
+	
 	public Set<ClassEntry> getUnmatchedSourceClasses()
 	{
 		return m_unmatchedSourceClasses;
 	}
-
+	
 	public Set<ClassEntry> getUnmatchedDestClasses()
 	{
 		return m_unmatchedDestClasses;
@@ -133,7 +133,7 @@ public class ClassMatches implements Iterable<ClassMatch>
 	{
 		return m_ambiguousMatchesBySource.keySet();
 	}
-
+	
 	public ClassMatch getAmbiguousMatchBySource(ClassEntry sourceClass)
 	{
 		return m_ambiguousMatchesBySource.get(sourceClass);
@@ -143,12 +143,12 @@ public class ClassMatches implements Iterable<ClassMatch>
 	{
 		return m_matchesBySource.get(sourceClass);
 	}
-
+	
 	public ClassMatch getMatchByDest(ClassEntry destClass)
 	{
 		return m_matchesByDest.get(destClass);
 	}
-
+	
 	public void removeSource(ClassEntry sourceClass)
 	{
 		ClassMatch match = m_matchesBySource.get(sourceClass);
@@ -160,7 +160,7 @@ public class ClassMatches implements Iterable<ClassMatch>
 				add(match);
 		}
 	}
-
+	
 	public void removeDest(ClassEntry destClass)
 	{
 		ClassMatch match = m_matchesByDest.get(destClass);

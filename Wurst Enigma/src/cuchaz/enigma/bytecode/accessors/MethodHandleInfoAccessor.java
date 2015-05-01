@@ -14,11 +14,11 @@ import java.lang.reflect.Field;
 
 public class MethodHandleInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_kindIndex;
 	private static Field m_indexIndex;
-
+	
 	static
 	{
 		try
@@ -33,19 +33,19 @@ public class MethodHandleInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());
 	}
-
+	
 	private Object m_item;
-
+	
 	public MethodHandleInfoAccessor(Object item)
 	{
 		m_item = item;
 	}
-
+	
 	public int getTypeIndex()
 	{
 		try
@@ -56,7 +56,7 @@ public class MethodHandleInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setTypeIndex(int val)
 	{
 		try
@@ -67,7 +67,7 @@ public class MethodHandleInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public int getMethodRefIndex()
 	{
 		try
@@ -78,7 +78,7 @@ public class MethodHandleInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setMethodRefIndex(int val)
 	{
 		try

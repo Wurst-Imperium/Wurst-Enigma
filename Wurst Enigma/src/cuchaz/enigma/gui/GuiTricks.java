@@ -22,14 +22,14 @@ import javax.swing.ToolTipManager;
 
 public class GuiTricks
 {
-
+	
 	public static JLabel unboldLabel(JLabel label)
 	{
 		Font font = label.getFont();
 		label.setFont(font.deriveFont(font.getStyle() & ~Font.BOLD));
 		return label;
 	}
-
+	
 	public static void showToolTipNow(JComponent component)
 	{
 		// HACKHACK: trick the tooltip manager into showing the tooltip right
@@ -41,7 +41,7 @@ public class GuiTricks
 			System.currentTimeMillis(), 0, 0, 0, 0, false));
 		manager.setInitialDelay(oldDelay);
 	}
-
+	
 	public static void deactivateButton(JButton button)
 	{
 		button.setEnabled(false);
@@ -50,7 +50,7 @@ public class GuiTricks
 			.asList(button.getActionListeners()))
 			button.removeActionListener(listener);
 	}
-
+	
 	public static void activateButton(JButton button, String text,
 		ActionListener newListener)
 	{

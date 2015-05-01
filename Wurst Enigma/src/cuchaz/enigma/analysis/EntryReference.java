@@ -20,52 +20,52 @@ import cuchaz.enigma.mapping.Entry;
 
 public class EntryReference<E extends Entry, C extends Entry>
 {
-
+	
 	private static final List<String> ConstructorNonNames = Arrays.asList(
 		"this", "super", "static");
 	public E entry;
 	public C context;
-
+	
 	private boolean m_isNamed;
-
+	
 	public EntryReference(E entry, String sourceName)
 	{
 		this(entry, sourceName, null);
 	}
-
+	
 	public EntryReference(E entry, String sourceName, C context)
 	{
 		if(entry == null)
 			throw new IllegalArgumentException("Entry cannot be null!");
-
+		
 		this.entry = entry;
 		this.context = context;
-
+		
 		m_isNamed = sourceName != null && sourceName.length() > 0;
 		if(entry instanceof ConstructorEntry
 			&& ConstructorNonNames.contains(sourceName))
 			m_isNamed = false;
 	}
-
+	
 	public EntryReference(E entry, C context, EntryReference<E, C> other)
 	{
 		this.entry = entry;
 		this.context = context;
 		m_isNamed = other.m_isNamed;
 	}
-
+	
 	public ClassEntry getLocationClassEntry()
 	{
 		if(context != null)
 			return context.getClassEntry();
 		return entry.getClassEntry();
 	}
-
+	
 	public boolean isNamed()
 	{
 		return m_isNamed;
 	}
-
+	
 	public Entry getNameableEntry()
 	{
 		if(entry instanceof ConstructorEntry)
@@ -73,7 +73,7 @@ public class EntryReference<E extends Entry, C extends Entry>
 			return entry.getClassEntry();
 		return entry;
 	}
-
+	
 	public String getNamableName()
 	{
 		if(getNameableEntry() instanceof ClassEntry)
@@ -83,10 +83,10 @@ public class EntryReference<E extends Entry, C extends Entry>
 				// make sure we only rename the inner class name
 				return classEntry.getInnermostClassName();
 		}
-
+		
 		return getNameableEntry().getName();
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
@@ -95,7 +95,7 @@ public class EntryReference<E extends Entry, C extends Entry>
 				context.hashCode());
 		return entry.hashCode();
 	}
-
+	
 	@Override
 	public boolean equals(Object other)
 	{
@@ -103,14 +103,14 @@ public class EntryReference<E extends Entry, C extends Entry>
 			return equals((EntryReference<?, ?>)other);
 		return false;
 	}
-
+	
 	public boolean equals(EntryReference<?, ?> other)
 	{
 		// check entry first
 		boolean isEntrySame = entry.equals(other.entry);
 		if(!isEntrySame)
 			return false;
-
+		
 		// check caller
 		if(context == null && other.context == null)
 			return true;
@@ -118,7 +118,7 @@ public class EntryReference<E extends Entry, C extends Entry>
 			return context.equals(other.context);
 		return false;
 	}
-
+	
 	@Override
 	public String toString()
 	{

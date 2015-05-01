@@ -28,19 +28,19 @@ import cuchaz.enigma.mapping.Type;
 
 public class ClassTranslator
 {
-
+	
 	private Translator m_translator;
-
+	
 	public ClassTranslator(Translator translator)
 	{
 		m_translator = translator;
 	}
-
+	
 	public void translate(CtClass c)
 	{
-
+		
 		// NOTE: the order of these translations is very important
-
+		
 		// translate all the field and method references in the code by editing
 		// the constant pool
 		ConstPool constants = c.getClassFile().getConstPool();
@@ -51,7 +51,7 @@ public class ClassTranslator
 			
 				case ConstPool.CONST_Fieldref:
 				{
-
+					
 					// translate the name and type
 					FieldEntry entry =
 						EntryFactory.getFieldEntry(Descriptor
@@ -65,11 +65,11 @@ public class ClassTranslator
 							.getName(), translatedEntry.getType().toString());
 				}
 					break;
-
+				
 				case ConstPool.CONST_Methodref:
 				case ConstPool.CONST_InterfaceMethodref:
 				{
-
+					
 					// translate the name and type (ie signature)
 					BehaviorEntry entry =
 						EntryFactory.getBehaviorEntry(Descriptor
@@ -84,41 +84,41 @@ public class ClassTranslator
 				}
 					break;
 			}
-
+		
 		ClassEntry classEntry =
 			new ClassEntry(Descriptor.toJvmName(c.getName()));
-
+		
 		// translate all the fields
 		for(CtField field : c.getDeclaredFields())
 		{
-
+			
 			// translate the name
 			FieldEntry entry = EntryFactory.getFieldEntry(field);
 			String translatedName = m_translator.translate(entry);
 			if(translatedName != null)
 				field.setName(translatedName);
-
+			
 			// translate the type
 			Type translatedType = m_translator.translateType(entry.getType());
 			field.getFieldInfo().setDescriptor(translatedType.toString());
 		}
-
+		
 		// translate all the methods and constructors
 		for(CtBehavior behavior : c.getDeclaredBehaviors())
 		{
-
+			
 			BehaviorEntry entry = EntryFactory.getBehaviorEntry(behavior);
-
+			
 			if(behavior instanceof CtMethod)
 			{
 				CtMethod method = (CtMethod)behavior;
-
+				
 				// translate the name
 				String translatedName = m_translator.translate(entry);
 				if(translatedName != null)
 					method.setName(translatedName);
 			}
-
+			
 			if(entry.getSignature() != null)
 			{
 				// translate the signature
@@ -128,7 +128,7 @@ public class ClassTranslator
 					translatedSignature.toString());
 			}
 		}
-
+		
 		// translate the EnclosingMethod attribute
 		EnclosingMethodAttribute enclosingMethodAttr =
 			(EnclosingMethodAttribute)c.getClassFile().getAttribute(
@@ -158,12 +158,12 @@ public class ClassTranslator
 						.getClassName(), deobfBehaviorEntry.getName(),
 						deobfBehaviorEntry.getSignature().toString()));
 			}
-
+		
 		// translate all the class names referenced in the code
 		// the above code only changed method/field/reference names and types,
 		// but not the rest of the class references
 		ClassRenamer.renameClasses(c, m_translator);
-
+		
 		// translate the source file attribute too
 		ClassEntry deobfClassEntry = m_translator.translateEntry(classEntry);
 		if(deobfClassEntry != null)
