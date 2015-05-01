@@ -77,7 +77,8 @@ public class Deobfuscator
 		m_settings = DecompilerSettings.javaDefaults();
 		m_settings.setMergeVariables(true);
 		m_settings.setForceExplicitImports(true);
-		m_settings.setForceExplicitTypeArguments(true);
+		m_settings.setForceExplicitTypeArguments(false);
+		m_settings.setRetainRedundantCasts(false);
 		// m_settings.setShowDebugLineNumbers(true);
 		// DEBUG
 		// m_settings.setShowSyntheticMembers(true);
