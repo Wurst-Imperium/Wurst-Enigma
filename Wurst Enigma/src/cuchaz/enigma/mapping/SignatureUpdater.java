@@ -18,25 +18,25 @@ import com.google.common.collect.Lists;
 
 public class SignatureUpdater
 {
-	
+
 	public interface ClassNameUpdater
 	{
 		String update(String className);
 	}
-	
+
 	public static String update(String signature, ClassNameUpdater updater)
 	{
 		try
 		{
 			StringBuilder buf = new StringBuilder();
-			
+
 			// read the signature character-by-character
 			StringReader reader = new StringReader(signature);
 			int i = -1;
 			while((i = reader.read()) != -1)
 			{
 				char c = (char)i;
-				
+
 				// does this character start a class name?
 				if(c == 'L')
 				{
@@ -52,7 +52,7 @@ public class SignatureUpdater
 					// copy the character into the buffer
 					buf.append(c);
 			}
-			
+
 			return buf.toString();
 		}catch(IOException ex)
 		{
@@ -60,7 +60,7 @@ public class SignatureUpdater
 			throw new Error(ex);
 		}
 	}
-	
+
 	private static String readClass(StringReader reader) throws IOException
 	{
 		// read all the characters in the buffer until we hit a ';'
@@ -71,7 +71,7 @@ public class SignatureUpdater
 		while((i = reader.read()) != -1)
 		{
 			char c = (char)i;
-			
+
 			if(c == '<')
 				depth++;
 			else if(c == '>')
@@ -82,10 +82,10 @@ public class SignatureUpdater
 				else
 					buf.append(c);
 		}
-		
+
 		return null;
 	}
-	
+
 	public static List<String> getClasses(String signature)
 	{
 		final List<String> classNames = Lists.newArrayList();

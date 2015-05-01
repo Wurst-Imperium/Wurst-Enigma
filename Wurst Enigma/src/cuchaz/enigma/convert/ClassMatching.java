@@ -25,11 +25,11 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassMatching
 {
-	
+
 	private ClassForest m_sourceClasses;
 	private ClassForest m_destClasses;
 	private BiMap<ClassEntry, ClassEntry> m_knownMatches;
-	
+
 	public ClassMatching(ClassIdentifier sourceIdentifier,
 		ClassIdentifier destIdentifier)
 	{
@@ -37,12 +37,12 @@ public class ClassMatching
 		m_destClasses = new ClassForest(destIdentifier);
 		m_knownMatches = HashBiMap.create();
 	}
-	
+
 	public void addKnownMatches(BiMap<ClassEntry, ClassEntry> knownMatches)
 	{
 		m_knownMatches.putAll(knownMatches);
 	}
-	
+
 	public void match(Iterable<ClassEntry> sourceClasses,
 		Iterable<ClassEntry> destClasses)
 	{
@@ -53,7 +53,7 @@ public class ClassMatching
 			if(!m_knownMatches.containsValue(destClass))
 				m_destClasses.add(destClass);
 	}
-	
+
 	public Collection<ClassMatch> matches()
 	{
 		List<ClassMatch> matches = Lists.newArrayList();
@@ -68,7 +68,7 @@ public class ClassMatching
 					m_destClasses.getClasses(identity)));
 		return matches;
 	}
-	
+
 	public Collection<ClassEntry> sourceClasses()
 	{
 		Set<ClassEntry> classes = Sets.newHashSet();
@@ -76,7 +76,7 @@ public class ClassMatching
 			classes.addAll(match.sourceClasses);
 		return classes;
 	}
-	
+
 	public Collection<ClassEntry> destClasses()
 	{
 		Set<ClassEntry> classes = Sets.newHashSet();
@@ -84,7 +84,7 @@ public class ClassMatching
 			classes.addAll(match.destClasses);
 		return classes;
 	}
-	
+
 	public BiMap<ClassEntry, ClassEntry> uniqueMatches()
 	{
 		BiMap<ClassEntry, ClassEntry> uniqueMatches = HashBiMap.create();
@@ -94,7 +94,7 @@ public class ClassMatching
 					match.getUniqueDest());
 		return uniqueMatches;
 	}
-	
+
 	public Collection<ClassMatch> ambiguousMatches()
 	{
 		List<ClassMatch> ambiguousMatches = Lists.newArrayList();
@@ -103,7 +103,7 @@ public class ClassMatching
 				ambiguousMatches.add(match);
 		return ambiguousMatches;
 	}
-	
+
 	public Collection<ClassEntry> unmatchedSourceClasses()
 	{
 		List<ClassEntry> classes = Lists.newArrayList();
@@ -112,7 +112,7 @@ public class ClassMatching
 				classes.addAll(match.sourceClasses);
 		return classes;
 	}
-	
+
 	public Collection<ClassEntry> unmatchedDestClasses()
 	{
 		List<ClassEntry> classes = Lists.newArrayList();
@@ -121,11 +121,11 @@ public class ClassMatching
 				classes.addAll(match.destClasses);
 		return classes;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		
+
 		// count the ambiguous classes
 		int numAmbiguousSource = 0;
 		int numAmbiguousDest = 0;
@@ -134,7 +134,7 @@ public class ClassMatching
 			numAmbiguousSource += match.sourceClasses.size();
 			numAmbiguousDest += match.destClasses.size();
 		}
-		
+
 		StringBuilder buf = new StringBuilder();
 		buf.append(String.format("%20s%8s%8s\n", "", "Source", "Dest"));
 		buf.append(String.format("%20s%8d%8d\n", "Classes", sourceClasses()

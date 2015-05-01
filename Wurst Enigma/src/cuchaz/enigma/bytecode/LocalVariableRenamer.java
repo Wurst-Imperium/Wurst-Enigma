@@ -24,9 +24,9 @@ import cuchaz.enigma.mapping.Translator;
 
 public class LocalVariableRenamer
 {
-	
+
 	private Translator m_translator;
-	
+
 	public LocalVariableRenamer(Translator translator)
 	{
 		m_translator = translator;
@@ -36,24 +36,24 @@ public class LocalVariableRenamer
 	{
 		for(CtBehavior behavior : c.getDeclaredBehaviors())
 		{
-			
+
 			// if there's a local variable table, just rename everything to v1,
 			// v2, v3, ... for now
 			CodeAttribute codeAttribute =
 				behavior.getMethodInfo().getCodeAttribute();
 			if(codeAttribute == null)
 				continue;
-			
+
 			BehaviorEntry behaviorEntry =
 				EntryFactory.getBehaviorEntry(behavior);
 			ConstPool constants = c.getClassFile().getConstPool();
-			
+
 			LocalVariableAttribute table =
 				(LocalVariableAttribute)codeAttribute
 					.getAttribute(LocalVariableAttribute.tag);
 			if(table != null)
 				renameLVT(behaviorEntry, constants, table);
-			
+
 			LocalVariableTypeAttribute typeTable =
 				(LocalVariableTypeAttribute)codeAttribute
 					.getAttribute(LocalVariableAttribute.typeTag);
@@ -65,17 +65,17 @@ public class LocalVariableRenamer
 	private void renameLVT(BehaviorEntry behaviorEntry, ConstPool constants,
 		LocalVariableAttribute table)
 	{
-		
+
 		// skip empty tables
 		if(table.tableLength() <= 0)
 			return;
-		
+
 		// where do we start counting variables?
 		int starti = 0;
 		if(table.variableName(0).equals("this"))
 			// skip the "this" variable
 			starti = 1;
-		
+
 		// rename method arguments first
 		int numArgs = 0;
 		if(behaviorEntry.getSignature() != null)
@@ -92,7 +92,7 @@ public class LocalVariableRenamer
 				renameVariable(table, i, constants.addUtf8Info(argName));
 			}
 		}
-		
+
 		// then rename the rest of the args, if any
 		for(int i = starti + numArgs; i < table.tableLength(); i++)
 		{
@@ -101,7 +101,7 @@ public class LocalVariableRenamer
 				constants.addUtf8Info("v" + (table.index(i) - firstIndex + 1)));
 		}
 	}
-	
+
 	private void renameLVTT(LocalVariableTypeAttribute typeTable,
 		LocalVariableAttribute table)
 	{
@@ -117,7 +117,7 @@ public class LocalVariableRenamer
 		// based off of LocalVariableAttribute.nameIndex()
 		ByteArray.write16bit(stringId, table.get(), i * 10 + 6);
 	}
-	
+
 	private int getNameIndex(LocalVariableAttribute table, int index)
 	{
 		for(int i = 0; i < table.tableLength(); i++)

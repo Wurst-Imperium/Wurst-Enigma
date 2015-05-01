@@ -12,16 +12,16 @@ package cuchaz.enigma.analysis;
 
 public class Token implements Comparable<Token>
 {
-	
+
 	public int start;
 	public int end;
 	public String text;
-	
+
 	public Token(int start, int end)
 	{
 		this(start, end, null);
 	}
-	
+
 	public Token(int start, int end, String source)
 	{
 		this.start = start;
@@ -29,18 +29,18 @@ public class Token implements Comparable<Token>
 		if(source != null)
 			text = source.substring(start, end);
 	}
-	
+
 	public boolean contains(int pos)
 	{
 		return pos >= start && pos <= end;
 	}
-	
+
 	@Override
 	public int compareTo(Token other)
 	{
 		return start - other.start;
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -48,12 +48,12 @@ public class Token implements Comparable<Token>
 			return equals((Token)other);
 		return false;
 	}
-	
+
 	public boolean equals(Token other)
 	{
 		return start == other.start && end == other.end;
 	}
-	
+
 	@Override
 	public String toString()
 	{

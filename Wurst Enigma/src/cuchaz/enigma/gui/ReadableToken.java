@@ -12,18 +12,18 @@ package cuchaz.enigma.gui;
 
 public class ReadableToken
 {
-	
+
 	public int line;
 	public int startColumn;
 	public int endColumn;
-	
+
 	public ReadableToken(int line, int startColumn, int endColumn)
 	{
 		this.line = line;
 		this.startColumn = startColumn;
 		this.endColumn = endColumn;
 	}
-	
+
 	@Override
 	public String toString()
 	{

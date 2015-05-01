@@ -19,15 +19,15 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassNamer
 {
-	
+
 	public interface SidedClassNamer
 	{
 		String getName(String name);
 	}
-	
+
 	private Map<String, String> m_sourceNames;
 	private Map<String, String> m_destNames;
-	
+
 	public ClassNamer(BiMap<ClassEntry, ClassEntry> mappings)
 	{
 		// convert the identity mappings to name maps
@@ -41,17 +41,17 @@ public class ClassNamer
 			m_destNames.put(entry.getValue().getName(), name);
 		}
 	}
-	
+
 	public String getSourceName(String name)
 	{
 		return m_sourceNames.get(name);
 	}
-	
+
 	public String getDestName(String name)
 	{
 		return m_destNames.get(name);
 	}
-	
+
 	public SidedClassNamer getSourceNamer()
 	{
 		return new SidedClassNamer()
@@ -63,7 +63,7 @@ public class ClassNamer
 			}
 		};
 	}
-	
+
 	public SidedClassNamer getDestNamer()
 	{
 		return new SidedClassNamer()

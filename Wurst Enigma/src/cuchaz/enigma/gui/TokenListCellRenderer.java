@@ -21,16 +21,16 @@ import cuchaz.enigma.analysis.Token;
 
 public class TokenListCellRenderer implements ListCellRenderer<Token>
 {
-	
+
 	private GuiController m_controller;
 	private DefaultListCellRenderer m_defaultRenderer;
-	
+
 	public TokenListCellRenderer(GuiController controller)
 	{
 		m_controller = controller;
 		m_defaultRenderer = new DefaultListCellRenderer();
 	}
-	
+
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Token> list,
 		Token token, int index, boolean isSelected, boolean hasFocus)

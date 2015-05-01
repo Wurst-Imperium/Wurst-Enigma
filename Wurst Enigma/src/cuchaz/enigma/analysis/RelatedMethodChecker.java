@@ -24,13 +24,13 @@ import cuchaz.enigma.mapping.MethodMapping;
 
 public class RelatedMethodChecker
 {
-	
+
 	private JarIndex m_jarIndex;
 	private Map<Set<MethodEntry>, String> m_deobfNamesByGroup;
 	private Map<MethodEntry, String> m_deobfNamesByObfMethod;
 	private Map<MethodEntry, Set<MethodEntry>> m_groupsByObfMethod;
 	private Set<Set<MethodEntry>> m_inconsistentGroups;
-	
+
 	public RelatedMethodChecker(JarIndex jarIndex)
 	{
 		m_jarIndex = jarIndex;
@@ -39,15 +39,15 @@ public class RelatedMethodChecker
 		m_groupsByObfMethod = Maps.newHashMap();
 		m_inconsistentGroups = Sets.newHashSet();
 	}
-	
+
 	public void checkMethod(ClassEntry classEntry, MethodMapping methodMapping)
 	{
-		
+
 		// TEMP: disable the expensive check for now, maybe we can optimize it
 		// later, or just use it for debugging
 		if("".isEmpty())
 			return;
-		
+
 		BehaviorEntry obfBehaviorEntry =
 			EntryFactory.getObfBehaviorEntry(classEntry, methodMapping);
 		if(!(obfBehaviorEntry instanceof MethodEntry))
@@ -56,26 +56,26 @@ public class RelatedMethodChecker
 		MethodEntry obfMethodEntry = (MethodEntry)obfBehaviorEntry;
 		String deobfName = methodMapping.getDeobfName();
 		m_deobfNamesByObfMethod.put(obfMethodEntry, deobfName);
-		
+
 		// have we seen this method's group before?
 		Set<MethodEntry> group = m_groupsByObfMethod.get(obfMethodEntry);
 		if(group == null)
 		{
-			
+
 			// no, compute the group and save the name
 			group = m_jarIndex.getRelatedMethodImplementations(obfMethodEntry);
 			m_deobfNamesByGroup.put(group, deobfName);
-			
+
 			assert group.contains(obfMethodEntry);
 			for(MethodEntry relatedMethodEntry : group)
 				m_groupsByObfMethod.put(relatedMethodEntry, group);
 		}
-		
+
 		// check the name
 		if(!sameName(m_deobfNamesByGroup.get(group), deobfName))
 			m_inconsistentGroups.add(group);
 	}
-	
+
 	private boolean sameName(String a, String b)
 	{
 		if(a == null && b == null)
@@ -89,7 +89,7 @@ public class RelatedMethodChecker
 	{
 		return m_inconsistentGroups.size() > 0;
 	}
-	
+
 	public String getReport()
 	{
 		StringBuilder buf = new StringBuilder();

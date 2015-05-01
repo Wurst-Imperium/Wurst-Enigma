@@ -16,21 +16,21 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassSelectorClassNode extends DefaultMutableTreeNode
 {
-	
+
 	private static final long serialVersionUID = -8956754339813257380L;
-	
+
 	private ClassEntry m_classEntry;
-	
+
 	public ClassSelectorClassNode(ClassEntry classEntry)
 	{
 		m_classEntry = classEntry;
 	}
-	
+
 	public ClassEntry getClassEntry()
 	{
 		return m_classEntry;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -40,7 +40,7 @@ public class ClassSelectorClassNode extends DefaultMutableTreeNode
 				m_classEntry.getSimpleName());
 		return m_classEntry.getSimpleName();
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -48,7 +48,7 @@ public class ClassSelectorClassNode extends DefaultMutableTreeNode
 			return equals((ClassSelectorClassNode)other);
 		return false;
 	}
-	
+
 	public boolean equals(ClassSelectorClassNode other)
 	{
 		return m_classEntry.equals(other.m_classEntry);

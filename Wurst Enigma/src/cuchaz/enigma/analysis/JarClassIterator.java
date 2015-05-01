@@ -32,34 +32,34 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class JarClassIterator implements Iterator<CtClass>
 {
-	
+
 	private JarFile m_jar;
 	private Iterator<JarEntry> m_iter;
-	
+
 	public JarClassIterator(JarFile jar)
 	{
 		m_jar = jar;
-		
+
 		// get the jar entries that correspond to classes
 		List<JarEntry> classEntries = Lists.newArrayList();
 		Enumeration<JarEntry> entries = m_jar.entries();
 		while(entries.hasMoreElements())
 		{
 			JarEntry entry = entries.nextElement();
-			
+
 			// is this a class file?
 			if(entry.getName().endsWith(".class"))
 				classEntries.add(entry);
 		}
 		m_iter = classEntries.iterator();
 	}
-	
+
 	@Override
 	public boolean hasNext()
 	{
 		return m_iter.hasNext();
 	}
-	
+
 	@Override
 	public CtClass next()
 	{
@@ -72,13 +72,13 @@ public class JarClassIterator implements Iterator<CtClass>
 			throw new Error("Unable to load class: " + entry.getName());
 		}
 	}
-	
+
 	@Override
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public static List<ClassEntry> getClassEntries(JarFile jar)
 	{
 		List<ClassEntry> classEntries = Lists.newArrayList();
@@ -86,14 +86,14 @@ public class JarClassIterator implements Iterator<CtClass>
 		while(entries.hasMoreElements())
 		{
 			JarEntry entry = entries.nextElement();
-			
+
 			// is this a class file?
 			if(!entry.isDirectory() && entry.getName().endsWith(".class"))
 				classEntries.add(getClassEntry(entry));
 		}
 		return classEntries;
 	}
-	
+
 	public static Iterable<CtClass> classes(final JarFile jar)
 	{
 		return new Iterable<CtClass>()
@@ -105,7 +105,7 @@ public class JarClassIterator implements Iterator<CtClass>
 			}
 		};
 	}
-	
+
 	public static CtClass getClass(JarFile jar, ClassEntry classEntry)
 	{
 		try
@@ -116,7 +116,7 @@ public class JarClassIterator implements Iterator<CtClass>
 			throw new Error("Unable to load class: " + classEntry.getName());
 		}
 	}
-	
+
 	private static CtClass getClass(JarFile jar, JarEntry entry)
 		throws IOException, NotFoundException
 	{
@@ -131,14 +131,14 @@ public class JarClassIterator implements Iterator<CtClass>
 			if(numBytesRead < 0)
 				break;
 			bos.write(buf, 0, numBytesRead);
-			
+
 			// sanity checking
 			totalNumBytesRead += numBytesRead;
 			if(totalNumBytesRead > Constants.MiB)
 				throw new Error("Class file " + entry.getName()
 					+ " larger than 1 MiB! Something is wrong!");
 		}
-		
+
 		// get a javassist handle for the class
 		String className =
 			Descriptor.toJavaName(getClassEntry(entry).getName());
@@ -148,7 +148,7 @@ public class JarClassIterator implements Iterator<CtClass>
 			.toByteArray()));
 		return classPool.get(className);
 	}
-	
+
 	private static ClassEntry getClassEntry(JarEntry entry)
 	{
 		return new ClassEntry(entry.getName().substring(0,

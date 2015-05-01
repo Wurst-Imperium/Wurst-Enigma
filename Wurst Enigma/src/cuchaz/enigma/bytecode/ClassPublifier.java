@@ -21,15 +21,15 @@ public class ClassPublifier
 	
 	public static CtClass publify(CtClass c)
 	{
-		
+
 		// publify all the fields
 		for(CtField field : c.getDeclaredFields())
 			field.setModifiers(publify(field.getModifiers()));
-		
+
 		// publify all the methods and constructors
 		for(CtBehavior behavior : c.getDeclaredBehaviors())
 			behavior.setModifiers(publify(behavior.getModifiers()));
-		
+
 		// publify all the inner classes
 		InnerClassesAttribute attr =
 			(InnerClassesAttribute)c.getClassFile().getAttribute(
@@ -37,7 +37,7 @@ public class ClassPublifier
 		if(attr != null)
 			for(int i = 0; i < attr.tableLength(); i++)
 				attr.setAccessFlags(i, publify(attr.accessFlags(i)));
-		
+
 		return c;
 	}
 	

@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.File;
@@ -36,8 +35,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import jsyntaxpane.DefaultSyntaxKit;
-
 import com.google.common.collect.Lists;
 
 import cuchaz.enigma.Constants;
@@ -45,6 +42,7 @@ import cuchaz.enigma.ExceptionIgnorer;
 import cuchaz.enigma.analysis.*;
 import cuchaz.enigma.gui.ClassSelector.ClassSelectionListener;
 import cuchaz.enigma.mapping.*;
+import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 public class Gui
 {
@@ -695,8 +693,7 @@ public class Gui
 			JMenu mnWurst = new JMenu("Wurst");
 			menuBar.add(mnWurst);
 			{
-				JMenuItem mntmFixClassNames =
-					new JMenuItem("Fix Ambiguous Names");
+				JMenuItem mntmFixClassNames = new JMenuItem("Fix Ambiguous Names");
 				mntmFixClassNames.addActionListener(new ActionListener()
 				{
 					@Override
@@ -738,7 +735,7 @@ public class Gui
 		pane.doLayout();
 		m_frame.setSize(1024, 576);
 		m_frame.setMinimumSize(new Dimension(640, 480));
-		m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		m_frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		m_frame.setVisible(true);
 		m_frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}

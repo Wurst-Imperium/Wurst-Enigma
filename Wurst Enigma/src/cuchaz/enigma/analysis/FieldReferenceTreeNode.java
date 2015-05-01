@@ -19,14 +19,14 @@ import cuchaz.enigma.mapping.Translator;
 public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements
 	ReferenceTreeNode<FieldEntry, BehaviorEntry>
 {
-	
+
 	private static final long serialVersionUID = -7934108091928699835L;
-	
+
 	private Translator m_deobfuscatingTranslator;
 	private FieldEntry m_entry;
 	private EntryReference<FieldEntry, BehaviorEntry> m_reference;
 	private Access m_access;
-	
+
 	public FieldReferenceTreeNode(Translator deobfuscatingTranslator,
 		FieldEntry entry)
 	{
@@ -34,7 +34,7 @@ public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements
 		m_entry = entry;
 		m_reference = null;
 	}
-	
+
 	private FieldReferenceTreeNode(Translator deobfuscatingTranslator,
 		EntryReference<FieldEntry, BehaviorEntry> reference, Access access)
 	{
@@ -43,19 +43,19 @@ public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements
 		m_reference = reference;
 		m_access = access;
 	}
-	
+
 	@Override
 	public FieldEntry getEntry()
 	{
 		return m_entry;
 	}
-	
+
 	@Override
 	public EntryReference<FieldEntry, BehaviorEntry> getReference()
 	{
 		return m_reference;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -65,7 +65,7 @@ public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements
 				m_access);
 		return m_deobfuscatingTranslator.translateEntry(m_entry).toString();
 	}
-	
+
 	public void load(JarIndex index, boolean recurse)
 	{
 		// get all the child nodes
@@ -79,7 +79,7 @@ public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements
 				.getBehaviorReferences(m_reference.context))
 				add(new BehaviorReferenceTreeNode(m_deobfuscatingTranslator,
 					reference, index.getAccess(m_reference.context)));
-		
+
 		if(recurse && children != null)
 			for(Object node : children)
 				if(node instanceof BehaviorReferenceTreeNode)

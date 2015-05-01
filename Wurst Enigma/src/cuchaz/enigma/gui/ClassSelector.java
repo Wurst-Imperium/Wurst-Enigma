@@ -33,17 +33,17 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassSelector extends JTree
 {
-	
+
 	private static final long serialVersionUID = -7632046902384775977L;
-	
+
 	public interface ClassSelectionListener
 	{
 		void onSelectClass(ClassEntry classEntry);
 	}
-	
+
 	public static Comparator<ClassEntry> ObfuscatedClassEntryComparator;
 	public static Comparator<ClassEntry> DeobfuscatedClassEntryComparator;
-	
+
 	static
 	{
 		ObfuscatedClassEntryComparator = new Comparator<ClassEntry>()
@@ -58,7 +58,7 @@ public class ClassSelector extends JTree
 				return aname.compareTo(bname);
 			}
 		};
-		
+
 		DeobfuscatedClassEntryComparator = new Comparator<ClassEntry>()
 		{
 			@Override
@@ -72,19 +72,19 @@ public class ClassSelector extends JTree
 			}
 		};
 	}
-	
+
 	private ClassSelectionListener m_listener;
 	private Comparator<ClassEntry> m_comparator;
-	
+
 	public ClassSelector(Comparator<ClassEntry> comparator)
 	{
 		m_comparator = comparator;
-		
+
 		// configure the tree control
 		setRootVisible(false);
 		setShowsRootHandles(false);
 		setModel(null);
-		
+
 		// hook events
 		addMouseListener(new MouseAdapter()
 		{
@@ -105,16 +105,16 @@ public class ClassSelector extends JTree
 				}
 			}
 		});
-		
+
 		// init defaults
 		m_listener = null;
 	}
-	
+
 	public void setListener(ClassSelectionListener val)
 	{
 		m_listener = val;
 	}
-	
+
 	public void setClasses(Collection<ClassEntry> classEntries)
 	{
 		if(classEntries == null)
@@ -122,12 +122,12 @@ public class ClassSelector extends JTree
 			setModel(null);
 			return;
 		}
-		
+
 		// build the package names
 		Map<String, ClassSelectorPackageNode> packages = Maps.newHashMap();
 		for(ClassEntry classEntry : classEntries)
 			packages.put(classEntry.getPackageName(), null);
-		
+
 		// sort the packages
 		List<String> sortedPackageNames = Lists.newArrayList(packages.keySet());
 		Collections.sort(sortedPackageNames, new Comparator<String>()
@@ -138,7 +138,7 @@ public class ClassSelector extends JTree
 				// I can never keep this rule straight when writing these damn
 				// things...
 				// a < b => -1, a == b => 0, a > b => +1
-				
+
 				String[] aparts = a.split("/");
 				String[] bparts = b.split("/");
 				for(int i = 0; true; i++)
@@ -147,14 +147,14 @@ public class ClassSelector extends JTree
 						return -1;
 					else if(i >= bparts.length)
 						return 1;
-					
+
 					int result = aparts[i].compareTo(bparts[i]);
 					if(result != 0)
 						return result;
 				}
 			}
 		});
-		
+
 		// create the root node and the package nodes
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		for(String packageName : sortedPackageNames)
@@ -164,13 +164,13 @@ public class ClassSelector extends JTree
 			packages.put(packageName, node);
 			root.add(node);
 		}
-		
+
 		// put the classes into packages
 		Multimap<String, ClassEntry> packagedClassEntries =
 			ArrayListMultimap.create();
 		for(ClassEntry classEntry : classEntries)
 			packagedClassEntries.put(classEntry.getPackageName(), classEntry);
-		
+
 		// build the class nodes
 		for(String packageName : packagedClassEntries.keySet())
 		{
@@ -178,7 +178,7 @@ public class ClassSelector extends JTree
 			List<ClassEntry> classEntriesInPackage =
 				Lists.newArrayList(packagedClassEntries.get(packageName));
 			Collections.sort(classEntriesInPackage, m_comparator);
-			
+
 			// create the nodes in order
 			for(ClassEntry classEntry : classEntriesInPackage)
 			{
@@ -186,11 +186,11 @@ public class ClassSelector extends JTree
 				node.add(new ClassSelectorClassNode(classEntry));
 			}
 		}
-		
+
 		// finally, update the tree control
 		setModel(new DefaultTreeModel(root));
 	}
-	
+
 	public ClassEntry getSelectedClass()
 	{
 		if(!isSelectionEmpty())
@@ -205,7 +205,7 @@ public class ClassSelector extends JTree
 		}
 		return null;
 	}
-	
+
 	public String getSelectedPackage()
 	{
 		if(!isSelectionEmpty())
@@ -225,7 +225,7 @@ public class ClassSelector extends JTree
 		}
 		return null;
 	}
-	
+
 	public Iterable<ClassSelectorPackageNode> packageNodes()
 	{
 		List<ClassSelectorPackageNode> nodes = Lists.newArrayList();
@@ -240,7 +240,7 @@ public class ClassSelector extends JTree
 		}
 		return nodes;
 	}
-	
+
 	public Iterable<ClassSelectorClassNode> classNodes(
 		ClassSelectorPackageNode packageNode)
 	{
@@ -254,7 +254,7 @@ public class ClassSelector extends JTree
 		}
 		return nodes;
 	}
-	
+
 	public void expandPackage(String packageName)
 	{
 		if(packageName == null)
@@ -267,14 +267,14 @@ public class ClassSelector extends JTree
 				return;
 			}
 	}
-	
+
 	public void expandAll()
 	{
 		for(ClassSelectorPackageNode packageNode : packageNodes())
 			expandPath(new TreePath(new Object[]{getModel().getRoot(),
 				packageNode}));
 	}
-	
+
 	public ClassEntry getFirstClass()
 	{
 		for(ClassSelectorPackageNode packageNode : packageNodes())
@@ -282,7 +282,7 @@ public class ClassSelector extends JTree
 				return classNode.getClassEntry();
 		return null;
 	}
-	
+
 	public ClassSelectorPackageNode getPackageNode(ClassEntry entry)
 	{
 		for(ClassSelectorPackageNode packageNode : packageNodes())

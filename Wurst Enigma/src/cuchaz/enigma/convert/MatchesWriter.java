@@ -22,7 +22,7 @@ import cuchaz.enigma.mapping.FieldEntry;
 
 public class MatchesWriter
 {
-	
+
 	public static void writeClasses(ClassMatches matches, File file)
 		throws IOException
 	{
@@ -41,7 +41,7 @@ public class MatchesWriter
 		writeClasses(out, match.destClasses);
 		out.write("\n");
 	}
-	
+
 	private static void writeClasses(FileWriter out,
 		Iterable<ClassEntry> classes) throws IOException
 	{
@@ -82,7 +82,7 @@ public class MatchesWriter
 			writeEntry(out, dest);
 		out.write("\n");
 	}
-	
+
 	private static <T extends Entry> void writeUnmatchableEntry(FileWriter out,
 		T entry) throws IOException
 	{
@@ -90,7 +90,7 @@ public class MatchesWriter
 		writeEntry(out, entry);
 		out.write("\n");
 	}
-	
+
 	private static <T extends Entry> void writeEntry(FileWriter out, T entry)
 		throws IOException
 	{
@@ -99,7 +99,7 @@ public class MatchesWriter
 		else if(entry instanceof BehaviorEntry)
 			writeBehavior(out, (BehaviorEntry)entry);
 	}
-	
+
 	private static void writeField(FileWriter out, FieldEntry fieldEntry)
 		throws IOException
 	{
@@ -109,7 +109,7 @@ public class MatchesWriter
 		out.write(" ");
 		out.write(fieldEntry.getType().toString());
 	}
-	
+
 	private static void writeBehavior(FileWriter out,
 		BehaviorEntry behaviorEntry) throws IOException
 	{

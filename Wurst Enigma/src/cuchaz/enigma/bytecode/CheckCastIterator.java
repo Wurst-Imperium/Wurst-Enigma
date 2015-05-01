@@ -25,40 +25,40 @@ import cuchaz.enigma.mapping.Signature;
 
 public class CheckCastIterator implements Iterator<CheckCast>
 {
-	
+
 	public static class CheckCast
 	{
-		
+
 		public String className;
 		public MethodEntry prevMethodEntry;
-		
+
 		public CheckCast(String className, MethodEntry prevMethodEntry)
 		{
 			this.className = className;
 			this.prevMethodEntry = prevMethodEntry;
 		}
 	}
-	
+
 	private ConstPool m_constants;
 	private CodeAttribute m_attribute;
 	private CodeIterator m_iter;
 	private CheckCast m_next;
-	
+
 	public CheckCastIterator(CodeAttribute codeAttribute) throws BadBytecode
 	{
 		m_constants = codeAttribute.getConstPool();
 		m_attribute = codeAttribute;
 		m_iter = m_attribute.iterator();
-		
+
 		m_next = getNext();
 	}
-	
+
 	@Override
 	public boolean hasNext()
 	{
 		return m_next != null;
 	}
-	
+
 	@Override
 	public CheckCast next()
 	{
@@ -72,13 +72,13 @@ public class CheckCastIterator implements Iterator<CheckCast>
 		}
 		return out;
 	}
-	
+
 	@Override
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	private CheckCast getNext() throws BadBytecode
 	{
 		int prevPos = 0;
@@ -89,7 +89,7 @@ public class CheckCastIterator implements Iterator<CheckCast>
 			switch(opcode)
 			{
 				case Opcode.CHECKCAST:
-					
+
 					// get the type of this op code (next two bytes are a
 					// classinfo index)
 					MethodEntry prevMethodEntry = getMethodEntry(prevPos);
@@ -102,7 +102,7 @@ public class CheckCastIterator implements Iterator<CheckCast>
 		}
 		return null;
 	}
-	
+
 	private MethodEntry getMethodEntry(int pos)
 	{
 		switch(m_iter.byteAt(pos))
@@ -119,7 +119,7 @@ public class CheckCastIterator implements Iterator<CheckCast>
 					m_constants.getMethodrefName(index), new Signature(
 						m_constants.getMethodrefType(index)));
 			}
-			
+
 			case Opcode.INVOKEINTERFACE:
 			{
 				int index = m_iter.s16bitAt(pos + 1);
@@ -132,7 +132,7 @@ public class CheckCastIterator implements Iterator<CheckCast>
 		}
 		return null;
 	}
-	
+
 	public Iterable<CheckCast> casts()
 	{
 		return new Iterable<CheckCast>()

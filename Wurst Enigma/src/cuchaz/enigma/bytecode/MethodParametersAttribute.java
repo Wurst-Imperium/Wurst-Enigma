@@ -22,16 +22,16 @@ import javassist.bytecode.MethodInfo;
 
 public class MethodParametersAttribute extends AttributeInfo
 {
-	
+
 	private MethodParametersAttribute(ConstPool pool,
 		List<Integer> parameterNameIndices)
 	{
 		super(pool, "MethodParameters", writeStruct(parameterNameIndices));
 	}
-	
+
 	public static void updateClass(MethodInfo info, List<String> names)
 	{
-		
+
 		// add the names to the class const pool
 		ConstPool constPool = info.getConstPool();
 		List<Integer> parameterNameIndices = new ArrayList<Integer>();
@@ -40,12 +40,12 @@ public class MethodParametersAttribute extends AttributeInfo
 				parameterNameIndices.add(constPool.addUtf8Info(name));
 			else
 				parameterNameIndices.add(0);
-		
+
 		// add the attribute to the method
 		info.addAttribute(new MethodParametersAttribute(constPool,
 			parameterNameIndices));
 	}
-	
+
 	private static byte[] writeStruct(List<Integer> parameterNameIndices)
 	{
 		// JVM 8 Spec says the struct looks like this:
@@ -55,10 +55,10 @@ public class MethodParametersAttribute extends AttributeInfo
 		// uint16 name_index -> points to UTF8 entry in constant pool, or 0 for
 		// no entry
 		// uint16 access_flags -> don't care, just set to 0
-		
+
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(buf);
-		
+
 		// NOTE: java hates unsigned integers, so we have to be careful here
 		// the writeShort(), writeByte() methods will read 16,8 low-order bits
 		// from the int argument
@@ -70,22 +70,22 @@ public class MethodParametersAttribute extends AttributeInfo
 		final int SIZEOF_UINT16 = 2;
 		final int MAX_UINT8 = (1 << 8) - 1;
 		final int MAX_UINT16 = (1 << 16) - 1;
-		
+
 		try
 		{
 			assert parameterNameIndices.size() >= 0
 				&& parameterNameIndices.size() <= MAX_UINT8;
 			out.writeByte(parameterNameIndices.size());
-			
+
 			for(Integer index : parameterNameIndices)
 			{
 				assert index >= 0 && index <= MAX_UINT16;
 				out.writeShort(index);
-				
+
 				// just write 0 for the access flags
 				out.writeShort(0);
 			}
-			
+
 			out.close();
 			byte[] data = buf.toByteArray();
 			assert data.length == SIZEOF_UINT8 + parameterNameIndices.size()

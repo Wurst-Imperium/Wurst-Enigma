@@ -36,12 +36,12 @@ import cuchaz.enigma.mapping.Translator;
 
 public class ClassRenamer
 {
-	
+
 	private static enum SignatureType
 	{
 		Class
 		{
-			
+
 			@Override
 			public String rename(String signature, ReplacerClassMap map)
 			{
@@ -50,7 +50,7 @@ public class ClassRenamer
 		},
 		Field
 		{
-			
+
 			@Override
 			public String rename(String signature, ReplacerClassMap map)
 			{
@@ -59,29 +59,29 @@ public class ClassRenamer
 		},
 		Method
 		{
-			
+
 			@Override
 			public String rename(String signature, ReplacerClassMap map)
 			{
 				return renameMethodSignature(signature, map);
 			}
 		};
-		
+
 		public abstract String rename(String signature, ReplacerClassMap map);
 	}
-	
+
 	private static class ReplacerClassMap extends HashMap<String, String>
 	{
-		
+
 		private static final long serialVersionUID = 317915213205066168L;
-		
+
 		private ClassNameReplacer m_replacer;
-		
+
 		public ReplacerClassMap(ClassNameReplacer replacer)
 		{
 			m_replacer = replacer;
 		}
-		
+
 		@Override
 		public String get(Object obj)
 		{
@@ -89,13 +89,13 @@ public class ClassRenamer
 				return get((String)obj);
 			return null;
 		}
-		
+
 		public String get(String className)
 		{
 			return m_replacer.replace(className);
 		}
 	}
-	
+
 	public static void renameClasses(CtClass c, final Translator translator)
 	{
 		renameClasses(c, new ClassNameReplacer()
@@ -111,7 +111,7 @@ public class ClassRenamer
 			}
 		});
 	}
-	
+
 	public static void moveAllClassesOutOfDefaultPackage(CtClass c,
 		final String newPackageName)
 	{
@@ -127,7 +127,7 @@ public class ClassRenamer
 			}
 		});
 	}
-	
+
 	public static void moveAllClassesIntoDefaultPackage(CtClass c,
 		final String oldPackageName)
 	{
@@ -143,25 +143,25 @@ public class ClassRenamer
 			}
 		});
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void renameClasses(CtClass c, ClassNameReplacer replacer)
 	{
-		
+
 		// sadly, we can't use CtClass.renameClass() because
 		// SignatureAttribute.renameClass() is extremely buggy =(
-		
+
 		ReplacerClassMap map = new ReplacerClassMap(replacer);
 		ClassFile classFile = c.getClassFile();
-		
+
 		// rename the constant pool (covers ClassInfo, MethodTypeInfo, and
 		// NameAndTypeInfo)
 		ConstPool constPool = c.getClassFile().getConstPool();
 		constPool.renameClass(map);
-		
+
 		// rename class attributes
 		renameAttributes(classFile.getAttributes(), map, SignatureType.Class);
-		
+
 		// rename methods
 		for(MethodInfo methodInfo : (List<MethodInfo>)classFile.getMethods())
 		{
@@ -170,7 +170,7 @@ public class ClassRenamer
 			renameAttributes(methodInfo.getAttributes(), map,
 				SignatureType.Method);
 		}
-		
+
 		// rename fields
 		for(FieldInfo fieldInfo : (List<FieldInfo>)classFile.getFields())
 		{
@@ -179,7 +179,7 @@ public class ClassRenamer
 			renameAttributes(fieldInfo.getAttributes(), map,
 				SignatureType.Field);
 		}
-		
+
 		// rename the class name itself last
 		// NOTE: don't use the map here, because setName() calls the buggy
 		// SignatureAttribute.renameClass()
@@ -187,7 +187,7 @@ public class ClassRenamer
 		String newName = renameClassName(c.getName(), map);
 		if(newName != null)
 			c.setName(newName);
-		
+
 		// replace simple names in the InnerClasses attribute too
 		InnerClassesAttribute attr =
 			(InnerClassesAttribute)c.getClassFile().getAttribute(
@@ -195,17 +195,17 @@ public class ClassRenamer
 		if(attr != null)
 			for(int i = 0; i < attr.tableLength(); i++)
 			{
-				
+
 				// get the inner class full name (which has already been
 				// translated)
 				ClassEntry classEntry =
 					new ClassEntry(Descriptor.toJvmName(attr.innerClass(i)));
-				
+
 				if(attr.innerNameIndex(i) != 0)
 					// update the inner name
 					attr.setInnerNameIndex(i, constPool.addUtf8Info(classEntry
 						.getInnermostClassName()));
-				
+
 				/*
 				 * DEBUG
 				 * System.out.println(String.format("\tDEOBF: %s-> ATTR: %s,%s,%s"
@@ -214,19 +214,19 @@ public class ClassRenamer
 				 */
 			}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static void renameAttributes(List<AttributeInfo> attributes,
 		ReplacerClassMap map, SignatureType type)
 	{
 		try
 		{
-			
+
 			// make the rename class method accessible
 			Method renameClassMethod =
 				AttributeInfo.class.getDeclaredMethod("renameClass", Map.class);
 			renameClassMethod.setAccessible(true);
-			
+
 			for(AttributeInfo attribute : attributes)
 				if(attribute instanceof SignatureAttribute)
 				{
@@ -253,7 +253,7 @@ public class ClassRenamer
 						map);
 				}else
 					renameClassMethod.invoke(attribute, map);
-			
+
 		}catch(NoSuchMethodException | IllegalAccessException
 			| IllegalArgumentException | InvocationTargetException ex)
 		{
@@ -265,7 +265,7 @@ public class ClassRenamer
 	private static void renameLocalVariableTypeAttribute(
 		LocalVariableTypeAttribute attribute, ReplacerClassMap map)
 	{
-		
+
 		// adapted from LocalVariableAttribute.renameClass()
 		ConstPool cp = attribute.getConstPool();
 		int n = attribute.tableLength();
@@ -289,7 +289,7 @@ public class ClassRenamer
 	private static String renameLocalVariableSignature(String signature,
 		ReplacerClassMap map)
 	{
-		
+
 		// for some reason, signatures with . in them don't count as field
 		// signatures
 		// looks like anonymous classes delimit with . in stead of $
@@ -308,12 +308,12 @@ public class ClassRenamer
 			}
 		}
 		signature = buf.toString();
-		
+
 		// translate
 		String newSignature = renameFieldSignature(signature, map);
 		if(newSignature != null)
 		{
-			
+
 			// put the delimiters back
 			buf = new StringBuilder(newSignature);
 			for(int i = buf.length() - 1; i >= 0 && numConverted > 0; i--)
@@ -327,10 +327,10 @@ public class ClassRenamer
 			}
 			assert numConverted == 0;
 			newSignature = buf.toString();
-			
+
 			return newSignature;
 		}
-		
+
 		return null;
 	}
 	
@@ -349,7 +349,7 @@ public class ClassRenamer
 			throw new Error("Can't parse field signature: " + signature);
 		}
 	}
-	
+
 	private static String renameFieldSignature(String signature,
 		ReplacerClassMap map)
 	{
@@ -365,7 +365,7 @@ public class ClassRenamer
 			throw new Error("Can't parse class signature: " + signature);
 		}
 	}
-	
+
 	private static String renameMethodSignature(String signature,
 		ReplacerClassMap map)
 	{
@@ -381,11 +381,11 @@ public class ClassRenamer
 			throw new Error("Can't parse method signature: " + signature);
 		}
 	}
-	
+
 	private static ClassSignature renameType(ClassSignature type,
 		ReplacerClassMap map)
 	{
-		
+
 		TypeParameter[] typeParamTypes = type.getParameters();
 		if(typeParamTypes != null)
 		{
@@ -398,7 +398,7 @@ public class ClassRenamer
 					typeParamTypes[i] = newParamType;
 			}
 		}
-		
+
 		ClassType superclassType = type.getSuperClass();
 		if(superclassType != ClassType.OBJECT)
 		{
@@ -406,7 +406,7 @@ public class ClassRenamer
 			if(newSuperclassType != null)
 				superclassType = newSuperclassType;
 		}
-		
+
 		ClassType[] interfaceTypes = type.getInterfaces();
 		if(interfaceTypes != null)
 		{
@@ -419,15 +419,15 @@ public class ClassRenamer
 					interfaceTypes[i] = newInterfaceType;
 			}
 		}
-		
+
 		return new ClassSignature(typeParamTypes, superclassType,
 			interfaceTypes);
 	}
-	
+
 	private static MethodSignature renameType(MethodSignature type,
 		ReplacerClassMap map)
 	{
-		
+
 		TypeParameter[] typeParamTypes = type.getTypeParameters();
 		if(typeParamTypes != null)
 		{
@@ -440,7 +440,7 @@ public class ClassRenamer
 					typeParamTypes[i] = newParamType;
 			}
 		}
-		
+
 		Type[] paramTypes = type.getParameterTypes();
 		if(paramTypes != null)
 		{
@@ -460,7 +460,7 @@ public class ClassRenamer
 			if(newReturnType != null)
 				returnType = newReturnType;
 		}
-		
+
 		ObjectType[] exceptionTypes = type.getExceptionTypes();
 		if(exceptionTypes != null)
 		{
@@ -474,7 +474,7 @@ public class ClassRenamer
 					exceptionTypes[i] = newExceptionType;
 			}
 		}
-		
+
 		return new MethodSignature(typeParamTypes, paramTypes, returnType,
 			exceptionTypes);
 	}
@@ -488,7 +488,7 @@ public class ClassRenamer
 		else
 			throw new Error("Don't know how to rename type " + type.getClass());
 	}
-	
+
 	private static ObjectType renameType(ObjectType type, ReplacerClassMap map)
 	{
 		if(type instanceof ArrayType)
@@ -500,7 +500,7 @@ public class ClassRenamer
 		else
 			throw new Error("Don't know how to rename type " + type.getClass());
 	}
-	
+
 	private static BaseType renameType(BaseType type, ReplacerClassMap map)
 	{
 		// don't have to rename primitives
@@ -516,7 +516,7 @@ public class ClassRenamer
 	
 	private static ClassType renameType(ClassType type, ReplacerClassMap map)
 	{
-		
+
 		// translate type args
 		TypeArgument[] args = type.getTypeArguments();
 		if(args != null)
@@ -529,32 +529,32 @@ public class ClassRenamer
 					args[i] = newType;
 			}
 		}
-		
+
 		if(type instanceof NestedClassType)
 		{
 			NestedClassType nestedType = (NestedClassType)type;
-			
+
 			// translate the name
 			String name = nestedType.getName();
 			String newName = map.get(getClassName(type));
 			if(newName != null)
 				name = new ClassEntry(newName).getInnermostClassName();
-			
+
 			// translate the parent class too
 			ClassType parent = renameType(nestedType.getDeclaringClass(), map);
 			if(parent == null)
 				parent = nestedType.getDeclaringClass();
-			
+
 			return new NestedClassType(parent, name, args);
 		}else
 		{
-			
+
 			// translate the name
 			String name = type.getName();
 			String newName = renameClassName(name, map);
 			if(newName != null)
 				name = newName;
-			
+
 			return new ClassType(name, args);
 		}
 	}
@@ -608,11 +608,11 @@ public class ClassRenamer
 			return new ArrayType(type.getDimension(), newSubType);
 		return null;
 	}
-	
+
 	private static TypeParameter renameType(TypeParameter type,
 		ReplacerClassMap map)
 	{
-		
+
 		ObjectType superclassType = type.getClassBound();
 		if(superclassType != null)
 		{
@@ -620,7 +620,7 @@ public class ClassRenamer
 			if(newSuperclassType != null)
 				superclassType = newSuperclassType;
 		}
-		
+
 		ObjectType[] interfaceTypes = type.getInterfaceBound();
 		if(interfaceTypes != null)
 		{
@@ -634,7 +634,7 @@ public class ClassRenamer
 					interfaceTypes[i] = newInterfaceType;
 			}
 		}
-		
+
 		return new TypeParameter(type.getName(), superclassType, interfaceTypes);
 	}
 }

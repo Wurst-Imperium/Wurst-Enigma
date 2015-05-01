@@ -12,9 +12,9 @@ package cuchaz.enigma.bytecode.accessors;
 
 public class Utf8InfoAccessor
 {
-	
+
 	private static Class<?> m_class;
-	
+
 	static
 	{
 		try
@@ -25,7 +25,7 @@ public class Utf8InfoAccessor
 			throw new Error(ex);
 		}
 	}
-	
+
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());

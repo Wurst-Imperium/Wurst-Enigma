@@ -19,18 +19,18 @@ import java.util.List;
 
 public class MappingsWriter
 {
-	
+
 	public void write(Writer out, Mappings mappings) throws IOException
 	{
 		write(new PrintWriter(out), mappings);
 	}
-	
+
 	public void write(PrintWriter out, Mappings mappings) throws IOException
 	{
 		for(ClassMapping classMapping : sorted(mappings.classes()))
 			write(out, classMapping, 0);
 	}
-	
+
 	private void write(PrintWriter out, ClassMapping classMapping, int depth)
 		throws IOException
 	{
@@ -40,17 +40,17 @@ public class MappingsWriter
 		else
 			out.format("%sCLASS %s %s\n", getIndent(depth),
 				classMapping.getObfFullName(), classMapping.getDeobfName());
-		
+
 		for(ClassMapping innerClassMapping : sorted(classMapping.innerClasses()))
 			write(out, innerClassMapping, depth + 1);
-		
+
 		for(FieldMapping fieldMapping : sorted(classMapping.fields()))
 			write(out, fieldMapping, depth + 1);
-		
+
 		for(MethodMapping methodMapping : sorted(classMapping.methods()))
 			write(out, methodMapping, depth + 1);
 	}
-	
+
 	private void write(PrintWriter out, FieldMapping fieldMapping, int depth)
 		throws IOException
 	{
@@ -58,7 +58,7 @@ public class MappingsWriter
 			fieldMapping.getObfName(), fieldMapping.getDeobfName(),
 			fieldMapping.getObfType().toString());
 	}
-	
+
 	private void write(PrintWriter out, MethodMapping methodMapping, int depth)
 		throws IOException
 	{
@@ -69,18 +69,18 @@ public class MappingsWriter
 			out.format("%sMETHOD %s %s %s\n", getIndent(depth),
 				methodMapping.getObfName(), methodMapping.getDeobfName(),
 				methodMapping.getObfSignature());
-		
+
 		for(ArgumentMapping argumentMapping : sorted(methodMapping.arguments()))
 			write(out, argumentMapping, depth + 1);
 	}
-	
+
 	private void write(PrintWriter out, ArgumentMapping argumentMapping,
 		int depth) throws IOException
 	{
 		out.format("%sARG %d %s\n", getIndent(depth),
 			argumentMapping.getIndex(), argumentMapping.getName());
 	}
-	
+
 	private <T extends Comparable<T>> List<T> sorted(Iterable<T> classes)
 	{
 		List<T> out = new ArrayList<T>();
@@ -89,7 +89,7 @@ public class MappingsWriter
 		Collections.sort(out);
 		return out;
 	}
-	
+
 	private String getIndent(int depth)
 	{
 		StringBuilder buf = new StringBuilder();

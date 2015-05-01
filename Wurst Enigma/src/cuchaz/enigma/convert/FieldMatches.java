@@ -30,7 +30,7 @@ public class FieldMatches
 	private Multimap<ClassEntry, FieldEntry> m_unmatchedSourceFields;
 	private Multimap<ClassEntry, FieldEntry> m_unmatchedDestFields;
 	private Multimap<ClassEntry, FieldEntry> m_unmatchableSourceFields;
-	
+
 	public FieldMatches()
 	{
 		m_matches = HashBiMap.create();
@@ -39,7 +39,7 @@ public class FieldMatches
 		m_unmatchedDestFields = HashMultimap.create();
 		m_unmatchableSourceFields = HashMultimap.create();
 	}
-	
+
 	public void addMatch(FieldEntry srcField, FieldEntry destField)
 	{
 		boolean wasAdded = m_matches.put(srcField, destField) == null;
@@ -48,33 +48,33 @@ public class FieldMatches
 			m_matchedSourceFields.put(srcField.getClassEntry(), srcField);
 		assert wasAdded;
 	}
-	
+
 	public void addUnmatchedSourceField(FieldEntry fieldEntry)
 	{
 		boolean wasAdded =
 			m_unmatchedSourceFields.put(fieldEntry.getClassEntry(), fieldEntry);
 		assert wasAdded;
 	}
-	
+
 	public void addUnmatchedSourceFields(Iterable<FieldEntry> fieldEntries)
 	{
 		for(FieldEntry fieldEntry : fieldEntries)
 			addUnmatchedSourceField(fieldEntry);
 	}
-	
+
 	public void addUnmatchedDestField(FieldEntry fieldEntry)
 	{
 		boolean wasAdded =
 			m_unmatchedDestFields.put(fieldEntry.getClassEntry(), fieldEntry);
 		assert wasAdded;
 	}
-	
+
 	public void addUnmatchedDestFields(Iterable<FieldEntry> fieldEntries)
 	{
 		for(FieldEntry fieldEntry : fieldEntries)
 			addUnmatchedDestField(fieldEntry);
 	}
-	
+
 	public void addUnmatchableSourceField(FieldEntry sourceField)
 	{
 		boolean wasAdded =
@@ -82,12 +82,12 @@ public class FieldMatches
 				sourceField);
 		assert wasAdded;
 	}
-	
+
 	public Set<ClassEntry> getSourceClassesWithUnmatchedFields()
 	{
 		return m_unmatchedSourceFields.keySet();
 	}
-	
+
 	public Collection<ClassEntry> getSourceClassesWithoutUnmatchedFields()
 	{
 		Set<ClassEntry> out = Sets.newHashSet();
@@ -116,7 +116,7 @@ public class FieldMatches
 	{
 		return m_unmatchedDestFields.get(destClass);
 	}
-	
+
 	public Collection<FieldEntry> getUnmatchableSourceFields()
 	{
 		return m_unmatchableSourceFields.values();
@@ -127,7 +127,7 @@ public class FieldMatches
 		return m_matches.containsKey(fieldEntry)
 			|| m_unmatchedSourceFields.containsValue(fieldEntry);
 	}
-	
+
 	public boolean hasDest(FieldEntry fieldEntry)
 	{
 		return m_matches.containsValue(fieldEntry)
@@ -138,7 +138,7 @@ public class FieldMatches
 	{
 		return m_matches;
 	}
-	
+
 	public boolean isMatchedSourceField(FieldEntry sourceField)
 	{
 		return m_matches.containsKey(sourceField);
@@ -178,7 +178,7 @@ public class FieldMatches
 		addUnmatchedSourceField(sourceField);
 		addUnmatchedDestField(destField);
 	}
-	
+
 	public void makeSourceUnmatchable(FieldEntry sourceField)
 	{
 		assert !isMatchedSourceField(sourceField);

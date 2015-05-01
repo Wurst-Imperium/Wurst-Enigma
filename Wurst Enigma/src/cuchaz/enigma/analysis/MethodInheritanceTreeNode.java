@@ -22,13 +22,13 @@ import cuchaz.enigma.mapping.Translator;
 
 public class MethodInheritanceTreeNode extends DefaultMutableTreeNode
 {
-	
+
 	private static final long serialVersionUID = 1096677030991810007L;
-	
+
 	private Translator m_deobfuscatingTranslator;
 	private MethodEntry m_entry;
 	private boolean m_isImplemented;
-	
+
 	public MethodInheritanceTreeNode(Translator deobfuscatingTranslator,
 		MethodEntry entry, boolean isImplemented)
 	{
@@ -36,34 +36,34 @@ public class MethodInheritanceTreeNode extends DefaultMutableTreeNode
 		m_entry = entry;
 		m_isImplemented = isImplemented;
 	}
-	
+
 	public MethodEntry getMethodEntry()
 	{
 		return m_entry;
 	}
-	
+
 	public String getDeobfClassName()
 	{
 		return m_deobfuscatingTranslator.translateClass(m_entry.getClassName());
 	}
-	
+
 	public String getDeobfMethodName()
 	{
 		return m_deobfuscatingTranslator.translate(m_entry);
 	}
-	
+
 	public boolean isImplemented()
 	{
 		return m_isImplemented;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		String className = getDeobfClassName();
 		if(className == null)
 			className = m_entry.getClassName();
-		
+
 		if(!m_isImplemented)
 			return className;
 		else
@@ -74,7 +74,7 @@ public class MethodInheritanceTreeNode extends DefaultMutableTreeNode
 			return className + "." + methodName + "()";
 		}
 	}
-	
+
 	public void load(JarIndex index, boolean recurse)
 	{
 		// get all the child nodes
@@ -88,23 +88,23 @@ public class MethodInheritanceTreeNode extends DefaultMutableTreeNode
 			nodes.add(new MethodInheritanceTreeNode(m_deobfuscatingTranslator,
 				methodEntry, index.containsObfBehavior(methodEntry)));
 		}
-		
+
 		// add them to this node
 		for(MethodInheritanceTreeNode node : nodes)
 			add(node);
-		
+
 		if(recurse)
 			for(MethodInheritanceTreeNode node : nodes)
 				node.load(index, true);
 	}
-	
+
 	public static MethodInheritanceTreeNode findNode(
 		MethodInheritanceTreeNode node, MethodEntry entry)
 	{
 		// is this the node?
 		if(node.getMethodEntry().equals(entry))
 			return node;
-		
+
 		// recurse
 		for(int i = 0; i < node.getChildCount(); i++)
 		{

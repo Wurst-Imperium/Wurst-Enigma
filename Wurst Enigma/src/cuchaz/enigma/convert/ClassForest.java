@@ -19,10 +19,10 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassForest
 {
-	
+
 	private ClassIdentifier m_identifier;
 	private Multimap<ClassIdentity, ClassEntry> m_forest;
-	
+
 	public ClassForest(ClassIdentifier identifier)
 	{
 		m_identifier = identifier;
@@ -50,7 +50,7 @@ public class ClassForest
 	{
 		return m_forest.keySet();
 	}
-	
+
 	public Collection<ClassEntry> classes()
 	{
 		return m_forest.values();

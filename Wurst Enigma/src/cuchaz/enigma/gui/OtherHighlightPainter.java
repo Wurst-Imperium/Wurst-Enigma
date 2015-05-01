@@ -14,7 +14,7 @@ import java.awt.Color;
 
 public class OtherHighlightPainter extends BoxHighlightPainter
 {
-	
+
 	public OtherHighlightPainter()
 	{
 		// grey

@@ -27,7 +27,7 @@ import cuchaz.enigma.mapping.Type;
 
 public class MatchesReader
 {
-	
+
 	public static ClassMatches readClasses(File file) throws IOException
 	{
 		try(BufferedReader in = new BufferedReader(new FileReader(file)))

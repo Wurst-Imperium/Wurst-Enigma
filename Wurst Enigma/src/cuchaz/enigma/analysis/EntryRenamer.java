@@ -23,7 +23,7 @@ import cuchaz.enigma.mapping.*;
 
 public class EntryRenamer
 {
-	
+
 	public static <T> void renameClassesInSet(Map<String, String> renames,
 		Set<T> set)
 	{
@@ -33,7 +33,7 @@ public class EntryRenamer
 		set.clear();
 		set.addAll(entries);
 	}
-	
+
 	public static <Key, Val> void renameClassesInMap(
 		Map<String, String> renames, Map<Key, Val> map)
 	{
@@ -47,7 +47,7 @@ public class EntryRenamer
 		for(Map.Entry<Key, Val> entry : entriesToAdd)
 			map.put(entry.getKey(), entry.getValue());
 	}
-	
+
 	public static <Key, Val> void renameClassesInMultimap(
 		Map<String, String> renames, Multimap<Key, Val> map)
 	{
@@ -61,7 +61,7 @@ public class EntryRenamer
 		for(Map.Entry<Key, Val> entry : entriesToAdd)
 			map.put(entry.getKey(), entry.getValue());
 	}
-	
+
 	public static <Key, Val> void renameMethodsInMultimap(
 		Map<MethodEntry, MethodEntry> renames, Multimap<Key, Val> map)
 	{
@@ -75,7 +75,7 @@ public class EntryRenamer
 		for(Map.Entry<Key, Val> entry : entriesToAdd)
 			map.put(entry.getKey(), entry.getValue());
 	}
-	
+
 	public static <Key, Val> void renameMethodsInMap(
 		Map<MethodEntry, MethodEntry> renames, Map<Key, Val> map)
 	{
@@ -89,7 +89,7 @@ public class EntryRenamer
 		for(Map.Entry<Key, Val> entry : entriesToAdd)
 			map.put(entry.getKey(), entry.getValue());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> T renameMethodsInThing(
 		Map<MethodEntry, MethodEntry> renames, T thing)
@@ -119,7 +119,7 @@ public class EntryRenamer
 		}
 		return thing;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> T renameClassesInThing(final Map<String, String> renames,
 		T thing)
@@ -184,7 +184,7 @@ public class EntryRenamer
 					return renameClassesInThing(renames, className);
 				}
 			});
-		
+
 		return thing;
 	}
 }

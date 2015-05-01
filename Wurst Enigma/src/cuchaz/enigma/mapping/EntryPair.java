@@ -12,10 +12,10 @@ package cuchaz.enigma.mapping;
 
 public class EntryPair<T extends Entry>
 {
-	
+
 	public T obf;
 	public T deobf;
-	
+
 	public EntryPair(T obf, T deobf)
 	{
 		this.obf = obf;

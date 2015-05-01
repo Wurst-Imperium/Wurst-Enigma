@@ -18,7 +18,7 @@ import javassist.bytecode.Descriptor;
 
 public class NameValidator
 {
-	
+
 	private static final Pattern IdentifierPattern;
 	private static final Pattern ClassPattern;
 	private static final List<String> ReservedWords = Arrays.asList("abstract",
@@ -29,10 +29,10 @@ public class NameValidator
 		"transient", "catch", "extends", "int", "short", "try", "char",
 		"final", "interface", "static", "void", "class", "finally", "long",
 		"strictfp", "volatile", "const", "float", "native", "super", "while");
-	
+
 	static
 	{
-		
+
 		// java allows all kinds of weird characters...
 		StringBuilder startChars = new StringBuilder();
 		StringBuilder partChars = new StringBuilder();
@@ -43,14 +43,14 @@ public class NameValidator
 			if(Character.isJavaIdentifierPart(i))
 				partChars.appendCodePoint(i);
 		}
-		
+
 		String identifierRegex = "[A-Za-z_<][A-Za-z0-9_>]*";
 		IdentifierPattern = Pattern.compile(identifierRegex);
 		ClassPattern =
 			Pattern.compile(String.format("^(%s(\\.|/))*(%s)$",
 				identifierRegex, identifierRegex));
 	}
-	
+
 	public static String validateClassName(String name, boolean packageRequired)
 	{
 		if(name == null)
@@ -63,7 +63,7 @@ public class NameValidator
 			throw new IllegalNameException(name, "Class must be in a package");
 		return Descriptor.toJvmName(name);
 	}
-	
+
 	public static String validateFieldName(String name)
 	{
 		if(name == null)
@@ -74,12 +74,12 @@ public class NameValidator
 				"This doesn't look like a legal identifier");
 		return name;
 	}
-	
+
 	public static String validateMethodName(String name)
 	{
 		return validateFieldName(name);
 	}
-	
+
 	public static String validateArgumentName(String name)
 	{
 		return validateFieldName(name);

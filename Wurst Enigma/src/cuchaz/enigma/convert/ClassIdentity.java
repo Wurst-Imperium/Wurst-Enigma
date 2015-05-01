@@ -54,7 +54,7 @@ import cuchaz.enigma.mapping.*;
 
 public class ClassIdentity
 {
-	
+
 	private ClassEntry m_classEntry;
 	private SidedClassNamer m_namer;
 	private Multiset<String> m_fields;
@@ -111,9 +111,9 @@ public class ClassIdentity
 		boolean useReferences)
 	{
 		m_namer = namer;
-		
+
 		// stuff from the bytecode
-		
+
 		m_classEntry = new ClassEntry(Descriptor.toJvmName(c.getName()));
 		m_fields = HashMultiset.create();
 		for(CtField field : c.getDeclaredFields())
@@ -138,15 +138,15 @@ public class ClassIdentity
 		for(String interfaceName : c.getClassFile().getInterfaces())
 			m_implements
 				.add(scrubClassName(Descriptor.toJvmName(interfaceName)));
-		
+
 		m_stringLiterals = Sets.newHashSet();
 		ConstPool constants = c.getClassFile().getConstPool();
 		for(int i = 1; i < constants.getSize(); i++)
 			if(constants.getTag(i) == ConstPool.CONST_String)
 				m_stringLiterals.add(constants.getStringInfo(i));
-		
+
 		// stuff from the jar index
-		
+
 		m_implementations = HashMultiset.create();
 		ClassImplementationsTreeNode implementationsNode =
 			index.getClassImplementations(null, m_classEntry);
@@ -163,7 +163,7 @@ public class ClassIdentity
 					.getName()));
 			}
 		}
-		
+
 		m_references = HashMultiset.create();
 		if(useReferences)
 		{
@@ -183,10 +183,10 @@ public class ClassIdentity
 					addReference(reference);
 			}
 		}
-		
+
 		m_outer = EntryFactory.getClassEntry(c).getOuterClassName();
 	}
-	
+
 	private void addReference(
 		EntryReference<? extends Entry, BehaviorEntry> reference)
 	{
@@ -198,12 +198,12 @@ public class ClassIdentity
 			m_references.add(String.format("%s_<clinit>",
 				scrubClassName(reference.context.getClassName())));
 	}
-	
+
 	public ClassEntry getClassEntry()
 	{
 		return m_classEntry;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -266,17 +266,17 @@ public class ClassIdentity
 		buf.append("\n");
 		return buf.toString();
 	}
-	
+
 	private String scrubClassName(String className)
 	{
 		return m_classNameReplacer.replace(className);
 	}
-	
+
 	private String scrubType(String typeName)
 	{
 		return scrubType(new Type(typeName)).toString();
 	}
-	
+
 	private Type scrubType(Type type)
 	{
 		if(type.hasClass())
@@ -284,23 +284,23 @@ public class ClassIdentity
 		else
 			return type;
 	}
-	
+
 	private String scrubSignature(String signature)
 	{
 		return scrubSignature(new Signature(signature)).toString();
 	}
-	
+
 	private Signature scrubSignature(Signature signature)
 	{
 		return new Signature(signature, m_classNameReplacer);
 	}
-	
+
 	private boolean isClassMatchedUniquely(String className)
 	{
 		return m_namer != null
 			&& m_namer.getName(Descriptor.toJvmName(className)) != null;
 	}
-	
+
 	private String getBehaviorSignature(CtBehavior behavior)
 	{
 		try
@@ -308,7 +308,7 @@ public class ClassIdentity
 			// does this method have an implementation?
 			if(behavior.getMethodInfo().getCodeAttribute() == null)
 				return "(none)";
-			
+
 			// compute the hash from the opcodes
 			ConstPool constants = behavior.getMethodInfo().getConstPool();
 			final MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -317,11 +317,11 @@ public class ClassIdentity
 			while(iter.hasNext())
 			{
 				int pos = iter.next();
-				
+
 				// update the hash with the opcode
 				int opcode = iter.byteAt(pos);
 				digest.update((byte)opcode);
-				
+
 				switch(opcode)
 				{
 					case Opcode.LDC:
@@ -330,7 +330,7 @@ public class ClassIdentity
 						updateHashWithConstant(digest, constants, constIndex);
 					}
 						break;
-					
+
 					case Opcode.LDC_W:
 					case Opcode.LDC2_W:
 					{
@@ -341,7 +341,7 @@ public class ClassIdentity
 						break;
 				}
 			}
-			
+
 			// update hash with method and field accesses
 			behavior.instrument(new ExprEditor()
 			{
@@ -355,7 +355,7 @@ public class ClassIdentity
 					if(isClassMatchedUniquely(call.getClassName()))
 						updateHashWithString(digest, call.getMethodName());
 				}
-				
+
 				@Override
 				public void edit(FieldAccess access)
 				{
@@ -366,7 +366,7 @@ public class ClassIdentity
 					if(isClassMatchedUniquely(access.getClassName()))
 						updateHashWithString(digest, access.getFieldName());
 				}
-				
+
 				@Override
 				public void edit(ConstructorCall call)
 				{
@@ -375,7 +375,7 @@ public class ClassIdentity
 					updateHashWithString(digest,
 						scrubSignature(call.getSignature()));
 				}
-				
+
 				@Override
 				public void edit(NewExpr expr)
 				{
@@ -383,7 +383,7 @@ public class ClassIdentity
 						.toJvmName(expr.getClassName())));
 				}
 			});
-			
+
 			// convert the hash to a hex string
 			return toHex(digest.digest());
 		}catch(BadBytecode | NoSuchAlgorithmException | CannotCompileException ex)
@@ -391,7 +391,7 @@ public class ClassIdentity
 			throw new Error(ex);
 		}
 	}
-	
+
 	private void updateHashWithConstant(MessageDigest digest,
 		ConstPool constants, int index)
 	{
@@ -400,7 +400,7 @@ public class ClassIdentity
 		if(item.getType() == InfoType.StringInfo)
 			updateHashWithString(digest, constants.getStringInfo(index));
 	}
-	
+
 	private void updateHashWithString(MessageDigest digest, String val)
 	{
 		try
@@ -411,7 +411,7 @@ public class ClassIdentity
 			throw new Error(ex);
 		}
 	}
-	
+
 	private String toHex(byte[] bytes)
 	{
 		// function taken from:
@@ -426,7 +426,7 @@ public class ClassIdentity
 		}
 		return new String(hexChars);
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -434,7 +434,7 @@ public class ClassIdentity
 			return equals((ClassIdentity)other);
 		return false;
 	}
-	
+
 	public boolean equals(ClassIdentity other)
 	{
 		return m_fields.equals(other.m_fields)
@@ -446,7 +446,7 @@ public class ClassIdentity
 			&& m_implementations.equals(other.m_implementations)
 			&& m_references.equals(other.m_references);
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -461,7 +461,7 @@ public class ClassIdentity
 		objs.addAll(m_references);
 		return Util.combineHashesOrdered(objs);
 	}
-	
+
 	public int getMatchScore(ClassIdentity other)
 	{
 		return 2 * getNumMatches(m_extends, other.m_extends) + 2
@@ -472,13 +472,13 @@ public class ClassIdentity
 			+ getNumMatches(m_methods, other.m_methods)
 			+ getNumMatches(m_constructors, other.m_constructors);
 	}
-	
+
 	public int getMaxMatchScore()
 	{
 		return 2 + 2 + 2 * m_implements.size() + m_stringLiterals.size()
 			+ m_fields.size() + m_methods.size() + m_constructors.size();
 	}
-	
+
 	public boolean matches(CtClass c)
 	{
 		// just compare declaration counts
@@ -486,7 +486,7 @@ public class ClassIdentity
 			&& m_methods.size() == c.getDeclaredMethods().length
 			&& m_constructors.size() == c.getDeclaredConstructors().length;
 	}
-	
+
 	private int getNumMatches(Set<String> a, Set<String> b)
 	{
 		int numMatches = 0;
@@ -495,7 +495,7 @@ public class ClassIdentity
 				numMatches++;
 		return numMatches;
 	}
-	
+
 	private int getNumMatches(Multiset<String> a, Multiset<String> b)
 	{
 		int numMatches = 0;
@@ -504,7 +504,7 @@ public class ClassIdentity
 				numMatches++;
 		return numMatches;
 	}
-	
+
 	private int getNumMatches(String a, String b)
 	{
 		if(a.equals(b))

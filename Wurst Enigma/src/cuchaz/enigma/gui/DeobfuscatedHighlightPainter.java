@@ -14,7 +14,7 @@ import java.awt.Color;
 
 public class DeobfuscatedHighlightPainter extends BoxHighlightPainter
 {
-	
+
 	public DeobfuscatedHighlightPainter()
 	{
 		// green ish

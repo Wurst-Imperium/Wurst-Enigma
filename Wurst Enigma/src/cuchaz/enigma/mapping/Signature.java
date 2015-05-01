@@ -19,12 +19,12 @@ import cuchaz.enigma.Util;
 
 public class Signature implements Serializable
 {
-	
+
 	private static final long serialVersionUID = -5843719505729497539L;
-	
+
 	private List<Type> m_argumentTypes;
 	private Type m_returnType;
-	
+
 	public Signature(String signature)
 	{
 		try
@@ -57,13 +57,13 @@ public class Signature implements Serializable
 				+ signature, ex);
 		}
 	}
-	
+
 	public Signature(Signature other)
 	{
 		m_argumentTypes = Lists.newArrayList(other.m_argumentTypes);
 		m_returnType = new Type(other.m_returnType);
 	}
-	
+
 	public Signature(Signature other, ClassNameReplacer replacer)
 	{
 		m_argumentTypes = Lists.newArrayList(other.m_argumentTypes);
@@ -71,17 +71,17 @@ public class Signature implements Serializable
 			m_argumentTypes.set(i, new Type(m_argumentTypes.get(i), replacer));
 		m_returnType = new Type(other.m_returnType, replacer);
 	}
-	
+
 	public List<Type> getArgumentTypes()
 	{
 		return m_argumentTypes;
 	}
-	
+
 	public Type getReturnType()
 	{
 		return m_returnType;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -93,7 +93,7 @@ public class Signature implements Serializable
 		buf.append(m_returnType.toString());
 		return buf.toString();
 	}
-	
+
 	public Iterable<Type> types()
 	{
 		List<Type> types = Lists.newArrayList();
@@ -101,7 +101,7 @@ public class Signature implements Serializable
 		types.add(m_returnType);
 		return types;
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -109,13 +109,13 @@ public class Signature implements Serializable
 			return equals((Signature)other);
 		return false;
 	}
-	
+
 	public boolean equals(Signature other)
 	{
 		return m_argumentTypes.equals(other.m_argumentTypes)
 			&& m_returnType.equals(other.m_returnType);
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

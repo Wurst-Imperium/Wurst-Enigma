@@ -24,13 +24,13 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class ClassIdentifier
 {
-	
+
 	private JarIndex m_index;
 	private SidedClassNamer m_namer;
 	private boolean m_useReferences;
 	private TranslatingTypeLoader m_loader;
 	private Map<ClassEntry, ClassIdentity> m_cache;
-	
+
 	public ClassIdentifier(JarFile jar, JarIndex index, SidedClassNamer namer,
 		boolean useReferences)
 	{
@@ -40,7 +40,7 @@ public class ClassIdentifier
 		m_loader = new TranslatingTypeLoader(jar, index);
 		m_cache = Maps.newHashMap();
 	}
-	
+
 	public ClassIdentity identify(ClassEntry classEntry)
 		throws ClassNotFoundException
 	{

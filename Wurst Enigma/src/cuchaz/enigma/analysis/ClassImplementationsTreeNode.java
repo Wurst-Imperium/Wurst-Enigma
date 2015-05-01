@@ -22,29 +22,29 @@ import cuchaz.enigma.mapping.Translator;
 
 public class ClassImplementationsTreeNode extends DefaultMutableTreeNode
 {
-	
+
 	private static final long serialVersionUID = 3112703459157851912L;
-	
+
 	private Translator m_deobfuscatingTranslator;
 	private ClassEntry m_entry;
-	
+
 	public ClassImplementationsTreeNode(Translator deobfuscatingTranslator,
 		ClassEntry entry)
 	{
 		m_deobfuscatingTranslator = deobfuscatingTranslator;
 		m_entry = entry;
 	}
-	
+
 	public ClassEntry getClassEntry()
 	{
 		return m_entry;
 	}
-	
+
 	public String getDeobfClassName()
 	{
 		return m_deobfuscatingTranslator.translateClass(m_entry.getClassName());
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -53,7 +53,7 @@ public class ClassImplementationsTreeNode extends DefaultMutableTreeNode
 			className = m_entry.getClassName();
 		return className;
 	}
-	
+
 	public void load(JarIndex index)
 	{
 		// get all method implementations
@@ -63,19 +63,19 @@ public class ClassImplementationsTreeNode extends DefaultMutableTreeNode
 			nodes.add(new ClassImplementationsTreeNode(
 				m_deobfuscatingTranslator,
 				new ClassEntry(implementingClassName)));
-		
+
 		// add them to this node
 		for(ClassImplementationsTreeNode node : nodes)
 			add(node);
 	}
-	
+
 	public static ClassImplementationsTreeNode findNode(
 		ClassImplementationsTreeNode node, MethodEntry entry)
 	{
 		// is this the node?
 		if(node.m_entry.equals(entry))
 			return node;
-		
+
 		// recurse
 		for(int i = 0; i < node.getChildCount(); i++)
 		{
