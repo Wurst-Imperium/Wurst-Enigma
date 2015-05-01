@@ -693,13 +693,13 @@ public class Gui
 			JMenu mnWurst = new JMenu("Wurst");
 			menuBar.add(mnWurst);
 			{
-				JMenuItem mntmFixClassNames = new JMenuItem("Fix Class Names");
+				JMenuItem mntmFixClassNames = new JMenuItem("Fix Ambiguous Names");
 				mntmFixClassNames.addActionListener(new ActionListener()
 				{
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						m_controller.fixClasses();
+						m_controller.fixNames();
 					}
 				});
 				mnWurst.add(mntmFixClassNames);

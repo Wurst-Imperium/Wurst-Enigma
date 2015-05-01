@@ -412,12 +412,12 @@ public class GuiController
 		refreshCurrentClass(obfReference);
 	}
 	
-	public void fixClasses()
+	public void fixNames()
 	{
 		if(m_deobfuscator == null)
 		{
 			JOptionPane.showMessageDialog(m_gui.getFrame(),
-				"Cannot fix class names because no classes are present.",
+				"Cannot fix names because no classes are present.",
 				"No classes", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -428,10 +428,50 @@ public class GuiController
 			@Override
 			public void run(ProgressListener progress) throws Exception
 			{
+				progress.init(m_deobfuscator.getJarIndex()
+					.getObfBehaviorEntries().size(), "Fixing method names...");
 				counter.set(0);
+				int i = 0;
+				for(BehaviorEntry entry : m_deobfuscator.getJarIndex()
+					.getObfBehaviorEntries())
+				{
+					String name = entry.getName();
+					name = "method" + counter.incrementAndGet();
+					if(!name.equals(entry.getName()))
+						try
+						{
+							rename(new EntryReference<Entry, Entry>(entry,
+								entry.getName()), name);
+						}catch(IllegalNameException e)
+						{
+							problems.compareAndSet(false, true);
+						}
+					progress.onProgress(i++, name);
+				}
+				progress.init(m_deobfuscator.getJarIndex().getObfFieldEntries()
+					.size(), "Fixing field names...");
+				counter.set(0);
+				i = 0;
+				for(FieldEntry entry : m_deobfuscator.getJarIndex()
+					.getObfFieldEntries())
+				{
+					String name = entry.getName();
+					name = "field" + counter.incrementAndGet();
+					if(!name.equals(entry.getName()))
+						try
+						{
+							rename(new EntryReference<Entry, Entry>(entry,
+								entry.getName()), name);
+						}catch(IllegalNameException e)
+						{
+							problems.compareAndSet(false, true);
+						}
+					progress.onProgress(i++, name);
+				}
 				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
 					.size(), "Fixing class names...");
-				int i = 0;
+				counter.set(0);
+				i = 0;
 				for(ClassEntry entry : m_deobfuscator.getJarIndex()
 					.getObfClassEntries())
 				{
