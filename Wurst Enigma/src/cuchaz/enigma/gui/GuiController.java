@@ -434,28 +434,10 @@ public class GuiController
 			@Override
 			public void run(ProgressListener progress) throws Exception
 			{
-				progress.init(m_deobfuscator.getJarIndex()
-					.getObfBehaviorEntries().size(), "Fixing method names...");
-				counter.set(0);
-				int i = 0;
-				for(BehaviorEntry entry : m_deobfuscator.getJarIndex()
-					.getObfBehaviorEntries())
-				{
-					String name = entry.getName();
-					name = "method" + counter.incrementAndGet();
-					if(!name.equals(entry.getName()))
-						try
-						{
-							rename(new EntryReference<Entry, Entry>(entry,
-								entry.getName()), name);
-						}catch(IllegalNameException e)
-						{}
-					progress.onProgress(i++, name);
-				}
 				progress.init(m_deobfuscator.getJarIndex().getObfFieldEntries()
 					.size(), "Fixing field names...");
 				counter.set(0);
-				i = 0;
+				int i = 0;
 				for(FieldEntry entry : m_deobfuscator.getJarIndex()
 					.getObfFieldEntries())
 				{
@@ -485,7 +467,9 @@ public class GuiController
 							name.substring(0, name.lastIndexOf("/") + 1)
 								+ Character.toUpperCase(name.charAt(name
 									.lastIndexOf("/") + 1))
-								+ name.substring(name.lastIndexOf("/") + 2);
+								+ (entry.getSimpleName().length() == 1
+									? counter.incrementAndGet() : name
+										.substring(name.lastIndexOf("/") + 2));
 					if(!name.equals(entry.getName()))
 						try
 						{
