@@ -181,7 +181,7 @@ public class GuiController
 				
 				// DEOBFUSCATE ALL THE THINGS!! @_@
 				i = 0;
-				Pattern lists = Pattern.compile("\\(List\\<(\\w*?)\\>\\)Lists\\.newArrayList\\(\\)");
+				Pattern generics = Pattern.compile("\\((\\w+)\\<(\\w+)\\>\\)(\\w+)\\.(\\w+)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
@@ -207,8 +207,8 @@ public class GuiController
 							source.replace(
 								"WurstWurstWurstAllesWirdAusWurstGemacht", "");
 						
-						// fix lists
-						source = lists.matcher(source).replaceAll("Lists\\.\\<$1\\>newArrayList\\(\\)");
+						// fix generic types
+						source = generics.matcher(source).replaceAll("$3\\.\\<$2\\>$4");
 						
 						// write the file
 						File file =
