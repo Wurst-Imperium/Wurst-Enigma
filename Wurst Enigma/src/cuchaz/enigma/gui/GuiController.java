@@ -181,7 +181,7 @@ public class GuiController
 				
 				// DEOBFUSCATE ALL THE THINGS!! @_@
 				i = 0;
-				Pattern lists = Pattern.compile("\\(List\\<(\\w)\\>\\)Lists\\.newArrayList\\(\\)");
+				Pattern lists = Pattern.compile("\\(List\\<(\\w*?)\\>\\)Lists\\.newArrayList\\(\\)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
