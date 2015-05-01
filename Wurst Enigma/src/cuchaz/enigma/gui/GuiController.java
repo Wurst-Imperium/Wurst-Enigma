@@ -222,39 +222,38 @@ public class GuiController
 							+ obfClassEntry.toString() + ")", t);
 					}
 				}
-				progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
-					.size(), "Renaming inner classes back...");
-				i = 0;
-				for(ClassEntry entry : m_deobfuscator.getJarIndex()
-					.getObfClassEntries())
-				{
-					if(!entry.isInnerClass())
-					{
-						progress.onProgress(i++, entry.getName());
-						continue;
-					}
-					String name = entry.getInnermostClassName();
-					if(name
-						.startsWith("WurstWurstWurstAllesWirdAusWurstGemacht"))
-						name =
-							name.substring("WurstWurstWurstAllesWirdAusWurstGemacht"
-								.length());
-					try
-					{
-						EntryReference<Entry, Entry> obfReference =
-							m_deobfuscator
-								.obfuscateReference(new EntryReference<Entry, Entry>(
-									entry, entry.getName()));
-						m_deobfuscator.rename(obfReference.getNameableEntry(),
-							name);
-					}catch(IllegalNameException e)
-					{
-						e.printStackTrace();
-					}
-					progress.onProgress(i++, name);
-				}
-				if(progress != null)
-					progress.onProgress(i, "Done!");
+				// FIXME: Changing the names back
+				// progress.init(m_deobfuscator.getJarIndex().getObfClassEntries()
+				// .size(), "Renaming inner classes back...");
+				// i = 0;
+				// for(ClassEntry entry : m_deobfuscator.getJarIndex()
+				// .getObfClassEntries())
+				// {
+				// if(!entry.isInnerClass())
+				// {
+				// progress.onProgress(i++, entry.getName());
+				// continue;
+				// }
+				// String name = entry.getInnermostClassName();
+				// if(name
+				// .startsWith("WurstWurstWurstAllesWirdAusWurstGemacht"))
+				// name =
+				// name.substring("WurstWurstWurstAllesWirdAusWurstGemacht"
+				// .length());
+				// try
+				// {
+				// EntryReference<Entry, Entry> obfReference =
+				// m_deobfuscator
+				// .obfuscateReference(new EntryReference<Entry, Entry>(
+				// entry, entry.getName()));
+				// m_deobfuscator.rename(obfReference.getNameableEntry(),
+				// name);
+				// }catch(IllegalNameException e)
+				// {
+				// e.printStackTrace();
+				// }
+				// progress.onProgress(i++, name);
+				// }
 			}
 		});
 	}
