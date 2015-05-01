@@ -181,7 +181,9 @@ public class GuiController
 				
 				// DEOBFUSCATE ALL THE THINGS!! @_@
 				i = 0;
-				Pattern generics = Pattern.compile("\\((\\w+)\\<(\\w+)\\>\\)(\\w+)\\.(\\w+)");
+				Pattern generics =
+					Pattern
+						.compile("\\((\\w+)\\<((\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
@@ -208,7 +210,9 @@ public class GuiController
 								"WurstWurstWurstAllesWirdAusWurstGemacht", "");
 						
 						// fix generic types
-						source = generics.matcher(source).replaceAll("$3\\.\\<$2\\>$4");
+						source =
+							generics.matcher(source).replaceAll(
+								"$4\\.\\<$2\\>$5");
 						
 						// write the file
 						File file =
