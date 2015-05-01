@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
@@ -180,6 +181,7 @@ public class GuiController
 				
 				// DEOBFUSCATE ALL THE THINGS!! @_@
 				i = 0;
+				Pattern lists = Pattern.compile("\\(List\\<(\\w)\\>\\)Lists\\.newArrayList\\(\\)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
@@ -204,6 +206,9 @@ public class GuiController
 						source =
 							source.replace(
 								"WurstWurstWurstAllesWirdAusWurstGemacht", "");
+						
+						// fix lists
+						source = lists.matcher(source).replaceAll("Lists\\.\\<$1\\>newArrayList\\(\\)");
 						
 						// write the file
 						File file =
