@@ -47,6 +47,10 @@ public class GuiController
 	private static final AtomicInteger counter = new AtomicInteger();
 	/**
 	 * <p>
+	 * <img src="https://www.debuggex.com/i/ibaNEZhHhegmePu7.png">
+	 * <p>
+	 * <a href="https://www.debuggex.com/r/Js-f7WVynUm0XYlF">View on Debuggex</a>
+	 * <p>
 	 * Fixes generic types by converting things like
 	 * <p>
 	 * <code>List&lt;String&gt; v1 = (List&lt;String&gt;)Lists.newArrayList();</code>
@@ -58,6 +62,10 @@ public class GuiController
 	private Pattern generics = Pattern
 		.compile("\\((?:\\w+)\\<((?:\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 	/**
+	 * <p>
+	 * <img src="https://www.debuggex.com/i/6cuahb6SWhccHFXl.png">
+	 * <p>
+	 * <a href="https://www.debuggex.com/r/mdtos-w3Eb4rK5Gp">View on Debuggex</a>
 	 * <p>
 	 * Fixes more generic types by converting things like
 	 * <p>
