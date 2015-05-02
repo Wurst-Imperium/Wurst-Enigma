@@ -65,25 +65,25 @@ public class GuiController
 			.compile("\\((?:\\w+)\\<((?:\\w{2,}(?:\\<(?:\\w+|\\?)\\>|(?:\\[\\])+|)|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 	/**
 	 * <p>
-	 * <img src="https://www.debuggex.com/i/6cuahb6SWhccHFXl.png">
+	 * <img src="https://www.debuggex.com/i/F1gV8Ess-sMevlUC.png">
 	 * <p>
-	 * <a href="https://www.debuggex.com/r/mdtos-w3Eb4rK5Gp">View on
+	 * <a href="https://www.debuggex.com/r/F1gV8Ess-sMevlUC">View on
 	 * Debuggex</a>
 	 * <p>
 	 * Fixes more generic types by converting things like
 	 * <p>
-	 * <code>((Oa&lt;Integer, B&gt;)this).a();</code>
+	 * <code>this.field2833 = (Map&lt;String, T&gt;)Maps.newHashMap();</code>
 	 * <p>
 	 * to
 	 * <p>
-	 * <code>this.a();</code>
+	 * <code>this.field2833 = Maps.newHashMap();</code>
 	 * <p>
 	 * <var>B</var> is not a class, but a generic type that Procyon failed to
 	 * decompile.
 	 */
 	private Pattern generics2 =
 		Pattern
-			.compile("\\(\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)\\)");
+			.compile("\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)");
 	
 	public GuiController(Gui gui)
 	{
