@@ -45,6 +45,34 @@ public class GuiController
 	private boolean m_isDirty;
 	private Deque<EntryReference<Entry, Entry>> m_referenceStack;
 	private static final AtomicInteger counter = new AtomicInteger();
+	/**
+	 * <p>
+	 * Fixes generic types by converting things like
+	 * <p>
+	 * <code>List&lt;String&gt; v1 = (List&lt;String&gt;)Lists.newArrayList();</code>
+	 * <p>
+	 * to
+	 * <p>
+	 * <code>List&lt;String&gt; v1 = Lists.&lt;String&gt;newArrayList();</code>
+	 */
+	private Pattern generics = Pattern
+		.compile("\\((?:\\w+)\\<((?:\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
+	/**
+	 * <p>
+	 * Fixes more generic types by converting things like
+	 * <p>
+	 * <code>((Oa&lt;Integer, B&gt;)this).a();</code>
+	 * <p>
+	 * to
+	 * <p>
+	 * <code>this.a();</code>
+	 * <p>
+	 * <var>B</var> is not a class, but a generic type that Procyon failed to
+	 * decompile.
+	 */
+	private Pattern generics2 =
+		Pattern
+			.compile("\\(\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)\\)");
 	
 	public GuiController(Gui gui)
 	{
@@ -180,12 +208,6 @@ public class GuiController
 				
 				// DEOBFUSCATE ALL THE THINGS!! @_@
 				i = 0;
-				Pattern generics =
-					Pattern
-						.compile("\\((?:\\w+)\\<((?:\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
-				Pattern generics2 =
-					Pattern
-						.compile("\\(\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)\\)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
@@ -215,9 +237,7 @@ public class GuiController
 						source =
 							generics.matcher(source).replaceAll(
 								"$2\\.\\<$1\\>$3");
-						source =
-							generics2.matcher(source).replaceAll(
-								"$1");
+						source = generics2.matcher(source).replaceAll("$1");
 						
 						// write the file
 						File file =
