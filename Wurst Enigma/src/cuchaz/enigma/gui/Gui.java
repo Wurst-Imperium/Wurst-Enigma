@@ -478,7 +478,7 @@ public class Gui
 		centerPanel.add(m_infoPanel, BorderLayout.NORTH);
 		centerPanel.add(sourceScroller, BorderLayout.CENTER);
 		m_tabs = new JTabbedPane();
-		m_tabs.setPreferredSize(new Dimension(250, 0));
+		m_tabs.setPreferredSize(new Dimension(288, 0));
 		m_tabs.addTab("Inheritance", inheritancePanel);
 		m_tabs.addTab("Implementations", implementationsPanel);
 		m_tabs.addTab("Call Graph", callPanel);
