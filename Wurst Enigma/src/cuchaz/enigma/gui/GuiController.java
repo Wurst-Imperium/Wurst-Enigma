@@ -183,6 +183,9 @@ public class GuiController
 				Pattern generics =
 					Pattern
 						.compile("\\((\\w+)\\<((\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
+				Pattern generics2 =
+					Pattern
+						.compile("\\(\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)\\)");
 				for(ClassEntry obfClassEntry : classEntries)
 				{
 					ClassEntry deobfClassEntry =
@@ -212,6 +215,9 @@ public class GuiController
 						source =
 							generics.matcher(source).replaceAll(
 								"$4\\.\\<$2\\>$5");
+						source =
+							generics2.matcher(source).replaceAll(
+								"$1");
 						
 						// write the file
 						File file =
