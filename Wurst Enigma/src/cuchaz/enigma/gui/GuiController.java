@@ -47,9 +47,10 @@ public class GuiController
 	private static final AtomicInteger counter = new AtomicInteger();
 	/**
 	 * <p>
-	 * <img src="https://www.debuggex.com/i/ibaNEZhHhegmePu7.png">
+	 * <img src="https://www.debuggex.com/i/cJLq3ep3KJ7ZNHRb.png">
 	 * <p>
-	 * <a href="https://www.debuggex.com/r/Js-f7WVynUm0XYlF">View on Debuggex</a>
+	 * <a href="https://www.debuggex.com/r/cJLq3ep3KJ7ZNHRb">View on
+	 * Debuggex</a>
 	 * <p>
 	 * Fixes generic types by converting things like
 	 * <p>
@@ -59,13 +60,15 @@ public class GuiController
 	 * <p>
 	 * <code>List&lt;String&gt; v1 = Lists.&lt;String&gt;newArrayList();</code>
 	 */
-	private Pattern generics = Pattern
-		.compile("\\((?:\\w+)\\<((?:\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
+	private Pattern generics =
+		Pattern
+			.compile("\\((?:\\w+)\\<((?:\\w{2,}(?:\\<(?:\\w+|\\?)\\>|(?:\\[\\])+|)|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 	/**
 	 * <p>
 	 * <img src="https://www.debuggex.com/i/6cuahb6SWhccHFXl.png">
 	 * <p>
-	 * <a href="https://www.debuggex.com/r/mdtos-w3Eb4rK5Gp">View on Debuggex</a>
+	 * <a href="https://www.debuggex.com/r/mdtos-w3Eb4rK5Gp">View on
+	 * Debuggex</a>
 	 * <p>
 	 * Fixes more generic types by converting things like
 	 * <p>
