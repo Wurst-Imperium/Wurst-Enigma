@@ -182,7 +182,7 @@ public class GuiController
 				i = 0;
 				Pattern generics =
 					Pattern
-						.compile("\\((\\w+)\\<((\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
+						.compile("\\((?:\\w+)\\<((?:\\w{2,}|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 				Pattern generics2 =
 					Pattern
 						.compile("\\(\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)\\)");
@@ -214,7 +214,7 @@ public class GuiController
 						// fix generic types
 						source =
 							generics.matcher(source).replaceAll(
-								"$4\\.\\<$2\\>$5");
+								"$2\\.\\<$1\\>$3");
 						source =
 							generics2.matcher(source).replaceAll(
 								"$1");
