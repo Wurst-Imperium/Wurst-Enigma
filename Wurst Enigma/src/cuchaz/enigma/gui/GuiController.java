@@ -78,7 +78,7 @@ public class GuiController
 	 * <p>
 	 * <code>this.field2833 = Maps.newHashMap();</code>
 	 * <p>
-	 * <var>B</var> is not a class, but a generic type that Procyon failed to
+	 * <var>T</var> is not a class, but a generic type that Procyon failed to
 	 * decompile.
 	 */
 	private Pattern generics2 =
