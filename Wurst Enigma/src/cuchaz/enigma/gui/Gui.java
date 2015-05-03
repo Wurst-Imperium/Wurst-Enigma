@@ -87,6 +87,7 @@ public class Gui
 	private EntryReference<Entry, Entry> m_reference;
 	private JFileChooser m_jarFileChooser;
 	private JFileChooser m_mappingsFileChooser;
+	private JFileChooser m_regexFileChooser;
 	private JFileChooser m_exportSourceFileChooser;
 	private JFileChooser m_exportJarFileChooser;
 	private JMenuItem mntmExportSource;
@@ -122,6 +123,7 @@ public class Gui
 		// init file choosers
 		m_jarFileChooser = new JFileChooser();
 		m_mappingsFileChooser = new JFileChooser();
+		m_regexFileChooser = new JFileChooser();
 		m_exportSourceFileChooser = new JFileChooser();
 		m_exportSourceFileChooser
 			.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -693,7 +695,8 @@ public class Gui
 			JMenu mnWurst = new JMenu("Wurst");
 			menuBar.add(mnWurst);
 			{
-				JMenuItem mntmFixClassNames = new JMenuItem("Fix Ambiguous Names");
+				JMenuItem mntmFixClassNames =
+					new JMenuItem("Fix Ambiguous Names");
 				mntmFixClassNames.addActionListener(new ActionListener()
 				{
 					@Override
@@ -703,6 +706,19 @@ public class Gui
 					}
 				});
 				mnWurst.add(mntmFixClassNames);
+				JMenuItem mntmOpenRegexList =
+					new JMenuItem("Open Regex List...");
+				mntmOpenRegexList.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(m_regexFileChooser.showOpenDialog(m_frame) == JFileChooser.APPROVE_OPTION)
+							m_controller.openRegexList(m_regexFileChooser
+								.getSelectedFile());
+					}
+				});
+				mnWurst.add(mntmOpenRegexList);
 				mntmExportSource = new JMenuItem("Export Source...");
 				mntmExportSource.addActionListener(new ActionListener()
 				{

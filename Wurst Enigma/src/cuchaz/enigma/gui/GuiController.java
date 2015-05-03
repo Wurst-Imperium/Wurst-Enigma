@@ -102,8 +102,6 @@ public class GuiController
 	private Pattern generics3 = Pattern
 		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
 	
-	// TODO: Custom regexes
-	
 	public GuiController(Gui gui)
 	{
 		m_gui = gui;
@@ -161,6 +159,11 @@ public class GuiController
 		refreshCurrentClass();
 	}
 	
+	public void openRegexList(File file)
+	{
+		
+	}
+
 	public void exportSource(final File dirOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
