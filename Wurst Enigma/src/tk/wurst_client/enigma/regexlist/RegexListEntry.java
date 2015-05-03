@@ -8,19 +8,20 @@
 package tk.wurst_client.enigma.regexlist;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class RegexListEntry
 {
 	private final Pattern regex;
 	private final String replacement;
 	
-	public RegexListEntry(String regex, String replacement)
+	public RegexListEntry(String regex, String replacement) throws PatternSyntaxException
 	{
 		this.regex = Pattern.compile(regex);
 		this.replacement = replacement;
 	}
 	
-	public String replaceAll(String content)
+	public String replaceAll(String content) throws IllegalArgumentException
 	{
 		return regex.matcher(content).replaceAll(replacement);
 	}

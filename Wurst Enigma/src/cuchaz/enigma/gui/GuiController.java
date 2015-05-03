@@ -301,8 +301,19 @@ public class GuiController
 						source = generics3.matcher(source).replaceAll("$1$2");
 						
 						// apply custom regexes
-						for(RegexListEntry entry : regexList)
-							source = entry.replaceAll(source);
+						try
+						{
+							for(RegexListEntry entry : regexList)
+								source = entry.replaceAll(source);
+						}catch(IllegalArgumentException e)
+						{
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(m_gui.getFrame(),
+								"Regex list contains invalid replacement(s).\n"
+									+ "Export aborted.", "Invalid regex list",
+								JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						
 						// write the file
 						File file =

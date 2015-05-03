@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.regex.PatternSyntaxException;
 
 public class RegexListReader
 {
@@ -31,8 +32,13 @@ public class RegexListReader
 			String[] data = lines[i].split("\t");
 			if(data.length < 2)
 				throw new IOException("Missing data on line " + (i + 1));
-			// if data has more than 2 elements, only use the first 2
-			regexList.add(new RegexListEntry(data[0], data[1]));
+			try
+			{
+				regexList.add(new RegexListEntry(data[0], data[1]));
+			}catch(PatternSyntaxException e)
+			{
+				throw new IOException("Invalid regex on line " + (i + 1));
+			}
 		}
 		return regexList;
 	}
