@@ -11,6 +11,7 @@
 package cuchaz.enigma.gui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+
+import tk.wurst_client.enigma.regexlist.RegexListReader;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -101,6 +104,7 @@ public class GuiController
 	 */
 	private Pattern generics3 = Pattern
 		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
+	private String[][] regexList;
 	
 	public GuiController(Gui gui)
 	{
@@ -161,9 +165,24 @@ public class GuiController
 	
 	public void openRegexList(File file)
 	{
-		
+		try
+		{
+			regexList = new RegexListReader().read(file);
+		}catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				e.getLocalizedMessage(), "File not found",
+				JOptionPane.ERROR_MESSAGE);
+		}catch(IOException e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				e.getLocalizedMessage(), "File could not be read",
+				JOptionPane.ERROR_MESSAGE);
+		}
 	}
-
+	
 	public void exportSource(final File dirOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
