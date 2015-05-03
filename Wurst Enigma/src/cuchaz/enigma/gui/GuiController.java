@@ -11,9 +11,11 @@
 package cuchaz.enigma.gui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
@@ -23,6 +25,9 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+
+import tk.wurst_client.enigma.regexlist.RegexListEntry;
+import tk.wurst_client.enigma.regexlist.RegexListReader;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -101,8 +106,8 @@ public class GuiController
 	 */
 	private Pattern generics3 = Pattern
 		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
-	
-	// TODO: Custom regexes
+	private ArrayList<RegexListEntry> regexList =
+		new ArrayList<RegexListEntry>();
 	
 	public GuiController(Gui gui)
 	{
@@ -159,6 +164,31 @@ public class GuiController
 		m_gui.setMappingsFile(null);
 		refreshClasses();
 		refreshCurrentClass();
+	}
+	
+	public void openRegexList(File file)
+	{
+		try
+		{
+			regexList = new RegexListReader().read(file);
+		}catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				e.getLocalizedMessage(), "File not found",
+				JOptionPane.ERROR_MESSAGE);
+		}catch(IOException e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(m_gui.getFrame(),
+				e.getLocalizedMessage(), "File could not be read",
+				JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	public void closeRegexList()
+	{
+		regexList.clear();
 	}
 	
 	public void exportSource(final File dirOut)
@@ -269,6 +299,21 @@ public class GuiController
 								"$2\\.\\<$1\\>$3");
 						source = generics2.matcher(source).replaceAll("$1");
 						source = generics3.matcher(source).replaceAll("$1$2");
+						
+						// apply custom regexes
+						try
+						{
+							for(RegexListEntry entry : regexList)
+								source = entry.replaceAll(source);
+						}catch(IllegalArgumentException e)
+						{
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(m_gui.getFrame(),
+								"Regex list contains invalid replacement(s).\n"
+									+ "Export aborted.", "Invalid regex list",
+								JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						
 						// write the file
 						File file =
