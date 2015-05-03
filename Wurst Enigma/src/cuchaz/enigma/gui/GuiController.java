@@ -186,6 +186,11 @@ public class GuiController
 		}
 	}
 	
+	public void closeRegexList()
+	{
+		regexList.clear();
+	}
+	
 	public void exportSource(final File dirOut)
 	{
 		ProgressDialog.runInThread(m_gui.getFrame(), new ProgressRunnable()
