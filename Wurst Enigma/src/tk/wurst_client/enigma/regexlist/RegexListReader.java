@@ -11,10 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 
 public class RegexListReader
 {
-	public String[][] read(File file) throws IOException
+	public ArrayList<RegexListEntry> read(File file) throws IOException
 	{
 		final char[] buffer = new char[8192];
 		final StringBuilder output = new StringBuilder();
@@ -24,15 +25,14 @@ public class RegexListReader
 		reader.close();
 		String content = output.toString();
 		String[] lines = content.split("\n");
-		String[][] regexList = new String[lines.length][2];
+		ArrayList<RegexListEntry> regexList = new ArrayList<RegexListEntry>();
 		for(int i = 0; i < lines.length; i++)
 		{
 			String[] data = lines[i].split("\t");
 			if(data.length < 2)
 				throw new IOException("Missing data on line " + (i + 1));
 			// if data has more than 2 elements, only use the first 2
-			for(int i2 = 0; i2 < 2; i2++)
-				regexList[i][i2] = data[i];
+			regexList.add(new RegexListEntry(data[0], data[1]));
 		}
 		return regexList;
 	}

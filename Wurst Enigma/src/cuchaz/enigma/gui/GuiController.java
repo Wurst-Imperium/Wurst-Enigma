@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import tk.wurst_client.enigma.regexlist.RegexListEntry;
 import tk.wurst_client.enigma.regexlist.RegexListReader;
 
 import com.google.common.collect.Lists;
@@ -104,7 +106,7 @@ public class GuiController
 	 */
 	private Pattern generics3 = Pattern
 		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
-	private String[][] regexList;
+	private ArrayList<RegexListEntry> regexList;
 	
 	public GuiController(Gui gui)
 	{
