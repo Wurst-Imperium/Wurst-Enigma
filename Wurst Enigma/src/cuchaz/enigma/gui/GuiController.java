@@ -84,6 +84,25 @@ public class GuiController
 	private Pattern generics2 =
 		Pattern
 			.compile("\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)");
+	/**
+	 * <p>
+	 * <img src="https://www.debuggex.com/i/kVZtC3FTNidWR86H.png">
+	 * <p>
+	 * <a href="https://www.debuggex.com/r/kVZtC3FTNidWR86H">View on
+	 * Debuggex</a>
+	 * <p>
+	 * Fixes more generic types by converting things like
+	 * <p>
+	 * <code>new Qt&lt;Object&gt;(6.0f, 1.0, 1.2);</code>
+	 * <p>
+	 * to
+	 * <p>
+	 * <code>new Qt(6.0f, 1.0, 1.2);</code>
+	 */
+	private Pattern generics3 = Pattern
+		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
+	
+	// TODO: Custom regexes
 	
 	public GuiController(Gui gui)
 	{
@@ -249,6 +268,7 @@ public class GuiController
 							generics.matcher(source).replaceAll(
 								"$2\\.\\<$1\\>$3");
 						source = generics2.matcher(source).replaceAll("$1");
+						source = generics3.matcher(source).replaceAll("$1$2");
 						
 						// write the file
 						File file =
