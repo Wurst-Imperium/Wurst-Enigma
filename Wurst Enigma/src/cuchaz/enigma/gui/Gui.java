@@ -718,9 +718,10 @@ public class Gui
 								.getSelectedFile());
 					}
 				});
-				JMenuItem mntmCloseRegexList1 =
+				mnWurst.add(mntmOpenRegexList);
+				JMenuItem mntmCloseRegexList =
 					new JMenuItem("Close Regex List");
-				mntmCloseRegexList1.addActionListener(new ActionListener()
+				mntmCloseRegexList.addActionListener(new ActionListener()
 				{
 					@Override
 					public void actionPerformed(ActionEvent e)
@@ -728,7 +729,7 @@ public class Gui
 						m_controller.closeRegexList();
 					}
 				});
-				mnWurst.add(mntmCloseRegexList1);
+				mnWurst.add(mntmCloseRegexList);
 				mntmExportSource = new JMenuItem("Export Source...");
 				mntmExportSource.addActionListener(new ActionListener()
 				{
