@@ -70,9 +70,9 @@ public class GuiController
 			.compile("\\((?:\\w+)\\<((?:\\w{2,}(?:\\<(?:\\w+|\\?)\\>|(?:\\[\\])+|)|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 	/**
 	 * <p>
-	 * <img src="https://www.debuggex.com/i/F1gV8Ess-sMevlUC.png">
+	 * <img src="https://www.debuggex.com/i/ojlBdjjZhnfH5FwU.png">
 	 * <p>
-	 * <a href="https://www.debuggex.com/r/F1gV8Ess-sMevlUC">View on
+	 * <a href="https://www.debuggex.com/r/ojlBdjjZhnfH5FwU">View on
 	 * Debuggex</a>
 	 * <p>
 	 * Fixes more generic types by converting things like
@@ -88,7 +88,7 @@ public class GuiController
 	 */
 	private Pattern generics2 =
 		Pattern
-			.compile("\\((?:\\w+)\\<(?:[A-Z]|[A-Z], \\w+|\\w+, [A-Z])>\\)((?:\\w|\\.|\\(\\))+)");
+			.compile("\\((?:\\w+)\\<(?:[A-Z\\?]|[A-Z\\?], \\w+|\\w+, [A-Z\\?]|[A-Z\\?], [A-Z\\?])>\\)((?:\\w|\\.|\\(\\))+)");
 	/**
 	 * <p>
 	 * <img src="https://www.debuggex.com/i/kVZtC3FTNidWR86H.png">
