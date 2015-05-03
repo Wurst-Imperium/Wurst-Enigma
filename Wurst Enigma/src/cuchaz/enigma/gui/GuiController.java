@@ -106,7 +106,8 @@ public class GuiController
 	 */
 	private Pattern generics3 = Pattern
 		.compile("(new (?:\\w|\\.)+)\\<Object\\>(\\(.+\\))");
-	private ArrayList<RegexListEntry> regexList;
+	private ArrayList<RegexListEntry> regexList =
+		new ArrayList<RegexListEntry>();
 	
 	public GuiController(Gui gui)
 	{
@@ -293,6 +294,10 @@ public class GuiController
 								"$2\\.\\<$1\\>$3");
 						source = generics2.matcher(source).replaceAll("$1");
 						source = generics3.matcher(source).replaceAll("$1$2");
+						
+						// apply custom regexes
+						for(RegexListEntry entry : regexList)
+							source = entry.replaceAll(source);
 						
 						// write the file
 						File file =

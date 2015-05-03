@@ -19,14 +19,9 @@ public class RegexListEntry
 		this.regex = Pattern.compile(regex);
 		this.replacement = replacement;
 	}
-
-	public Pattern getRegex()
+	
+	public String replaceAll(String content)
 	{
-		return regex;
-	}
-
-	public String getReplacement()
-	{
-		return replacement;
+		return regex.matcher(content).replaceAll(replacement);
 	}
 }
