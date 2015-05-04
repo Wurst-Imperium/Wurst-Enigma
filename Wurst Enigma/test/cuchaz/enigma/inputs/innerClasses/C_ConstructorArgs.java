@@ -12,16 +12,16 @@ package cuchaz.enigma.inputs.innerClasses;
 
 public class C_ConstructorArgs
 {
-
+	
 	class Inner
 	{
-
+		
 		public Inner(int a)
 		{}
 	}
-
+	
 	Inner i;
-
+	
 	public void foo()
 	{
 		i = new Inner(5);

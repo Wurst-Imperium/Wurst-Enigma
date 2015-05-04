@@ -19,33 +19,33 @@ import com.google.common.collect.Queues;
 
 public class MappingsReader
 {
-
+	
 	public Mappings read(Reader in) throws IOException, MappingParseException
 	{
 		return read(new BufferedReader(in));
 	}
-
+	
 	public Mappings read(BufferedReader in) throws IOException,
 		MappingParseException
 	{
 		Mappings mappings = new Mappings();
 		Deque<Object> mappingStack = Queues.newArrayDeque();
-
+		
 		int lineNumber = 0;
 		String line = null;
 		while((line = in.readLine()) != null)
 		{
 			lineNumber++;
-
+			
 			// strip comments
 			int commentPos = line.indexOf('#');
 			if(commentPos >= 0)
 				line = line.substring(0, commentPos);
-
+			
 			// skip blank lines
 			if(line.trim().length() <= 0)
 				continue;
-
+			
 			// get the indent of this line
 			int indent = 0;
 			for(int i = 0; i < line.length(); i++)
@@ -54,17 +54,17 @@ public class MappingsReader
 					break;
 				indent++;
 			}
-
+			
 			// handle stack pops
 			while(indent < mappingStack.size())
 				mappingStack.pop();
-
+			
 			String[] parts = line.trim().split("\\s");
 			try
 			{
 				// read the first token
 				String token = parts[0];
-
+				
 				if(token.equalsIgnoreCase("CLASS"))
 				{
 					ClassMapping classMapping;
@@ -75,12 +75,12 @@ public class MappingsReader
 						mappings.addClassMapping(classMapping);
 					}else
 					{
-
+						
 						// inner class
 						if(!(mappingStack.peek() instanceof ClassMapping))
 							throw new MappingParseException(lineNumber,
 								"Unexpected CLASS entry here!");
-
+						
 						classMapping = readClass(parts, true);
 						((ClassMapping)mappingStack.peek())
 							.addInnerClassMapping(classMapping);
@@ -119,15 +119,15 @@ public class MappingsReader
 					+ line);
 			}
 		}
-
+		
 		return mappings;
 	}
-
+	
 	private ArgumentMapping readArgument(String[] parts)
 	{
 		return new ArgumentMapping(Integer.parseInt(parts[1]), parts[2]);
 	}
-
+	
 	private ClassMapping readClass(String[] parts, boolean makeSimple)
 	{
 		if(parts.length == 2)
@@ -135,13 +135,13 @@ public class MappingsReader
 		else
 			return new ClassMapping(parts[1], parts[2]);
 	}
-
+	
 	/* TEMP */
 	protected FieldMapping readField(String[] parts)
 	{
 		return new FieldMapping(parts[1], new Type(parts[3]), parts[2]);
 	}
-
+	
 	private MethodMapping readMethod(String[] parts)
 	{
 		if(parts.length == 3)

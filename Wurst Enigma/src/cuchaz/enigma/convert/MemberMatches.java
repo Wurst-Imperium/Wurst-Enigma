@@ -30,7 +30,7 @@ public class MemberMatches<T extends Entry>
 	private Multimap<ClassEntry, T> m_unmatchedSourceEntries;
 	private Multimap<ClassEntry, T> m_unmatchedDestEntries;
 	private Multimap<ClassEntry, T> m_unmatchableSourceEntries;
-
+	
 	public MemberMatches()
 	{
 		m_matches = HashBiMap.create();
@@ -39,7 +39,7 @@ public class MemberMatches<T extends Entry>
 		m_unmatchedDestEntries = HashMultimap.create();
 		m_unmatchableSourceEntries = HashMultimap.create();
 	}
-
+	
 	public void addMatch(T srcEntry, T destEntry)
 	{
 		boolean wasAdded = m_matches.put(srcEntry, destEntry) == null;
@@ -48,7 +48,7 @@ public class MemberMatches<T extends Entry>
 			m_matchedSourceEntries.put(srcEntry.getClassEntry(), srcEntry);
 		assert wasAdded;
 	}
-
+	
 	public void addUnmatchedSourceEntry(T sourceEntry)
 	{
 		boolean wasAdded =
@@ -56,26 +56,26 @@ public class MemberMatches<T extends Entry>
 				sourceEntry);
 		assert wasAdded;
 	}
-
+	
 	public void addUnmatchedSourceEntries(Iterable<T> sourceEntries)
 	{
 		for(T sourceEntry : sourceEntries)
 			addUnmatchedSourceEntry(sourceEntry);
 	}
-
+	
 	public void addUnmatchedDestEntry(T destEntry)
 	{
 		boolean wasAdded =
 			m_unmatchedDestEntries.put(destEntry.getClassEntry(), destEntry);
 		assert wasAdded;
 	}
-
+	
 	public void addUnmatchedDestEntries(Iterable<T> destEntriesntries)
 	{
 		for(T entry : destEntriesntries)
 			addUnmatchedDestEntry(entry);
 	}
-
+	
 	public void addUnmatchableSourceEntry(T sourceEntry)
 	{
 		boolean wasAdded =
@@ -83,12 +83,12 @@ public class MemberMatches<T extends Entry>
 				sourceEntry);
 		assert wasAdded;
 	}
-
+	
 	public Set<ClassEntry> getSourceClassesWithUnmatchedEntries()
 	{
 		return m_unmatchedSourceEntries.keySet();
 	}
-
+	
 	public Collection<ClassEntry> getSourceClassesWithoutUnmatchedEntries()
 	{
 		Set<ClassEntry> out = Sets.newHashSet();
@@ -116,7 +116,7 @@ public class MemberMatches<T extends Entry>
 	{
 		return m_unmatchedDestEntries.get(destClass);
 	}
-
+	
 	public Collection<T> getUnmatchableSourceEntries()
 	{
 		return m_unmatchableSourceEntries.values();
@@ -127,7 +127,7 @@ public class MemberMatches<T extends Entry>
 		return m_matches.containsKey(sourceEntry)
 			|| m_unmatchedSourceEntries.containsValue(sourceEntry);
 	}
-
+	
 	public boolean hasDest(T destEntry)
 	{
 		return m_matches.containsValue(destEntry)
@@ -138,7 +138,7 @@ public class MemberMatches<T extends Entry>
 	{
 		return m_matches;
 	}
-
+	
 	public boolean isMatchedSourceEntry(T sourceEntry)
 	{
 		return m_matches.containsKey(sourceEntry);
@@ -148,7 +148,7 @@ public class MemberMatches<T extends Entry>
 	{
 		return m_matches.containsValue(destEntry);
 	}
-
+	
 	public boolean isUnmatchableSourceEntry(T sourceEntry)
 	{
 		return m_unmatchableSourceEntries.containsEntry(
@@ -184,7 +184,7 @@ public class MemberMatches<T extends Entry>
 		addUnmatchedSourceEntry(sourceEntry);
 		addUnmatchedDestEntry(destEntry);
 	}
-
+	
 	public void makeSourceUnmatchable(T sourceEntry)
 	{
 		assert !isMatchedSourceEntry(sourceEntry);

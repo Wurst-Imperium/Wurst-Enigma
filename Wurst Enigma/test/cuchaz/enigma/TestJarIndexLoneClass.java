@@ -42,15 +42,15 @@ import cuchaz.enigma.mapping.Translator;
 
 public class TestJarIndexLoneClass
 {
-
+	
 	private JarIndex m_index;
-
+	
 	public TestJarIndexLoneClass() throws Exception
 	{
 		m_index = new JarIndex();
 		m_index.indexJar(new JarFile("build/testLoneClass.obf.jar"), false);
 	}
-
+	
 	@Test
 	public void obfEntries()
 	{
@@ -59,7 +59,7 @@ public class TestJarIndexLoneClass
 			containsInAnyOrder(newClass("cuchaz/enigma/inputs/Keep"),
 				newClass("none/a")));
 	}
-
+	
 	@Test
 	public void translationIndex()
 	{
@@ -82,7 +82,7 @@ public class TestJarIndexLoneClass
 			m_index.getTranslationIndex().getSubclass(
 				new ClassEntry("cuchaz/enigma/inputs/Keep")), is(empty()));
 	}
-
+	
 	@Test
 	public void access()
 	{
@@ -98,7 +98,7 @@ public class TestJarIndexLoneClass
 		assertThat(m_index.getAccess(newField("none/a", "a", "LFoo;")),
 			is(nullValue()));
 	}
-
+	
 	@Test
 	public void classInheritance()
 	{
@@ -108,7 +108,7 @@ public class TestJarIndexLoneClass
 		assertThat(node.getObfClassName(), is("none/a"));
 		assertThat(node.getChildCount(), is(0));
 	}
-
+	
 	@Test
 	public void methodInheritance()
 	{
@@ -119,7 +119,7 @@ public class TestJarIndexLoneClass
 		assertThat(node.getMethodEntry(), is(source));
 		assertThat(node.getChildCount(), is(0));
 	}
-
+	
 	@Test
 	public void classImplementations()
 	{
@@ -128,7 +128,7 @@ public class TestJarIndexLoneClass
 				newClass("none/a"));
 		assertThat(node, is(nullValue()));
 	}
-
+	
 	@Test
 	public void methodImplementations()
 	{
@@ -136,7 +136,7 @@ public class TestJarIndexLoneClass
 		assertThat(m_index.getMethodImplementations(new Translator(), source),
 			is(empty()));
 	}
-
+	
 	@Test
 	public void relatedMethodImplementations()
 	{
@@ -147,7 +147,7 @@ public class TestJarIndexLoneClass
 			entries,
 			containsInAnyOrder(newMethod("none/a", "a", "()Ljava/lang/String;")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void fieldReferences()
@@ -163,50 +163,50 @@ public class TestJarIndexLoneClass
 				newFieldReferenceByMethod(source, "none/a", "a",
 					"()Ljava/lang/String;")));
 	}
-
+	
 	@Test
 	public void behaviorReferences()
 	{
 		assertThat(m_index.getBehaviorReferences(newMethod("none/a", "a",
 			"()Ljava/lang/String;")), is(empty()));
 	}
-
+	
 	@Test
 	public void innerClasses()
 	{
 		assertThat(m_index.getInnerClasses(newClass("none/a")), is(empty()));
 	}
-
+	
 	@Test
 	public void outerClass()
 	{
 		assertThat(m_index.getOuterClass(newClass("a")), is(nullValue()));
 	}
-
+	
 	@Test
 	public void isAnonymousClass()
 	{
 		assertThat(m_index.isAnonymousClass(newClass("none/a")), is(false));
 	}
-
+	
 	@Test
 	public void interfaces()
 	{
 		assertThat(m_index.getInterfaces("none/a"), is(empty()));
 	}
-
+	
 	@Test
 	public void implementingClasses()
 	{
 		assertThat(m_index.getImplementingClasses("none/a"), is(empty()));
 	}
-
+	
 	@Test
 	public void isInterface()
 	{
 		assertThat(m_index.isInterface("none/a"), is(false));
 	}
-
+	
 	@Test
 	public void contains()
 	{

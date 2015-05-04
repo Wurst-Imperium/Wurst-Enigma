@@ -15,7 +15,7 @@ public class ExceptionIgnorer
 	
 	public static boolean shouldIgnore(Throwable t)
 	{
-
+		
 		// is this that pesky concurrent access bug in the highlight painter
 		// system?
 		// (ancient ui code is ancient)
@@ -34,8 +34,8 @@ public class ExceptionIgnorer
 					return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 }

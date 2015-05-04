@@ -43,19 +43,19 @@ import cuchaz.enigma.mapping.Translator;
 
 public class TranslatingTypeLoader implements ITypeLoader
 {
-
+	
 	private JarFile m_jar;
 	private JarIndex m_jarIndex;
 	private Translator m_obfuscatingTranslator;
 	private Translator m_deobfuscatingTranslator;
 	private Map<String, byte[]> m_cache;
 	private ClasspathTypeLoader m_defaultTypeLoader;
-
+	
 	public TranslatingTypeLoader(JarFile jar, JarIndex jarIndex)
 	{
 		this(jar, jarIndex, new Translator(), new Translator());
 	}
-
+	
 	public TranslatingTypeLoader(JarFile jar, JarIndex jarIndex,
 		Translator obfuscatingTranslator, Translator deobfuscatingTranslator)
 	{
@@ -66,16 +66,16 @@ public class TranslatingTypeLoader implements ITypeLoader
 		m_cache = Maps.newHashMap();
 		m_defaultTypeLoader = new ClasspathTypeLoader();
 	}
-
+	
 	public void clearCache()
 	{
 		m_cache.clear();
 	}
-
+	
 	@Override
 	public boolean tryLoadType(String className, Buffer out)
 	{
-
+		
 		// check the cache
 		byte[] data;
 		if(m_cache.containsKey(className))
@@ -85,25 +85,25 @@ public class TranslatingTypeLoader implements ITypeLoader
 			data = loadType(className);
 			m_cache.put(className, data);
 		}
-
+		
 		if(data == null)
 			// chain to default type loader
 			return m_defaultTypeLoader.tryLoadType(className, out);
-
+		
 		// send the class to the decompiler
 		out.reset(data.length);
 		System.arraycopy(data, 0, out.array(), out.position(), data.length);
 		out.position(0);
 		return true;
 	}
-
+	
 	public CtClass loadClass(String deobfClassName)
 	{
-
+		
 		byte[] data = loadType(deobfClassName);
 		if(data == null)
 			return null;
-
+		
 		// return a javassist handle for the class
 		String javaClassFileName = Descriptor.toJavaName(deobfClassName);
 		ClassPool classPool = new ClassPool();
@@ -117,15 +117,15 @@ public class TranslatingTypeLoader implements ITypeLoader
 			throw new Error(ex);
 		}
 	}
-
+	
 	private byte[] loadType(String className)
 	{
-
+		
 		// NOTE: don't know if class name is obf or deobf
 		ClassEntry classEntry = new ClassEntry(className);
 		ClassEntry obfClassEntry =
 			m_obfuscatingTranslator.translateEntry(classEntry);
-
+		
 		// is this an inner class referenced directly? (ie trying to load b
 		// instead of a$b)
 		if(!obfClassEntry.isInnerClass())
@@ -143,11 +143,11 @@ public class TranslatingTypeLoader implements ITypeLoader
 				return null;
 			}
 		}
-
+		
 		// is this a class we should even know about?
 		if(!m_jarIndex.containsObfClass(obfClassEntry))
 			return null;
-
+		
 		// DEBUG
 		// System.out.println(String.format("Looking for %s (obf: %s)",
 		// classEntry.getName(), obfClassEntry.getName()));
@@ -157,7 +157,7 @@ public class TranslatingTypeLoader implements ITypeLoader
 		if(classInJarName == null)
 			// couldn't find it
 			return null;
-
+		
 		try
 		{
 			// read the class file into a buffer
@@ -176,22 +176,22 @@ public class TranslatingTypeLoader implements ITypeLoader
 			data.close();
 			in.close();
 			buf = data.toByteArray();
-
+			
 			// load the javassist handle to the raw class
 			ClassPool classPool = new ClassPool();
 			String classInJarJavaName = Descriptor.toJavaName(classInJarName);
 			classPool.insertClassPath(new ByteArrayClassPath(
 				classInJarJavaName, buf));
 			CtClass c = classPool.get(classInJarJavaName);
-
+			
 			c = transformClass(c);
-
+			
 			// sanity checking
 			assertClassName(c, classEntry);
-
+			
 			// DEBUG
 			// Util.writeClass( c );
-
+			
 			// we have a transformed class!
 			return c.toBytecode();
 		}catch(IOException | NotFoundException | CannotCompileException ex)
@@ -199,7 +199,7 @@ public class TranslatingTypeLoader implements ITypeLoader
 			throw new Error(ex);
 		}
 	}
-
+	
 	private String findClassInJar(ClassEntry obfClassEntry)
 	{
 		
@@ -210,17 +210,17 @@ public class TranslatingTypeLoader implements ITypeLoader
 			if(jarEntry != null)
 				return className;
 		}
-
+		
 		// didn't find it ;_;
 		return null;
 	}
-
+	
 	public List<String> getClassNamesToTry(String className)
 	{
 		return getClassNamesToTry(m_obfuscatingTranslator
 			.translateEntry(new ClassEntry(className)));
 	}
-
+	
 	public List<String> getClassNamesToTry(ClassEntry obfClassEntry)
 	{
 		List<String> classNamesToTry = Lists.newArrayList();
@@ -237,16 +237,16 @@ public class TranslatingTypeLoader implements ITypeLoader
 	public CtClass transformClass(CtClass c) throws IOException,
 		NotFoundException, CannotCompileException
 	{
-
+		
 		// we moved a lot of classes out of the default package into the none
 		// package
 		// make sure all the class references are consistent
 		ClassRenamer
 			.moveAllClassesOutOfDefaultPackage(c, Constants.NonePackage);
-
+		
 		// reconstruct inner classes
 		new InnerClassWriter(m_jarIndex).write(c);
-
+		
 		// re-get the javassist handle since we changed class names
 		ClassEntry obfClassEntry =
 			new ClassEntry(Descriptor.toJvmName(c.getName()));
@@ -256,27 +256,27 @@ public class TranslatingTypeLoader implements ITypeLoader
 		classPool.insertClassPath(new ByteArrayClassPath(
 			javaClassReconstructedName, c.toBytecode()));
 		c = classPool.get(javaClassReconstructedName);
-
+		
 		// check that the file is correct after inner class reconstruction (ie
 		// cause Javassist to fail fast if something is wrong)
 		assertClassName(c, obfClassEntry);
-
+		
 		// do all kinds of deobfuscating transformations on the class
 		new BridgeMarker(m_jarIndex).markBridges(c);
 		new MethodParameterWriter(m_deobfuscatingTranslator)
 			.writeMethodArguments(c);
 		new LocalVariableRenamer(m_deobfuscatingTranslator).rename(c);
 		new ClassTranslator(m_deobfuscatingTranslator).translate(c);
-
+		
 		return c;
 	}
-
+	
 	private void assertClassName(CtClass c, ClassEntry obfClassEntry)
 	{
 		String name1 = Descriptor.toJvmName(c.getName());
 		assert name1.equals(obfClassEntry.getName()) : String.format(
 			"Looking for %s, instead found %s", obfClassEntry.getName(), name1);
-
+		
 		String name2 = Descriptor.toJvmName(c.getClassFile().getName());
 		assert name2.equals(obfClassEntry.getName()) : String.format(
 			"Looking for %s, instead found %s", obfClassEntry.getName(), name2);

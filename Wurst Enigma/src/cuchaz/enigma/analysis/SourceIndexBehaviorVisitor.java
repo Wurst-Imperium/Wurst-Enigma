@@ -22,20 +22,20 @@ import cuchaz.enigma.mapping.*;
 
 public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 {
-
+	
 	private BehaviorEntry m_behaviorEntry;
-
+	
 	public SourceIndexBehaviorVisitor(BehaviorEntry behaviorEntry)
 	{
 		m_behaviorEntry = behaviorEntry;
 	}
-
+	
 	@Override
 	public Void visitInvocationExpression(InvocationExpression node,
 		SourceIndex index)
 	{
 		MemberReference ref = node.getUserData(Keys.MEMBER_REFERENCE);
-
+		
 		// get the behavior entry
 		ClassEntry classEntry =
 			new ClassEntry(ref.getDeclaringType().getInternalName());
@@ -69,10 +69,10 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 			if(tokenNode != null)
 				index.addReference(tokenNode, behaviorEntry, m_behaviorEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitMemberReferenceExpression(MemberReferenceExpression node,
 		SourceIndex index)
@@ -83,7 +83,7 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 			// make sure this is actually a field
 			if(ref.getErasedSignature().indexOf('(') >= 0)
 				throw new Error("Expected a field here! got " + ref);
-
+			
 			ClassEntry classEntry =
 				new ClassEntry(ref.getDeclaringType().getInternalName());
 			FieldEntry fieldEntry =
@@ -92,10 +92,10 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 			index.addReference(node.getMemberNameToken(), fieldEntry,
 				m_behaviorEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitSimpleType(SimpleType node, SourceIndex index)
 	{
@@ -106,10 +106,10 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 			index.addReference(node.getIdentifierToken(), classEntry,
 				m_behaviorEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitParameterDeclaration(ParameterDeclaration node,
 		SourceIndex index)
@@ -125,10 +125,10 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 					node.getName());
 			index.addDeclaration(node.getNameToken(), argumentEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitIdentifierExpression(IdentifierExpression node,
 		SourceIndex index)
@@ -144,10 +144,10 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 			index.addReference(node.getIdentifierToken(), fieldEntry,
 				m_behaviorEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitObjectCreationExpression(ObjectCreationExpression node,
 		SourceIndex index)
@@ -167,7 +167,7 @@ public class SourceIndexBehaviorVisitor extends SourceIndexVisitor
 					constructorEntry, m_behaviorEntry);
 			}
 		}
-
+		
 		return recurse(node, index);
 	}
 }

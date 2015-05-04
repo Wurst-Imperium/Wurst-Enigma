@@ -15,7 +15,8 @@ public class RegexListEntry
 	private final Pattern regex;
 	private final String replacement;
 	
-	public RegexListEntry(String regex, String replacement) throws PatternSyntaxException
+	public RegexListEntry(String regex, String replacement)
+		throws PatternSyntaxException
 	{
 		this.regex = Pattern.compile(regex);
 		this.replacement = replacement;

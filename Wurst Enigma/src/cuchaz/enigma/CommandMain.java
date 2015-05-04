@@ -20,16 +20,16 @@ import cuchaz.enigma.mapping.MappingsReader;
 
 public class CommandMain
 {
-
+	
 	public static class ConsoleProgressListener implements ProgressListener
 	{
-
+		
 		private static final int ReportTime = 5000; // 5s
 		
 		private int m_totalWork;
 		private long m_startTime;
 		private long m_lastReportTime;
-
+		
 		@Override
 		public void init(int totalWork, String title)
 		{
@@ -42,12 +42,12 @@ public class CommandMain
 		@Override
 		public void onProgress(int numDone, String message)
 		{
-
+			
 			long now = System.currentTimeMillis();
 			boolean isLastUpdate = numDone == m_totalWork;
 			boolean shouldReport =
 				isLastUpdate || now - m_lastReportTime > ReportTime;
-
+			
 			if(shouldReport)
 			{
 				int percent = numDone * 100 / m_totalWork;
@@ -62,13 +62,13 @@ public class CommandMain
 			}
 		}
 	}
-
+	
 	public static void main(String[] args) throws Exception
 	{
-
+		
 		try
 		{
-
+			
 			// process the command
 			String command = getArg(args, 0, "command", true);
 			if(command.equalsIgnoreCase("deobfuscate"))
@@ -103,7 +103,7 @@ public class CommandMain
 			.println("\t\tdecompile <in jar> <out folder> [<mappings file>]");
 		System.out.println("\t\tprotectify <in jar> <out jar>");
 	}
-
+	
 	private static void decompile(String[] args) throws Exception
 	{
 		File fileJarIn = getReadableFile(getArg(args, 1, "in jar", true));
@@ -126,7 +126,7 @@ public class CommandMain
 			getDeobfuscator(fileMappings, new JarFile(fileJarIn));
 		deobfuscator.writeJar(fileJarOut, new ConsoleProgressListener());
 	}
-
+	
 	private static void protectify(String[] args) throws Exception
 	{
 		File fileJarIn = getReadableFile(getArg(args, 1, "in jar", true));
@@ -135,7 +135,7 @@ public class CommandMain
 			getDeobfuscator(null, new JarFile(fileJarIn));
 		deobfuscator.protectifyJar(fileJarOut, new ConsoleProgressListener());
 	}
-
+	
 	private static void publify(String[] args) throws Exception
 	{
 		File fileJarIn = getReadableFile(getArg(args, 1, "in jar", true));
@@ -144,7 +144,7 @@ public class CommandMain
 			getDeobfuscator(null, new JarFile(fileJarIn));
 		deobfuscator.publifyJar(fileJarOut, new ConsoleProgressListener());
 	}
-
+	
 	private static Deobfuscator getDeobfuscator(File fileMappings, JarFile jar)
 		throws Exception
 	{
@@ -159,7 +159,7 @@ public class CommandMain
 		}
 		return deobfuscator;
 	}
-
+	
 	private static String getArg(String[] args, int i, String name,
 		boolean required)
 	{
@@ -192,7 +192,7 @@ public class CommandMain
 			throw new IllegalArgumentException("Cannot write to folder: " + dir);
 		return dir;
 	}
-
+	
 	private static File getReadableFile(String path)
 	{
 		if(path == null)

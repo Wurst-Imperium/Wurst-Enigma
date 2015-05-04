@@ -27,11 +27,11 @@ import cuchaz.enigma.mapping.*;
 
 public class MappingsConverter
 {
-
+	
 	public static ClassMatches computeClassMatches(JarFile sourceJar,
 		JarFile destJar, Mappings mappings)
 	{
-
+		
 		// index jars
 		System.out.println("Indexing source jar...");
 		JarIndex sourceIndex = new JarIndex();
@@ -39,46 +39,46 @@ public class MappingsConverter
 		System.out.println("Indexing dest jar...");
 		JarIndex destIndex = new JarIndex();
 		destIndex.indexJar(destJar, false);
-
+		
 		// compute the matching
 		ClassMatching matching =
 			computeMatching(sourceJar, sourceIndex, destJar, destIndex, null);
 		return new ClassMatches(matching.matches());
 	}
-
+	
 	public static ClassMatching computeMatching(JarFile sourceJar,
 		JarIndex sourceIndex, JarFile destJar, JarIndex destIndex,
 		BiMap<ClassEntry, ClassEntry> knownMatches)
 	{
-
+		
 		System.out.println("Iteratively matching classes");
-
+		
 		ClassMatching lastMatching = null;
 		int round = 0;
 		SidedClassNamer sourceNamer = null;
 		SidedClassNamer destNamer = null;
 		for(boolean useReferences : Arrays.asList(false, true))
 		{
-
+			
 			int numUniqueMatchesLastTime = 0;
 			if(lastMatching != null)
 				numUniqueMatchesLastTime = lastMatching.uniqueMatches().size();
-
+			
 			while(true)
 			{
-
+				
 				System.out.println("Round " + (++round) + "...");
-
+				
 				// init the matching with identity settings
 				ClassMatching matching =
 					new ClassMatching(new ClassIdentifier(sourceJar,
 						sourceIndex, sourceNamer, useReferences),
 						new ClassIdentifier(destJar, destIndex, destNamer,
 							useReferences));
-
+				
 				if(knownMatches != null)
 					matching.addKnownMatches(knownMatches);
-
+				
 				if(lastMatching == null)
 					// search all classes
 					matching.match(sourceIndex.getObfClassEntries(),
@@ -87,7 +87,7 @@ public class MappingsConverter
 				{
 					// we already know about these matches from last time
 					matching.addKnownMatches(lastMatching.uniqueMatches());
-
+					
 					// search unmatched and ambiguously-matched classes
 					matching.match(lastMatching.unmatchedSourceClasses(),
 						lastMatching.unmatchedDestClasses());
@@ -97,7 +97,7 @@ public class MappingsConverter
 				System.out.println(matching);
 				BiMap<ClassEntry, ClassEntry> uniqueMatches =
 					matching.uniqueMatches();
-
+				
 				// did we match anything new this time?
 				if(uniqueMatches.size() > numUniqueMatchesLastTime)
 				{
@@ -105,22 +105,22 @@ public class MappingsConverter
 					lastMatching = matching;
 				}else
 					break;
-
+				
 				// update the namers
 				ClassNamer namer = new ClassNamer(uniqueMatches);
 				sourceNamer = namer.getSourceNamer();
 				destNamer = namer.getDestNamer();
 			}
 		}
-
+		
 		return lastMatching;
 	}
-
+	
 	public static Mappings newMappings(ClassMatches matches,
 		Mappings oldMappings, Deobfuscator sourceDeobfuscator,
 		Deobfuscator destDeobfuscator)
 	{
-
+		
 		// sort the unique matches by size of inner class chain
 		Multimap<Integer, java.util.Map.Entry<ClassEntry, ClassEntry>> matchesByDestChainSize =
 			HashMultimap.create();
@@ -132,7 +132,7 @@ public class MappingsConverter
 					.getObfClassChain(match.getValue()).size();
 			matchesByDestChainSize.put(chainSize, match);
 		}
-
+		
 		// build the mappings (in order of small-to-large inner chains)
 		Mappings newMappings = new Mappings();
 		List<Integer> chainSizes =
@@ -142,14 +142,14 @@ public class MappingsConverter
 			for(java.util.Map.Entry<ClassEntry, ClassEntry> match : matchesByDestChainSize
 				.get(chainSize))
 			{
-
+				
 				// get class info
 				ClassEntry obfSourceClassEntry = match.getKey();
 				ClassEntry obfDestClassEntry = match.getValue();
 				List<ClassEntry> destClassChain =
 					destDeobfuscator.getJarIndex().getObfClassChain(
 						obfDestClassEntry);
-
+				
 				ClassMapping sourceMapping =
 					sourceDeobfuscator.getMappings().getClassByObf(
 						obfSourceClassEntry);
@@ -157,7 +157,7 @@ public class MappingsConverter
 					// if this class was never deobfuscated, don't try to match
 					// it
 					continue;
-
+				
 				// find out where to make the dest class mapping
 				if(destClassChain.size() == 1)
 					// not an inner class, add directly to mappings
@@ -202,12 +202,12 @@ public class MappingsConverter
 			}
 		return newMappings;
 	}
-
+	
 	private static ClassMapping migrateClassMapping(ClassEntry newObfClass,
 		ClassMapping oldClassMapping, final ClassMatches matches,
 		boolean useSimpleName)
 	{
-
+		
 		ClassNameReplacer replacer = new ClassNameReplacer()
 		{
 			@Override
@@ -220,7 +220,7 @@ public class MappingsConverter
 				return null;
 			}
 		};
-
+		
 		ClassMapping newClassMapping;
 		String deobfName = oldClassMapping.getDeobfName();
 		if(deobfName != null)
@@ -231,24 +231,24 @@ public class MappingsConverter
 				new ClassMapping(newObfClass.getName(), deobfName);
 		}else
 			newClassMapping = new ClassMapping(newObfClass.getName());
-
+		
 		// copy fields
 		for(FieldMapping fieldMapping : oldClassMapping.fields())
 			newClassMapping.addFieldMapping(new FieldMapping(fieldMapping,
 				replacer));
-
+		
 		// copy methods
 		for(MethodMapping methodMapping : oldClassMapping.methods())
 			newClassMapping.addMethodMapping(new MethodMapping(methodMapping,
 				replacer));
-
+		
 		return newClassMapping;
 	}
 	
 	public static void convertMappings(Mappings mappings,
 		BiMap<ClassEntry, ClassEntry> changes)
 	{
-
+		
 		// sort the changes so classes are renamed in the correct order
 		// ie. if we have the mappings a->b, b->c, we have to apply b->c before
 		// a->b
@@ -268,7 +268,7 @@ public class MappingsConverter
 					iter.remove();
 				}
 			}
-
+			
 			// did we remove any changes?
 			if(numChangesLeft - changes.size() > 0)
 				// keep going
@@ -280,13 +280,13 @@ public class MappingsConverter
 		if(!changes.isEmpty())
 			throw new Error(
 				"Unable to sort class changes! There must be a cycle.");
-
+		
 		// convert the mappings in the correct class order
 		for(Map.Entry<ClassEntry, ClassEntry> entry : sortedChanges.entrySet())
 			mappings.renameObfClass(entry.getKey().getName(), entry.getValue()
 				.getName());
 	}
-
+	
 	public static interface Doer<T extends Entry>
 	{
 		Collection<T> getDroppedEntries(MappingsChecker checker);
@@ -306,7 +306,7 @@ public class MappingsConverter
 		
 		void removeMemberByObf(ClassMapping classMapping, T obfEntry);
 	}
-
+	
 	public static Doer<FieldEntry> getFieldDoer()
 	{
 		return new Doer<FieldEntry>()
@@ -359,7 +359,7 @@ public class MappingsConverter
 					fieldMapping.getObfType(), newField.getName(),
 					newField.getType());
 			}
-
+			
 			@Override
 			public boolean hasObfMember(ClassMapping classMapping,
 				FieldEntry obfField)
@@ -377,7 +377,7 @@ public class MappingsConverter
 			}
 		};
 	}
-
+	
 	public static Doer<BehaviorEntry> getMethodDoer()
 	{
 		return new Doer<BehaviorEntry>()
@@ -440,7 +440,7 @@ public class MappingsConverter
 					methodMapping.getObfSignature(), newBehavior.getName(),
 					newBehavior.getSignature());
 			}
-
+			
 			@Override
 			public boolean hasObfMember(ClassMapping classMapping,
 				BehaviorEntry obfBehavior)
@@ -458,14 +458,14 @@ public class MappingsConverter
 			}
 		};
 	}
-
+	
 	public static <T extends Entry> MemberMatches<T> computeMemberMatches(
 		Deobfuscator destDeobfuscator, Mappings destMappings,
 		ClassMatches classMatches, Doer<T> doer)
 	{
-
+		
 		MemberMatches<T> memberMatches = new MemberMatches<T>();
-
+		
 		// unmatched source fields are easy
 		MappingsChecker checker =
 			new MappingsChecker(destDeobfuscator.getJarIndex());
@@ -477,13 +477,13 @@ public class MappingsConverter
 					.inverse());
 			memberMatches.addUnmatchedSourceEntry(srcObfEntry);
 		}
-
+		
 		// get matched fields (anything that's left after the checks/drops is
 		// matched(
 		for(ClassMapping classMapping : destMappings.classes())
 			collectMatchedFields(memberMatches, classMapping, classMatches,
 				doer);
-
+		
 		// get unmatched dest fields
 		for(T destEntry : doer.getObfEntries(destDeobfuscator.getJarIndex()))
 			if(!memberMatches.isMatchedDestEntry(destEntry))
@@ -492,7 +492,7 @@ public class MappingsConverter
 		System.out.println("Automatching "
 			+ memberMatches.getUnmatchedSourceEntries().size()
 			+ " unmatched source entries...");
-
+		
 		// go through the unmatched source fields and try to pick out the easy
 		// matches
 		for(ClassEntry obfSourceClass : Lists.newArrayList(memberMatches
@@ -500,17 +500,17 @@ public class MappingsConverter
 			for(T obfSourceEntry : Lists.newArrayList(memberMatches
 				.getUnmatchedSourceEntries(obfSourceClass)))
 			{
-
+				
 				// get the possible dest matches
 				ClassEntry obfDestClass =
 					classMatches.getUniqueMatches().get(obfSourceClass);
-
+				
 				// filter by type/signature
 				Set<T> obfDestEntries =
 					doer.filterEntries(
 						memberMatches.getUnmatchedDestEntries(obfDestClass),
 						obfSourceEntry, classMatches);
-
+				
 				if(obfDestEntries.size() == 1)
 					// make the easy match
 					memberMatches.makeMatch(obfSourceEntry, obfDestEntries
@@ -519,20 +519,20 @@ public class MappingsConverter
 					// no match is possible =(
 					memberMatches.makeSourceUnmatchable(obfSourceEntry);
 			}
-
+		
 		System.out.println(String.format(
 			"Ended up with %d ambiguous and %d unmatchable source entries",
 			memberMatches.getUnmatchedSourceEntries().size(), memberMatches
 				.getUnmatchableSourceEntries().size()));
-
+		
 		return memberMatches;
 	}
-
+	
 	private static <T extends Entry> void collectMatchedFields(
 		MemberMatches<T> memberMatches, ClassMapping destClassMapping,
 		ClassMatches classMatches, Doer<T> doer)
 	{
-
+		
 		// get the fields for this class
 		for(MemberMapping<T> destEntryMapping : doer
 			.getMappings(destClassMapping))
@@ -544,7 +544,7 @@ public class MappingsConverter
 					.inverse());
 			memberMatches.addMatch(srcObfField, destObfField);
 		}
-
+		
 		// recurse
 		for(ClassMapping destInnerClassMapping : destClassMapping
 			.innerClasses())
@@ -583,7 +583,7 @@ public class MappingsConverter
 			}
 		});
 	}
-
+	
 	private static Signature translate(Signature signature,
 		final BiMap<ClassEntry, ClassEntry> map)
 	{
@@ -608,15 +608,15 @@ public class MappingsConverter
 		for(ClassMapping classMapping : mappings.classes())
 			applyMemberMatches(classMapping, classMatches, memberMatches, doer);
 	}
-
+	
 	private static <T extends Entry> void applyMemberMatches(
 		ClassMapping classMapping, ClassMatches classMatches,
 		MemberMatches<T> memberMatches, Doer<T> doer)
 	{
-
+		
 		// get the classes
 		ClassEntry obfDestClass = classMapping.getObfEntry();
-
+		
 		// make a map of all the renames we need to make
 		Map<T, T> renames = Maps.newHashMap();
 		for(MemberMapping<T> memberMapping : Lists.newArrayList(doer
@@ -626,7 +626,7 @@ public class MappingsConverter
 			T obfSourceEntry =
 				getSourceEntryFromDestMapping(memberMapping, obfDestClass,
 					classMatches);
-
+			
 			// but drop the unmatchable things
 			if(memberMatches.isUnmatchableSourceEntry(obfSourceEntry))
 			{
@@ -639,7 +639,7 @@ public class MappingsConverter
 				&& !obfOldDestEntry.getName().equals(obfNewDestEntry.getName()))
 				renames.put(obfOldDestEntry, obfNewDestEntry);
 		}
-
+		
 		if(!renames.isEmpty())
 		{
 			
@@ -648,7 +648,7 @@ public class MappingsConverter
 			do
 			{
 				numRenamesAppliedThisRound = 0;
-
+				
 				for(MemberMapping<T> memberMapping : Lists.newArrayList(doer
 					.getMappings(classMapping)))
 				{
@@ -667,7 +667,7 @@ public class MappingsConverter
 						}
 				}
 			}while(numRenamesAppliedThisRound > 0);
-
+			
 			if(!renames.isEmpty())
 			{
 				System.err
@@ -680,13 +680,13 @@ public class MappingsConverter
 						.getKey().getName(), entry.getValue().getName()));
 			}
 		}
-
+		
 		// recurse
 		for(ClassMapping innerClassMapping : classMapping.innerClasses())
 			applyMemberMatches(innerClassMapping, classMatches, memberMatches,
 				doer);
 	}
-
+	
 	private static <T extends Entry> T getSourceEntryFromDestMapping(
 		MemberMapping<T> destMemberMapping, ClassEntry obfDestClass,
 		ClassMatches classMatches)

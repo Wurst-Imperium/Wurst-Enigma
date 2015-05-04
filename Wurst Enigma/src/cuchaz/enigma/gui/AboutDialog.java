@@ -30,14 +30,14 @@ import cuchaz.enigma.Util;
 
 public class AboutDialog
 {
-
+	
 	public static void show(JFrame parent)
 	{
 		// init frame
 		final JFrame frame = new JFrame(Constants.Name + " - About");
 		final Container pane = frame.getContentPane();
 		pane.setLayout(new FlowLayout());
-
+		
 		// load the content
 		try
 		{
@@ -50,7 +50,7 @@ public class AboutDialog
 		{
 			throw new Error(ex);
 		}
-
+		
 		// show the link
 		String html = "<html><a href=\"%s\">%s</a></html>";
 		html = String.format(html, Constants.Url, Constants.Url);
@@ -71,7 +71,7 @@ public class AboutDialog
 		JPanel linkPanel = new JPanel();
 		linkPanel.add(link);
 		pane.add(linkPanel);
-
+		
 		// show ok button
 		JButton okButton = new JButton("Ok");
 		pane.add(okButton);
@@ -83,7 +83,7 @@ public class AboutDialog
 				frame.dispose();
 			}
 		});
-
+		
 		// show the frame
 		pane.doLayout();
 		frame.setSize(400, 220);

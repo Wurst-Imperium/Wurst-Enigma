@@ -24,7 +24,7 @@ import cuchaz.enigma.mapping.Type;
 
 public class TestSignature
 {
-
+	
 	@Test
 	public void easiest()
 	{
@@ -32,7 +32,7 @@ public class TestSignature
 		assertThat(sig.getArgumentTypes(), is(empty()));
 		assertThat(sig.getReturnType(), is(new Type("V")));
 	}
-
+	
 	@Test
 	public void primitives()
 	{
@@ -55,7 +55,7 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("Z")));
 		}
 	}
-
+	
 	@Test
 	public void classes()
 	{
@@ -79,7 +79,7 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("LBar;")));
 		}
 	}
-
+	
 	@Test
 	public void arrays()
 	{
@@ -100,7 +100,7 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("[D")));
 		}
 	}
-
+	
 	@Test
 	public void mixed()
 	{
@@ -117,7 +117,7 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("[LFoo;")));
 		}
 	}
-
+	
 	@Test
 	public void replaceClasses()
 	{
@@ -181,7 +181,7 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("LCow;")));
 		}
 	}
-
+	
 	@Test
 	public void replaceArrayClasses()
 	{
@@ -203,14 +203,14 @@ public class TestSignature
 			assertThat(sig.getReturnType(), is(new Type("[[[LBeer;")));
 		}
 	}
-
+	
 	@Test
 	public void equals()
 	{
-
+		
 		// base
 		assertThat(new Signature("()V"), is(new Signature("()V")));
-
+		
 		// arguments
 		assertThat(new Signature("(I)V"), is(new Signature("(I)V")));
 		assertThat(new Signature("(ZIZ)V"), is(new Signature("(ZIZ)V")));
@@ -229,7 +229,7 @@ public class TestSignature
 			"(LFoo;LCow;)V"))));
 		assertThat(new Signature("([LFoo;LBar;)V"), is(not(new Signature(
 			"(LFoo;LCow;)V"))));
-
+		
 		// return type
 		assertThat(new Signature("()I"), is(new Signature("()I")));
 		assertThat(new Signature("()Z"), is(new Signature("()Z")));
@@ -237,7 +237,7 @@ public class TestSignature
 		assertThat(new Signature("()[[[Z"), is(new Signature("()[[[Z")));
 		assertThat(new Signature("()LFoo;"), is(new Signature("()LFoo;")));
 		assertThat(new Signature("()[LFoo;"), is(new Signature("()[LFoo;")));
-
+		
 		assertThat(new Signature("()I"), is(not(new Signature("()Z"))));
 		assertThat(new Signature("()Z"), is(not(new Signature("()I"))));
 		assertThat(new Signature("()[D"), is(not(new Signature("()[J"))));
@@ -246,7 +246,7 @@ public class TestSignature
 		assertThat(new Signature("()[LFoo;"),
 			is(not(new Signature("()[LBar;"))));
 	}
-
+	
 	@Test
 	public void testToString()
 	{

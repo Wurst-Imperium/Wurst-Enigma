@@ -25,14 +25,14 @@ import cuchaz.enigma.mapping.Entry;
 
 public class TokenChecker
 {
-
+	
 	private Deobfuscator m_deobfuscator;
-
+	
 	protected TokenChecker(JarFile jarFile) throws IOException
 	{
 		m_deobfuscator = new Deobfuscator(jarFile);
 	}
-
+	
 	protected String getDeclarationToken(Entry entry)
 	{
 		// decompile the class
@@ -43,14 +43,14 @@ public class TokenChecker
 		// entry.getClassName().replace( '/', '.' ) + ".txt" ) ), null );
 		String source = m_deobfuscator.getSource(tree);
 		SourceIndex index = m_deobfuscator.getSourceIndex(tree, source);
-
+		
 		// get the token value
 		Token token = index.getDeclarationToken(entry);
 		if(token == null)
 			return null;
 		return source.substring(token.start, token.end);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	protected Collection<String> getReferenceTokens(
 		EntryReference<? extends Entry, ? extends Entry> reference)
@@ -60,7 +60,7 @@ public class TokenChecker
 			m_deobfuscator.getSourceTree(reference.context.getClassName());
 		String source = m_deobfuscator.getSource(tree);
 		SourceIndex index = m_deobfuscator.getSourceIndex(tree, source);
-
+		
 		// get the token values
 		List<String> values = Lists.newArrayList();
 		for(Token token : index

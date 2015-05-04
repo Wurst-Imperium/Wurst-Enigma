@@ -14,10 +14,10 @@ import java.lang.reflect.Field;
 
 public class StringInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_stringIndex;
-
+	
 	static
 	{
 		try
@@ -30,19 +30,19 @@ public class StringInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());
 	}
-
+	
 	private Object m_item;
-
+	
 	public StringInfoAccessor(Object item)
 	{
 		m_item = item;
 	}
-
+	
 	public int getStringIndex()
 	{
 		try
@@ -53,7 +53,7 @@ public class StringInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setStringIndex(int val)
 	{
 		try

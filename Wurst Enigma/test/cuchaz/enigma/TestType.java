@@ -21,7 +21,7 @@ import cuchaz.enigma.mapping.Type;
 
 public class TestType
 {
-
+	
 	@Test
 	public void isVoid()
 	{
@@ -36,7 +36,7 @@ public class TestType
 		assertThat(new Type("LFoo;").isVoid(), is(false));
 		assertThat(new Type("[I").isVoid(), is(false));
 	}
-
+	
 	@Test
 	public void isPrimitive()
 	{
@@ -51,7 +51,7 @@ public class TestType
 		assertThat(new Type("LFoo;").isPrimitive(), is(false));
 		assertThat(new Type("[I").isPrimitive(), is(false));
 	}
-
+	
 	@Test
 	public void getPrimitive()
 	{
@@ -63,7 +63,7 @@ public class TestType
 		assertThat(new Type("F").getPrimitive(), is(Type.Primitive.Float));
 		assertThat(new Type("D").getPrimitive(), is(Type.Primitive.Double));
 	}
-
+	
 	@Test
 	public void isClass()
 	{
@@ -78,7 +78,7 @@ public class TestType
 		assertThat(new Type("LFoo;").isClass(), is(true));
 		assertThat(new Type("[I").isClass(), is(false));
 	}
-
+	
 	@Test
 	public void getClassEntry()
 	{
@@ -86,7 +86,7 @@ public class TestType
 		assertThat(new Type("Ljava/lang/String;").getClassEntry(),
 			is(newClass("java/lang/String")));
 	}
-
+	
 	@Test
 	public void getArrayClassEntry()
 	{
@@ -94,7 +94,7 @@ public class TestType
 		assertThat(new Type("[[[Ljava/lang/String;").getClassEntry(),
 			is(newClass("java/lang/String")));
 	}
-
+	
 	@Test
 	public void isArray()
 	{
@@ -109,7 +109,7 @@ public class TestType
 		assertThat(new Type("LFoo;").isArray(), is(false));
 		assertThat(new Type("[I").isArray(), is(true));
 	}
-
+	
 	@Test
 	public void getArrayDimension()
 	{
@@ -117,7 +117,7 @@ public class TestType
 		assertThat(new Type("[[I").getArrayDimension(), is(2));
 		assertThat(new Type("[[[I").getArrayDimension(), is(3));
 	}
-
+	
 	@Test
 	public void getArrayType()
 	{
@@ -127,7 +127,7 @@ public class TestType
 		assertThat(new Type("[Ljava/lang/String;").getArrayType(), is(new Type(
 			"Ljava/lang/String;")));
 	}
-
+	
 	@Test
 	public void hasClass()
 	{
@@ -141,7 +141,7 @@ public class TestType
 		assertThat(new Type("[[[I").hasClass(), is(false));
 		assertThat(new Type("Z").hasClass(), is(false));
 	}
-
+	
 	@Test
 	public void parseVoid()
 	{
@@ -153,7 +153,7 @@ public class TestType
 		assertThat(Type.parseFirst("VLFoo;"), is(answer));
 		assertThat(Type.parseFirst("V[LFoo;"), is(answer));
 	}
-
+	
 	@Test
 	public void parsePrimitive()
 	{
@@ -165,7 +165,7 @@ public class TestType
 		assertThat(Type.parseFirst("ILFoo;"), is(answer));
 		assertThat(Type.parseFirst("I[LFoo;"), is(answer));
 	}
-
+	
 	@Test
 	public void parseClass()
 	{
@@ -217,7 +217,7 @@ public class TestType
 			assertThat(Type.parseFirst("[LFoo;LFoo;"), is(answer));
 		}
 	}
-
+	
 	@Test
 	public void equals()
 	{
@@ -233,7 +233,7 @@ public class TestType
 		assertThat(new Type("[I"), is(new Type("[I")));
 		assertThat(new Type("[[[I"), is(new Type("[[[I")));
 		assertThat(new Type("[LFoo;"), is(new Type("[LFoo;")));
-
+		
 		assertThat(new Type("V"), is(not(new Type("I"))));
 		assertThat(new Type("I"), is(not(new Type("J"))));
 		assertThat(new Type("I"), is(not(new Type("LBar;"))));
@@ -243,7 +243,7 @@ public class TestType
 		assertThat(new Type("[[[I"), is(not(new Type("[I"))));
 		assertThat(new Type("[LFoo;"), is(not(new Type("[LBar;"))));
 	}
-
+	
 	@Test
 	public void testToString()
 	{

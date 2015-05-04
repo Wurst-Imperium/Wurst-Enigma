@@ -24,18 +24,18 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class TestDeobfuscator
 {
-
+	
 	private Deobfuscator getDeobfuscator() throws IOException
 	{
 		return new Deobfuscator(new JarFile("build/testLoneClass.obf.jar"));
 	}
-
+	
 	@Test
 	public void loadJar() throws Exception
 	{
 		getDeobfuscator();
 	}
-
+	
 	@Test
 	public void getClasses() throws Exception
 	{
@@ -48,7 +48,7 @@ public class TestDeobfuscator
 		assertEquals(1, deobfClasses.size());
 		assertEquals("cuchaz/enigma/inputs/Keep", deobfClasses.get(0).getName());
 	}
-
+	
 	@Test
 	public void decompileClass() throws Exception
 	{

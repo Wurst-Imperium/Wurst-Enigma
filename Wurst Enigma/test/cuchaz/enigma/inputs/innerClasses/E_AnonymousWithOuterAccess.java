@@ -12,10 +12,10 @@ package cuchaz.enigma.inputs.innerClasses;
 
 public class E_AnonymousWithOuterAccess
 {
-
+	
 	// reproduction of error case documented at:
 	// https://bitbucket.org/cuchaz/enigma/issue/61/stackoverflowerror-when-deobfuscating
-
+	
 	public Object makeInner()
 	{
 		outerMethod();
@@ -28,7 +28,7 @@ public class E_AnonymousWithOuterAccess
 			}
 		};
 	}
-
+	
 	private String outerMethod()
 	{
 		return "foo";

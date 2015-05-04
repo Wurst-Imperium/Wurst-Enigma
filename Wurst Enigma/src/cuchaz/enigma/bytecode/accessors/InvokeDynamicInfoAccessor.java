@@ -14,11 +14,11 @@ import java.lang.reflect.Field;
 
 public class InvokeDynamicInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_bootstrapIndex;
 	private static Field m_nameAndTypeIndex;
-
+	
 	static
 	{
 		try
@@ -33,19 +33,19 @@ public class InvokeDynamicInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());
 	}
-
+	
 	private Object m_item;
-
+	
 	public InvokeDynamicInfoAccessor(Object item)
 	{
 		m_item = item;
 	}
-
+	
 	public int getBootstrapIndex()
 	{
 		try
@@ -56,7 +56,7 @@ public class InvokeDynamicInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setBootstrapIndex(int val)
 	{
 		try
@@ -67,7 +67,7 @@ public class InvokeDynamicInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public int getNameAndTypeIndex()
 	{
 		try
@@ -78,7 +78,7 @@ public class InvokeDynamicInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setNameAndTypeIndex(int val)
 	{
 		try

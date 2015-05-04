@@ -26,7 +26,7 @@ public class TestDeobfed
 	
 	private static JarFile m_jar;
 	private static JarIndex m_index;
-
+	
 	@BeforeClass
 	public static void beforeClass() throws Exception
 	{
@@ -34,7 +34,7 @@ public class TestDeobfed
 		m_index = new JarIndex();
 		m_index.indexJar(m_jar, true);
 	}
-
+	
 	@Test
 	public void obfEntries()
 	{
@@ -51,7 +51,7 @@ public class TestDeobfed
 				newClass("none/h$b$a$a"), newClass("none/h$b$a$b"),
 				newClass("none/i"), newClass("none/i$a"), newClass("none/i$b")));
 	}
-
+	
 	@Test
 	public void decompile() throws Exception
 	{

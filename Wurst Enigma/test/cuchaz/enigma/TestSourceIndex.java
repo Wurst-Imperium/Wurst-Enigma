@@ -23,22 +23,22 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class TestSourceIndex
 {
-
+	
 	@Test
 	public void indexEverything() throws Exception
 	{
-
+		
 		File home = new File(System.getProperty("user.home"));
 		File jarFile = new File(home, "/.minecraft/versions/1.8.3/1.8.3.jar");
 		Deobfuscator deobfuscator = new Deobfuscator(new JarFile(jarFile));
-
+		
 		// get all classes that aren't inner classes
 		Set<ClassEntry> classEntries = Sets.newHashSet();
 		for(ClassEntry obfClassEntry : deobfuscator.getJarIndex()
 			.getObfClassEntries())
 			if(!obfClassEntry.isInnerClass())
 				classEntries.add(obfClassEntry);
-
+		
 		for(ClassEntry obfClassEntry : classEntries)
 			try
 			{

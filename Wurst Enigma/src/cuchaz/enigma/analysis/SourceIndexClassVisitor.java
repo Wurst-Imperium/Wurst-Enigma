@@ -25,14 +25,14 @@ import cuchaz.enigma.mapping.ProcyonEntryFactory;
 
 public class SourceIndexClassVisitor extends SourceIndexVisitor
 {
-
+	
 	private ClassEntry m_classEntry;
-
+	
 	public SourceIndexClassVisitor(ClassEntry classEntry)
 	{
 		m_classEntry = classEntry;
 	}
-
+	
 	@Override
 	public Void visitTypeDeclaration(TypeDeclaration node, SourceIndex index)
 	{
@@ -46,10 +46,10 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 			return node.acceptVisitor(new SourceIndexClassVisitor(classEntry),
 				index);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitSimpleType(SimpleType node, SourceIndex index)
 	{
@@ -60,17 +60,17 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 			index.addReference(node.getIdentifierToken(), classEntry,
 				m_classEntry);
 		}
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitMethodDeclaration(MethodDeclaration node, SourceIndex index)
 	{
 		MethodDefinition def = node.getUserData(Keys.METHOD_DEFINITION);
 		BehaviorEntry behaviorEntry = ProcyonEntryFactory.getBehaviorEntry(def);
 		AstNode tokenNode = node.getNameToken();
-
+		
 		if(behaviorEntry instanceof ConstructorEntry)
 		{
 			ConstructorEntry constructorEntry = (ConstructorEntry)behaviorEntry;
@@ -82,7 +82,7 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 		return node.acceptVisitor(
 			new SourceIndexBehaviorVisitor(behaviorEntry), index);
 	}
-
+	
 	@Override
 	public Void visitConstructorDeclaration(ConstructorDeclaration node,
 		SourceIndex index)
@@ -94,7 +94,7 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 		return node.acceptVisitor(new SourceIndexBehaviorVisitor(
 			constructorEntry), index);
 	}
-
+	
 	@Override
 	public Void visitFieldDeclaration(FieldDeclaration node, SourceIndex index)
 	{
@@ -103,10 +103,10 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 		assert node.getVariables().size() == 1;
 		VariableInitializer variable = node.getVariables().firstOrNullObject();
 		index.addDeclaration(variable.getNameToken(), fieldEntry);
-
+		
 		return recurse(node, index);
 	}
-
+	
 	@Override
 	public Void visitEnumValueDeclaration(EnumValueDeclaration node,
 		SourceIndex index)
@@ -115,7 +115,7 @@ public class SourceIndexClassVisitor extends SourceIndexVisitor
 		FieldDefinition def = node.getUserData(Keys.FIELD_DEFINITION);
 		FieldEntry fieldEntry = ProcyonEntryFactory.getFieldEntry(def);
 		index.addDeclaration(node.getNameToken(), fieldEntry);
-
+		
 		return recurse(node, index);
 	}
 }

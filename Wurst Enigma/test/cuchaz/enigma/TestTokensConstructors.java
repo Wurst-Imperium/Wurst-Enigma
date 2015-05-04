@@ -27,12 +27,12 @@ import cuchaz.enigma.mapping.BehaviorEntry;
 
 public class TestTokensConstructors extends TokenChecker
 {
-
+	
 	public TestTokensConstructors() throws Exception
 	{
 		super(new JarFile("build/testConstructors.obf.jar"));
 	}
-
+	
 	@Test
 	public void baseDeclarations()
 	{
@@ -41,7 +41,7 @@ public class TestTokensConstructors extends TokenChecker
 		assertThat(getDeclarationToken(newConstructor("none/a", "(I)V")),
 			is("a"));
 	}
-
+	
 	@Test
 	public void subDeclarations()
 	{
@@ -54,21 +54,21 @@ public class TestTokensConstructors extends TokenChecker
 		assertThat(getDeclarationToken(newConstructor("none/d", "(III)V")),
 			is("d"));
 	}
-
+	
 	@Test
 	public void subsubDeclarations()
 	{
 		assertThat(getDeclarationToken(newConstructor("none/e", "(I)V")),
 			is("e"));
 	}
-
+	
 	@Test
 	public void defaultDeclarations()
 	{
 		assertThat(getDeclarationToken(newConstructor("none/c", "()V")),
 			nullValue());
 	}
-
+	
 	@Test
 	public void baseDefaultReferences()
 	{
@@ -79,15 +79,15 @@ public class TestTokensConstructors extends TokenChecker
 		assertThat(
 			getReferenceTokens(newBehaviorReferenceByConstructor(source,
 				"none/d", "()V")), is(empty()) // implicit call, not decompiled
-												// to token
-			);
+		// to token
+		);
 		assertThat(
 			getReferenceTokens(newBehaviorReferenceByConstructor(source,
 				"none/d", "(III)V")), is(empty()) // implicit call, not
-													// decompiled to token
-			);
+		// decompiled to token
+		);
 	}
-
+	
 	@Test
 	public void baseIntReferences()
 	{
@@ -96,7 +96,7 @@ public class TestTokensConstructors extends TokenChecker
 			getReferenceTokens(newBehaviorReferenceByMethod(source, "none/b",
 				"b", "()V")), containsInAnyOrder("a"));
 	}
-
+	
 	@Test
 	public void subDefaultReferences()
 	{
@@ -108,7 +108,7 @@ public class TestTokensConstructors extends TokenChecker
 			getReferenceTokens(newBehaviorReferenceByConstructor(source,
 				"none/d", "(I)V")), containsInAnyOrder("this"));
 	}
-
+	
 	@Test
 	public void subIntReferences()
 	{
@@ -123,7 +123,7 @@ public class TestTokensConstructors extends TokenChecker
 			getReferenceTokens(newBehaviorReferenceByConstructor(source,
 				"none/e", "(I)V")), containsInAnyOrder("super"));
 	}
-
+	
 	@Test
 	public void subIntIntReferences()
 	{
@@ -132,7 +132,7 @@ public class TestTokensConstructors extends TokenChecker
 			getReferenceTokens(newBehaviorReferenceByMethod(source, "none/b",
 				"e", "()V")), containsInAnyOrder("d"));
 	}
-
+	
 	@Test
 	public void subsubIntReferences()
 	{
@@ -141,7 +141,7 @@ public class TestTokensConstructors extends TokenChecker
 			getReferenceTokens(newBehaviorReferenceByMethod(source, "none/b",
 				"f", "()V")), containsInAnyOrder("e"));
 	}
-
+	
 	@Test
 	public void defaultConstructableReferences()
 	{

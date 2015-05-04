@@ -34,30 +34,30 @@ import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 public class CodeReader extends JEditorPane
 {
-
+	
 	private static final long serialVersionUID = 3673180950485748810L;
-
+	
 	private static final Object m_lock = new Object();
-
+	
 	public static interface SelectionListener
 	{
 		void onSelect(EntryReference<Entry, Entry> reference);
 	}
-
+	
 	private SelectionHighlightPainter m_selectionHighlightPainter;
 	private SourceIndex m_sourceIndex;
 	private SelectionListener m_selectionListener;
-
+	
 	public CodeReader()
 	{
-
+		
 		setEditable(false);
 		setContentType("text/java");
-
+		
 		// turn off token highlighting (it's wrong most of the time anyway...)
 		DefaultSyntaxKit kit = (DefaultSyntaxKit)getEditorKit();
 		kit.toggleComponent(this, "de.sciss.syntaxpane.components.TokenMarker");
-
+		
 		// hook events
 		addCaretListener(new CaretListener()
 		{
@@ -76,17 +76,17 @@ public class CodeReader extends JEditorPane
 				}
 			}
 		});
-
+		
 		m_selectionHighlightPainter = new SelectionHighlightPainter();
 		m_sourceIndex = null;
 		m_selectionListener = null;
 	}
-
+	
 	public void setSelectionListener(SelectionListener val)
 	{
 		m_selectionListener = val;
 	}
-
+	
 	public void setCode(String code)
 	{
 		// sadly, the java lexer is not thread safe, so we have to serialize all
@@ -96,34 +96,34 @@ public class CodeReader extends JEditorPane
 			setText(code);
 		}
 	}
-
+	
 	public SourceIndex getSourceIndex()
 	{
 		return m_sourceIndex;
 	}
-
+	
 	public void decompileClass(ClassEntry classEntry, Deobfuscator deobfuscator)
 	{
 		decompileClass(classEntry, deobfuscator, null);
 	}
-
+	
 	public void decompileClass(ClassEntry classEntry,
 		Deobfuscator deobfuscator, Runnable callback)
 	{
 		decompileClass(classEntry, deobfuscator, null, callback);
 	}
-
+	
 	public void decompileClass(final ClassEntry classEntry,
 		final Deobfuscator deobfuscator, final Boolean ignoreBadTokens,
 		final Runnable callback)
 	{
-
+		
 		if(classEntry == null)
 		{
 			setCode(null);
 			return;
 		}
-
+		
 		setCode("(decompiling...)");
 		
 		// run decompilation in a separate thread to keep ui responsive
@@ -132,7 +132,7 @@ public class CodeReader extends JEditorPane
 			@Override
 			public void run()
 			{
-
+				
 				// decompile it
 				CompilationUnit sourceTree =
 					deobfuscator.getSourceTree(classEntry
@@ -142,13 +142,13 @@ public class CodeReader extends JEditorPane
 				m_sourceIndex =
 					deobfuscator.getSourceIndex(sourceTree, source,
 						ignoreBadTokens);
-
+				
 				if(callback != null)
 					callback.run();
 			}
 		}.start();
 	}
-
+	
 	public void navigateToClassDeclaration(ClassEntry classEntry)
 	{
 		
@@ -164,7 +164,7 @@ public class CodeReader extends JEditorPane
 					token = m_sourceIndex.getDeclarationToken(entry);
 					break;
 				}
-
+		
 		if(token != null)
 			navigateToToken(token);
 		else
@@ -172,21 +172,21 @@ public class CodeReader extends JEditorPane
 			System.out.println("Unable to find declaration in source for "
 				+ classEntry);
 	}
-
+	
 	public void navigateToToken(final Token token)
 	{
 		navigateToToken(this, token, m_selectionHighlightPainter);
 	}
-
+	
 	// HACKHACK: someday we can update the main GUI to use this code reader
 	public static void navigateToToken(final JEditorPane editor,
 		final Token token, final HighlightPainter highlightPainter)
 	{
-
+		
 		// set the caret position to the token
 		editor.setCaretPosition(token.start);
 		editor.grabFocus();
-
+		
 		try
 		{
 			// make sure the token is visible in the scroll window
@@ -206,13 +206,13 @@ public class CodeReader extends JEditorPane
 		{
 			throw new Error(ex);
 		}
-
+		
 		// highlight the token momentarily
 		final Timer timer = new Timer(200, new ActionListener()
 		{
 			private int m_counter = 0;
 			private Object m_highlight = null;
-
+			
 			@Override
 			public void actionPerformed(ActionEvent event)
 			{
@@ -228,7 +228,7 @@ public class CodeReader extends JEditorPane
 					}
 				else if(m_highlight != null)
 					editor.getHighlighter().removeHighlight(m_highlight);
-
+				
 				if(m_counter++ > 6)
 				{
 					Timer timer = (Timer)event.getSource();
@@ -238,14 +238,14 @@ public class CodeReader extends JEditorPane
 		});
 		timer.start();
 	}
-
+	
 	public void setHighlightedTokens(Iterable<Token> tokens,
 		HighlightPainter painter)
 	{
 		for(Token token : tokens)
 			setHighlightedToken(token, painter);
 	}
-
+	
 	public void setHighlightedToken(Token token, HighlightPainter painter)
 	{
 		try

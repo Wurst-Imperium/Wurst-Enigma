@@ -32,22 +32,22 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class TestJarIndexConstructorReferences
 {
-
+	
 	private JarIndex m_index;
-
+	
 	private ClassEntry m_baseClass = newClass("none/a");
 	private ClassEntry m_subClass = newClass("none/d");
 	private ClassEntry m_subsubClass = newClass("none/e");
 	private ClassEntry m_defaultClass = newClass("none/c");
 	private ClassEntry m_callerClass = newClass("none/b");
-
+	
 	public TestJarIndexConstructorReferences() throws Exception
 	{
 		File jarFile = new File("build/testConstructors.obf.jar");
 		m_index = new JarIndex();
 		m_index.indexJar(new JarFile(jarFile), false);
 	}
-
+	
 	@Test
 	public void obfEntries()
 	{
@@ -57,7 +57,7 @@ public class TestJarIndexConstructorReferences
 				m_baseClass, m_subClass, m_subsubClass, m_defaultClass,
 				m_callerClass));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void baseDefault()
@@ -75,7 +75,7 @@ public class TestJarIndexConstructorReferences
 				newBehaviorReferenceByConstructor(source, m_subClass.getName(),
 					"(III)V")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void baseInt()
@@ -86,7 +86,7 @@ public class TestJarIndexConstructorReferences
 			containsInAnyOrder(newBehaviorReferenceByMethod(source,
 				m_callerClass.getName(), "b", "()V")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void subDefault()
@@ -100,7 +100,7 @@ public class TestJarIndexConstructorReferences
 				newBehaviorReferenceByConstructor(source, m_subClass.getName(),
 					"(I)V")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void subInt()
@@ -116,7 +116,7 @@ public class TestJarIndexConstructorReferences
 				newBehaviorReferenceByConstructor(source,
 					m_subsubClass.getName(), "(I)V")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void subIntInt()
@@ -127,14 +127,14 @@ public class TestJarIndexConstructorReferences
 			containsInAnyOrder(newBehaviorReferenceByMethod(source,
 				m_callerClass.getName(), "e", "()V")));
 	}
-
+	
 	@Test
 	public void subIntIntInt()
 	{
 		BehaviorEntry source = newConstructor(m_subClass, "(III)V");
 		assertThat(m_index.getBehaviorReferences(source), is(empty()));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void subsubInt()
@@ -145,7 +145,7 @@ public class TestJarIndexConstructorReferences
 			containsInAnyOrder(newBehaviorReferenceByMethod(source,
 				m_callerClass.getName(), "f", "()V")));
 	}
-
+	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void defaultConstructable()

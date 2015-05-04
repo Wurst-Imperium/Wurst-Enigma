@@ -49,7 +49,7 @@ import cuchaz.enigma.mapping.*;
 
 public class JarIndex
 {
-
+	
 	private Set<ClassEntry> m_obfClassEntries;
 	private TranslationIndex m_translationIndex;
 	private Map<Entry, Access> m_access;
@@ -62,7 +62,7 @@ public class JarIndex
 	private Map<ClassEntry, ClassEntry> m_outerClassesByInner;
 	private Map<ClassEntry, BehaviorEntry> m_anonymousClasses;
 	private Map<MethodEntry, MethodEntry> m_bridgedMethods;
-
+	
 	public JarIndex()
 	{
 		m_obfClassEntries = Sets.newHashSet();
@@ -78,10 +78,10 @@ public class JarIndex
 		m_anonymousClasses = Maps.newHashMap();
 		m_bridgedMethods = Maps.newHashMap();
 	}
-
+	
 	public void indexJar(JarFile jar, boolean buildInnerClasses)
 	{
-
+		
 		// step 1: read the class names
 		for(ClassEntry classEntry : JarClassIterator.getClassEntries(jar))
 		{
@@ -92,7 +92,7 @@ public class JarIndex
 						+ classEntry.getName());
 			m_obfClassEntries.add(classEntry);
 		}
-
+		
 		// step 2: index field/method/constructor access
 		for(CtClass c : JarClassIterator.classes(jar))
 		{
@@ -112,7 +112,7 @@ public class JarIndex
 				m_behaviors.put(behaviorEntry.getClassEntry(), behaviorEntry);
 			}
 		}
-
+		
 		// step 3: index extends, implements, fields, and methods
 		for(CtClass c : JarClassIterator.classes(jar))
 		{
@@ -131,7 +131,7 @@ public class JarIndex
 			for(CtBehavior behavior : c.getDeclaredBehaviors())
 				indexBehavior(behavior);
 		}
-
+		
 		// step 4: index field, method, constructor references
 		for(CtClass c : JarClassIterator.classes(jar))
 		{
@@ -140,10 +140,10 @@ public class JarIndex
 			for(CtBehavior behavior : c.getDeclaredBehaviors())
 				indexBehaviorReferences(behavior);
 		}
-
+		
 		if(buildInnerClasses)
 		{
-
+			
 			// step 5: index inner classes and anonymous classes
 			for(CtClass c : JarClassIterator.classes(jar))
 			{
@@ -158,7 +158,7 @@ public class JarIndex
 						m_outerClassesByInner.put(innerClassEntry,
 							outerClassEntry) == null;
 					assert innerWasAdded;
-
+					
 					BehaviorEntry enclosingBehavior =
 						isAnonymousClass(c, outerClassEntry);
 					if(enclosingBehavior != null)
@@ -173,7 +173,7 @@ public class JarIndex
 					}
 				}
 			}
-
+			
 			// step 6: update other indices with inner class info
 			Map<String, String> renames = Maps.newHashMap();
 			for(ClassEntry innerClassEntry : m_innerClassesByOuter.values())
@@ -196,7 +196,7 @@ public class JarIndex
 			EntryRenamer.renameClassesInMap(renames, m_access);
 		}
 	}
-
+	
 	private void indexBehavior(CtBehavior behavior)
 	{
 		// get the behavior entry
@@ -205,11 +205,11 @@ public class JarIndex
 		if(behaviorEntry instanceof MethodEntry)
 		{
 			MethodEntry methodEntry = (MethodEntry)behaviorEntry;
-
+			
 			// index implementation
 			m_methodImplementations.put(behaviorEntry.getClassName(),
 				methodEntry);
-
+			
 			// look for bridge and bridged methods
 			CtMethod bridgedMethod = getBridgedMethod((CtMethod)behavior);
 			if(bridgedMethod != null)
@@ -218,7 +218,7 @@ public class JarIndex
 		}
 		// looks like we don't care about constructors here
 	}
-
+	
 	private void indexBehaviorReferences(CtBehavior behavior)
 	{
 		// index method calls
@@ -248,7 +248,7 @@ public class JarIndex
 							behaviorEntry);
 					m_behaviorReferences.put(calledMethodEntry, reference);
 				}
-
+				
 				@Override
 				public void edit(FieldAccess call)
 				{
@@ -267,7 +267,7 @@ public class JarIndex
 							behaviorEntry);
 					m_fieldReferences.put(calledFieldEntry, reference);
 				}
-
+				
 				@Override
 				public void edit(ConstructorCall call)
 				{
@@ -279,7 +279,7 @@ public class JarIndex
 							behaviorEntry);
 					m_behaviorReferences.put(calledConstructorEntry, reference);
 				}
-
+				
 				@Override
 				public void edit(NewExpr call)
 				{
@@ -297,18 +297,18 @@ public class JarIndex
 			throw new Error(ex);
 		}
 	}
-
+	
 	private CtMethod getBridgedMethod(CtMethod method)
 	{
-
+		
 		// bridge methods just call another method, cast it to the return type,
 		// and return the result
 		// let's see if we can detect this scenario
-
+		
 		// skip non-synthetic methods
 		if((method.getModifiers() & AccessFlag.SYNTHETIC) == 0)
 			return null;
-
+		
 		// get all the called methods
 		final List<MethodCall> methodCalls = Lists.newArrayList();
 		try
@@ -326,12 +326,12 @@ public class JarIndex
 			// this is stupid... we're not even compiling anything
 			throw new Error(ex);
 		}
-
+		
 		// is there just one?
 		if(methodCalls.size() != 1)
 			return null;
 		MethodCall call = methodCalls.get(0);
-
+		
 		try
 		{
 			// we have a bridge method!
@@ -342,30 +342,30 @@ public class JarIndex
 			return null;
 		}
 	}
-
+	
 	private ClassEntry findOuterClass(CtClass c)
 	{
-
+		
 		ClassEntry classEntry = EntryFactory.getClassEntry(c);
-
+		
 		// does this class already have an outer class?
 		if(classEntry.isInnerClass())
 			return classEntry.getOuterClassEntry();
-
+		
 		// inner classes:
 		// have constructors that can (illegally) set synthetic fields
 		// the outer class is the only class that calls constructors
-
+		
 		// use the synthetic fields to find the synthetic constructors
 		for(CtConstructor constructor : c.getDeclaredConstructors())
 		{
 			Set<String> syntheticFieldTypes = Sets.newHashSet();
 			if(!isIllegalConstructor(syntheticFieldTypes, constructor))
 				continue;
-
+			
 			ConstructorEntry constructorEntry =
 				EntryFactory.getConstructorEntry(constructor);
-
+			
 			// gather the classes from the illegally-set synthetic fields
 			Set<ClassEntry> illegallySetClasses = Sets.newHashSet();
 			for(String type : syntheticFieldTypes)
@@ -376,17 +376,17 @@ public class JarIndex
 					if(isSaneOuterClass(outerClassEntry, classEntry))
 						illegallySetClasses.add(outerClassEntry);
 				}
-
+			
 			// who calls this constructor?
 			Set<ClassEntry> callerClasses = Sets.newHashSet();
 			for(EntryReference<BehaviorEntry, BehaviorEntry> reference : getBehaviorReferences(constructorEntry))
 			{
-
+				
 				// make sure it's not a call to super
 				if(reference.entry instanceof ConstructorEntry
 					&& reference.context instanceof ConstructorEntry)
 				{
-
+					
 					// is the entry a superclass of the context?
 					ClassEntry calledClassEntry =
 						reference.entry.getClassEntry();
@@ -398,12 +398,12 @@ public class JarIndex
 						// it's a super call, skip
 						continue;
 				}
-
+				
 				if(isSaneOuterClass(reference.context.getClassEntry(),
 					classEntry))
 					callerClasses.add(reference.context.getClassEntry());
 			}
-
+			
 			// do we have an answer yet?
 			if(callerClasses.isEmpty())
 			{
@@ -433,34 +433,34 @@ public class JarIndex
 								classEntry, callerClasses));
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	private boolean isSaneOuterClass(ClassEntry outerClassEntry,
 		ClassEntry innerClassEntry)
 	{
-
+		
 		// clearly this would be silly
 		if(outerClassEntry.equals(innerClassEntry))
 			return false;
-
+		
 		// is the outer class in the jar?
 		if(!m_obfClassEntries.contains(outerClassEntry))
 			return false;
-
+		
 		return true;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private boolean isIllegalConstructor(Set<String> syntheticFieldTypes,
 		CtConstructor constructor)
 	{
-
+		
 		// illegal constructors only set synthetic member fields, then call
 		// super()
 		String className = constructor.getDeclaringClass().getName();
-
+		
 		// collect all the field accesses, constructor calls, and method calls
 		final List<FieldAccess> illegalFieldWrites = Lists.newArrayList();
 		final List<ConstructorCall> constructorCalls = Lists.newArrayList();
@@ -474,7 +474,7 @@ public class JarIndex
 					if(fieldAccess.isWriter() && constructorCalls.isEmpty())
 						illegalFieldWrites.add(fieldAccess);
 				}
-
+				
 				@Override
 				public void edit(ConstructorCall constructorCall)
 				{
@@ -486,15 +486,15 @@ public class JarIndex
 			// we're not compiling anything... this is stupid
 			throw new Error(ex);
 		}
-
+		
 		// are there any illegal field writes?
 		if(illegalFieldWrites.isEmpty())
 			return false;
-
+		
 		// are all the writes to synthetic fields?
 		for(FieldAccess fieldWrite : illegalFieldWrites)
 		{
-
+			
 			// all illegal writes have to be to the local class
 			if(!fieldWrite.getClassName().equals(className))
 			{
@@ -503,7 +503,7 @@ public class JarIndex
 					fieldWrite.getClassName(), fieldWrite.getFieldName()));
 				return false;
 			}
-
+			
 			// find the field
 			FieldInfo fieldInfo = null;
 			for(FieldInfo info : (List<FieldInfo>)constructor
@@ -518,7 +518,7 @@ public class JarIndex
 				// field is in a superclass or something, can't be a local
 				// synthetic member
 				return false;
-
+			
 			// is this field synthetic?
 			boolean isSynthetic =
 				(fieldInfo.getAccessFlags() & AccessFlag.SYNTHETIC) != 0;
@@ -532,14 +532,14 @@ public class JarIndex
 				return false;
 			}
 		}
-
+		
 		// we passed all the tests!
 		return true;
 	}
-
+	
 	private BehaviorEntry isAnonymousClass(CtClass c, ClassEntry outerClassEntry)
 	{
-
+		
 		// is this class already marked anonymous?
 		EnclosingMethodAttribute enclosingMethodAttribute =
 			(EnclosingMethodAttribute)c.getClassFile().getAttribute(
@@ -553,7 +553,7 @@ public class JarIndex
 			else
 				// an attribute but no method? assume not anonymous
 				return null;
-
+		
 		// if there's an inner class attribute, but not an enclosing method
 		// attribute, then it's not anonymous
 		InnerClassesAttribute innerClassesAttribute =
@@ -561,25 +561,25 @@ public class JarIndex
 				InnerClassesAttribute.tag);
 		if(innerClassesAttribute != null)
 			return null;
-
+		
 		ClassEntry innerClassEntry =
 			new ClassEntry(Descriptor.toJvmName(c.getName()));
-
+		
 		// anonymous classes:
 		// can't be abstract
 		// have only one constructor
 		// it's called exactly once by the outer class
 		// the type the instance is assigned to can't be this type
-
+		
 		// is abstract?
 		if(Modifier.isAbstract(c.getModifiers()))
 			return null;
-
+		
 		// is there exactly one constructor?
 		if(c.getDeclaredConstructors().length != 1)
 			return null;
 		CtConstructor constructor = c.getDeclaredConstructors()[0];
-
+		
 		// is this constructor called exactly once?
 		ConstructorEntry constructorEntry =
 			EntryFactory.getConstructorEntry(constructor);
@@ -587,7 +587,7 @@ public class JarIndex
 			getBehaviorReferences(constructorEntry);
 		if(references.size() != 1)
 			return null;
-
+		
 		// does the caller use this type?
 		BehaviorEntry caller = references.iterator().next().context;
 		for(FieldEntry fieldEntry : getReferencedFields(caller))
@@ -598,49 +598,49 @@ public class JarIndex
 		for(BehaviorEntry behaviorEntry : getReferencedBehaviors(caller))
 			if(behaviorEntry.getSignature().hasClass(innerClassEntry))
 				return null;
-
+		
 		return caller;
 	}
-
+	
 	public Set<ClassEntry> getObfClassEntries()
 	{
 		return m_obfClassEntries;
 	}
-
+	
 	public Collection<FieldEntry> getObfFieldEntries()
 	{
 		return m_fields.values();
 	}
-
+	
 	public Collection<FieldEntry> getObfFieldEntries(ClassEntry classEntry)
 	{
 		return m_fields.get(classEntry);
 	}
-
+	
 	public Collection<BehaviorEntry> getObfBehaviorEntries()
 	{
 		return m_behaviors.values();
 	}
-
+	
 	public Collection<BehaviorEntry> getObfBehaviorEntries(ClassEntry classEntry)
 	{
 		return m_behaviors.get(classEntry);
 	}
-
+	
 	public TranslationIndex getTranslationIndex()
 	{
 		return m_translationIndex;
 	}
-
+	
 	public Access getAccess(Entry entry)
 	{
 		return m_access.get(entry);
 	}
-
+	
 	public ClassInheritanceTreeNode getClassInheritance(
 		Translator deobfuscatingTranslator, ClassEntry obfClassEntry)
 	{
-
+		
 		// get the root node
 		List<String> ancestry = Lists.newArrayList();
 		ancestry.add(obfClassEntry.getName());
@@ -650,17 +650,17 @@ public class JarIndex
 		ClassInheritanceTreeNode rootNode =
 			new ClassInheritanceTreeNode(deobfuscatingTranslator,
 				ancestry.get(ancestry.size() - 1));
-
+		
 		// expand all children recursively
 		rootNode.load(m_translationIndex, true);
-
+		
 		return rootNode;
 	}
-
+	
 	public ClassImplementationsTreeNode getClassImplementations(
 		Translator deobfuscatingTranslator, ClassEntry obfClassEntry)
 	{
-
+		
 		// is this even an interface?
 		if(isInterface(obfClassEntry.getClassName()))
 		{
@@ -672,11 +672,11 @@ public class JarIndex
 		}
 		return null;
 	}
-
+	
 	public MethodInheritanceTreeNode getMethodInheritance(
 		Translator deobfuscatingTranslator, MethodEntry obfMethodEntry)
 	{
-
+		
 		// travel to the ancestor implementation
 		ClassEntry baseImplementationClassEntry =
 			obfMethodEntry.getClassEntry();
@@ -689,7 +689,7 @@ public class JarIndex
 			if(containsObfBehavior(ancestorMethodEntry))
 				baseImplementationClassEntry = ancestorClassEntry;
 		}
-
+		
 		// make a root node at the base
 		MethodEntry methodEntry =
 			new MethodEntry(baseImplementationClassEntry,
@@ -697,19 +697,19 @@ public class JarIndex
 		MethodInheritanceTreeNode rootNode =
 			new MethodInheritanceTreeNode(deobfuscatingTranslator, methodEntry,
 				containsObfBehavior(methodEntry));
-
+		
 		// expand the full tree
 		rootNode.load(this, true);
-
+		
 		return rootNode;
 	}
-
+	
 	public List<MethodImplementationsTreeNode> getMethodImplementations(
 		Translator deobfuscatingTranslator, MethodEntry obfMethodEntry)
 	{
-
+		
 		List<MethodEntry> interfaceMethodEntries = Lists.newArrayList();
-
+		
 		// is this method on an interface?
 		if(isInterface(obfMethodEntry.getClassName()))
 			interfaceMethodEntries.add(obfMethodEntry);
@@ -718,7 +718,7 @@ public class JarIndex
 			for(ClassEntry interfaceEntry : getInterfaces(obfMethodEntry
 				.getClassName()))
 			{
-
+				
 				// is this method defined in this interface?
 				MethodEntry methodInterface =
 					new MethodEntry(interfaceEntry, obfMethodEntry.getName(),
@@ -726,7 +726,7 @@ public class JarIndex
 				if(containsObfBehavior(methodInterface))
 					interfaceMethodEntries.add(methodInterface);
 			}
-
+		
 		List<MethodImplementationsTreeNode> nodes = Lists.newArrayList();
 		if(!interfaceMethodEntries.isEmpty())
 			for(MethodEntry interfaceMethodEntry : interfaceMethodEntries)
@@ -739,7 +739,7 @@ public class JarIndex
 			}
 		return nodes;
 	}
-
+	
 	public Set<MethodEntry> getRelatedMethodImplementations(
 		MethodEntry obfMethodEntry)
 	{
@@ -748,7 +748,7 @@ public class JarIndex
 			getMethodInheritance(null, obfMethodEntry));
 		return methodEntries;
 	}
-
+	
 	private void getRelatedMethodImplementations(
 		Set<MethodEntry> methodEntries, MethodInheritanceTreeNode node)
 	{
@@ -756,18 +756,18 @@ public class JarIndex
 		if(containsObfBehavior(methodEntry))
 			// collect the entry
 			methodEntries.add(methodEntry);
-
+		
 		// look at interface methods too
 		for(MethodImplementationsTreeNode implementationsNode : getMethodImplementations(
 			null, methodEntry))
 			getRelatedMethodImplementations(methodEntries, implementationsNode);
-
+		
 		// recurse
 		for(int i = 0; i < node.getChildCount(); i++)
 			getRelatedMethodImplementations(methodEntries,
 				(MethodInheritanceTreeNode)node.getChildAt(i));
 	}
-
+	
 	private void getRelatedMethodImplementations(
 		Set<MethodEntry> methodEntries, MethodImplementationsTreeNode node)
 	{
@@ -775,19 +775,19 @@ public class JarIndex
 		if(containsObfBehavior(methodEntry))
 			// collect the entry
 			methodEntries.add(methodEntry);
-
+		
 		// recurse
 		for(int i = 0; i < node.getChildCount(); i++)
 			getRelatedMethodImplementations(methodEntries,
 				(MethodImplementationsTreeNode)node.getChildAt(i));
 	}
-
+	
 	public Collection<EntryReference<FieldEntry, BehaviorEntry>> getFieldReferences(
 		FieldEntry fieldEntry)
 	{
 		return m_fieldReferences.get(fieldEntry);
 	}
-
+	
 	public Collection<FieldEntry> getReferencedFields(
 		BehaviorEntry behaviorEntry)
 	{
@@ -799,13 +799,13 @@ public class JarIndex
 				fieldEntries.add(reference.entry);
 		return fieldEntries;
 	}
-
+	
 	public Collection<EntryReference<BehaviorEntry, BehaviorEntry>> getBehaviorReferences(
 		BehaviorEntry behaviorEntry)
 	{
 		return m_behaviorReferences.get(behaviorEntry);
 	}
-
+	
 	public Collection<BehaviorEntry> getReferencedBehaviors(
 		BehaviorEntry behaviorEntry)
 	{
@@ -817,27 +817,27 @@ public class JarIndex
 				behaviorEntries.add(reference.entry);
 		return behaviorEntries;
 	}
-
+	
 	public Collection<ClassEntry> getInnerClasses(ClassEntry obfOuterClassEntry)
 	{
 		return m_innerClassesByOuter.get(obfOuterClassEntry);
 	}
-
+	
 	public ClassEntry getOuterClass(ClassEntry obfInnerClassEntry)
 	{
 		return m_outerClassesByInner.get(obfInnerClassEntry);
 	}
-
+	
 	public boolean isAnonymousClass(ClassEntry obfInnerClassEntry)
 	{
 		return m_anonymousClasses.containsKey(obfInnerClassEntry);
 	}
-
+	
 	public BehaviorEntry getAnonymousClassCaller(ClassEntry obfInnerClassName)
 	{
 		return m_anonymousClasses.get(obfInnerClassName);
 	}
-
+	
 	public Set<ClassEntry> getInterfaces(String className)
 	{
 		ClassEntry classEntry = new ClassEntry(className);
@@ -847,10 +847,10 @@ public class JarIndex
 			interfaces.addAll(m_translationIndex.getInterfaces(ancestor));
 		return interfaces;
 	}
-
+	
 	public Set<String> getImplementingClasses(String targetInterfaceName)
 	{
-
+		
 		// linear search is fast enough for now
 		Set<String> classNames = Sets.newHashSet();
 		for(Map.Entry<ClassEntry, ClassEntry> entry : m_translationIndex
@@ -867,41 +867,41 @@ public class JarIndex
 		}
 		return classNames;
 	}
-
+	
 	public boolean isInterface(String className)
 	{
 		return m_translationIndex.isInterface(new ClassEntry(className));
 	}
-
+	
 	public boolean containsObfClass(ClassEntry obfClassEntry)
 	{
 		return m_obfClassEntries.contains(obfClassEntry);
 	}
-
+	
 	public boolean containsObfField(FieldEntry obfFieldEntry)
 	{
 		return m_access.containsKey(obfFieldEntry);
 	}
-
+	
 	public boolean containsObfBehavior(BehaviorEntry obfBehaviorEntry)
 	{
 		return m_access.containsKey(obfBehaviorEntry);
 	}
-
+	
 	public boolean containsObfArgument(ArgumentEntry obfArgumentEntry)
 	{
 		// check the behavior
 		if(!containsObfBehavior(obfArgumentEntry.getBehaviorEntry()))
 			return false;
-
+		
 		// check the argument
 		if(obfArgumentEntry.getIndex() >= obfArgumentEntry.getBehaviorEntry()
 			.getSignature().getArgumentTypes().size())
 			return false;
-
+		
 		return true;
 	}
-
+	
 	public boolean containsObfEntry(Entry obfEntry)
 	{
 		if(obfEntry instanceof ClassEntry)
@@ -916,7 +916,7 @@ public class JarIndex
 			throw new Error("Entry type not supported: "
 				+ obfEntry.getClass().getName());
 	}
-
+	
 	public MethodEntry getBridgedMethod(MethodEntry bridgeMethodEntry)
 	{
 		return m_bridgedMethods.get(bridgeMethodEntry);
@@ -924,7 +924,7 @@ public class JarIndex
 	
 	public List<ClassEntry> getObfClassChain(ClassEntry obfClassEntry)
 	{
-
+		
 		// build class chain in inner-to-outer order
 		List<ClassEntry> obfClassChain = Lists.newArrayList(obfClassEntry);
 		ClassEntry checkClassEntry = obfClassEntry;
@@ -938,10 +938,10 @@ public class JarIndex
 			}else
 				break;
 		}
-
+		
 		// switch to outer-to-inner order
 		Collections.reverse(obfClassChain);
-
+		
 		return obfClassChain;
 	}
 }

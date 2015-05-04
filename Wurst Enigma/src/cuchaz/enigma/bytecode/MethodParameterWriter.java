@@ -25,22 +25,22 @@ import cuchaz.enigma.mapping.Translator;
 
 public class MethodParameterWriter
 {
-
+	
 	private Translator m_translator;
-
+	
 	public MethodParameterWriter(Translator translator)
 	{
 		m_translator = translator;
 	}
-
+	
 	public void writeMethodArguments(CtClass c)
 	{
-
+		
 		// Procyon will read method arguments from the "MethodParameters"
 		// attribute, so write those
 		for(CtBehavior behavior : c.getDeclaredBehaviors())
 		{
-
+			
 			// if there's a local variable table here, don't write a
 			// MethodParameters attribute
 			// let the local variable writer deal with it instead
@@ -51,7 +51,7 @@ public class MethodParameterWriter
 			if(codeAttribute != null
 				&& codeAttribute.getAttribute(LocalVariableAttribute.tag) != null)
 				continue;
-
+			
 			BehaviorEntry behaviorEntry =
 				EntryFactory.getBehaviorEntry(behavior);
 			
@@ -63,13 +63,13 @@ public class MethodParameterWriter
 			int numParams = signature.getArgumentTypes().size();
 			if(numParams <= 0)
 				continue;
-
+			
 			// get the list of argument names
 			List<String> names = new ArrayList<String>(numParams);
 			for(int i = 0; i < numParams; i++)
 				names.add(m_translator.translate(new ArgumentEntry(
 					behaviorEntry, i, "")));
-
+			
 			// save the mappings to the class
 			MethodParametersAttribute.updateClass(behavior.getMethodInfo(),
 				names);

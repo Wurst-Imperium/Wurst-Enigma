@@ -15,7 +15,7 @@ import java.util.List;
 
 public class D_AnonymousTesting
 {
-
+	
 	public List<Object> getObjs()
 	{
 		List<Object> objs = new ArrayList<Object>();

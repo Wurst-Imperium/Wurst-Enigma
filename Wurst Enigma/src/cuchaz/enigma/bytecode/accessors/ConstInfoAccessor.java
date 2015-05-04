@@ -24,11 +24,11 @@ import cuchaz.enigma.bytecode.InfoType;
 
 public class ConstInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_index;
 	private static Method m_getTag;
-
+	
 	static
 	{
 		try
@@ -43,16 +43,16 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	private Object m_item;
-
+	
 	public ConstInfoAccessor(Object item)
 	{
 		if(item == null)
 			throw new IllegalArgumentException("item cannot be null!");
 		m_item = item;
 	}
-
+	
 	public ConstInfoAccessor(DataInputStream in) throws IOException
 	{
 		try
@@ -60,12 +60,12 @@ public class ConstInfoAccessor
 			// read the entry
 			String className = in.readUTF();
 			int oldIndex = in.readInt();
-
+			
 			// NOTE: ConstInfo instances write a type id (a "tag"), but they
 			// don't read it back
 			// so we have to read it here
 			in.readByte();
-
+			
 			Constructor<?> constructor =
 				Class.forName(className).getConstructor(DataInputStream.class,
 					int.class);
@@ -79,12 +79,12 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public Object getItem()
 	{
 		return m_item;
 	}
-
+	
 	public int getIndex()
 	{
 		try
@@ -95,7 +95,7 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setIndex(int val)
 	{
 		try
@@ -106,7 +106,7 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public int getTag()
 	{
 		try
@@ -117,12 +117,12 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public ConstInfoAccessor copy()
 	{
 		return new ConstInfoAccessor(copyItem());
 	}
-
+	
 	public Object copyItem()
 	{
 		// I don't know of a simpler way to copy one of these silly things...
@@ -132,27 +132,27 @@ public class ConstInfoAccessor
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(buf);
 			write(out);
-
+			
 			// deserialize the item
 			DataInputStream in =
 				new DataInputStream(new ByteArrayInputStream(buf.toByteArray()));
 			Object item = new ConstInfoAccessor(in).getItem();
 			in.close();
-
+			
 			return item;
 		}catch(Exception ex)
 		{
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void write(DataOutputStream out) throws IOException
 	{
 		try
 		{
 			out.writeUTF(m_item.getClass().getName());
 			out.writeInt(getIndex());
-
+			
 			Method method =
 				m_item.getClass().getMethod("write", DataOutputStream.class);
 			method.setAccessible(true);
@@ -165,7 +165,7 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	@Override
 	public String toString()
 	{
@@ -184,7 +184,7 @@ public class ConstInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public InfoType getType()
 	{
 		return InfoType.getByTag(getTag());

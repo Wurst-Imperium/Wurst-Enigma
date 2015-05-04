@@ -14,11 +14,11 @@ import java.lang.reflect.Field;
 
 public class MemberRefInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_classIndex;
 	private static Field m_nameAndTypeIndex;
-
+	
 	static
 	{
 		try
@@ -33,19 +33,19 @@ public class MemberRefInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());
 	}
-
+	
 	private Object m_item;
-
+	
 	public MemberRefInfoAccessor(Object item)
 	{
 		m_item = item;
 	}
-
+	
 	public int getClassIndex()
 	{
 		try
@@ -56,7 +56,7 @@ public class MemberRefInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setClassIndex(int val)
 	{
 		try
@@ -67,7 +67,7 @@ public class MemberRefInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public int getNameAndTypeIndex()
 	{
 		try
@@ -78,7 +78,7 @@ public class MemberRefInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setNameAndTypeIndex(int val)
 	{
 		try

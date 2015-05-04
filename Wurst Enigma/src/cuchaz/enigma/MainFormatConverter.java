@@ -27,12 +27,12 @@ import cuchaz.enigma.mapping.*;
 
 public class MainFormatConverter
 {
-
+	
 	public static void main(String[] args) throws Exception
 	{
-
+		
 		System.out.println("Getting field types from jar...");
-
+		
 		JarFile jar =
 			new JarFile(System.getProperty("user.home")
 				+ "/.minecraft/versions/1.8/1.8.jar");
@@ -44,13 +44,13 @@ public class MainFormatConverter
 				fieldTypes.put(getFieldKey(fieldEntry),
 					moveClasssesOutOfDefaultPackage(fieldEntry.getType()));
 			}
-
+		
 		System.out.println("Reading mappings...");
-
+		
 		File fileMappings = new File("../Enigma Mappings/1.8.mappings");
 		MappingsReader mappingsReader = new MappingsReader()
 		{
-
+			
 			@Override
 			protected FieldMapping readField(String[] parts)
 			{
@@ -59,19 +59,19 @@ public class MainFormatConverter
 			}
 		};
 		Mappings mappings = mappingsReader.read(new FileReader(fileMappings));
-
+		
 		System.out.println("Updating field types...");
-
+		
 		for(ClassMapping classMapping : mappings.classes())
 			updateFieldsInClass(fieldTypes, classMapping);
-
+		
 		System.out.println("Saving mappings...");
-
+		
 		try(FileWriter writer = new FileWriter(fileMappings))
 		{
 			new MappingsWriter().write(writer, mappings);
 		}
-
+		
 		System.out.println("Done!");
 	}
 	
@@ -93,11 +93,11 @@ public class MainFormatConverter
 	private static void updateFieldsInClass(Map<String, Type> fieldTypes,
 		ClassMapping classMapping) throws Exception
 	{
-
+		
 		// update the fields
 		for(FieldMapping fieldMapping : classMapping.fields())
 			setFieldType(fieldTypes, classMapping, fieldMapping);
-
+		
 		// recurse
 		for(ClassMapping innerClassMapping : classMapping.innerClasses())
 			updateFieldsInClass(fieldTypes, innerClassMapping);
@@ -106,13 +106,13 @@ public class MainFormatConverter
 	private static void setFieldType(Map<String, Type> fieldTypes,
 		ClassMapping classMapping, FieldMapping fieldMapping) throws Exception
 	{
-
+		
 		// get the new type
 		Type newType = fieldTypes.get(getFieldKey(classMapping, fieldMapping));
 		if(newType == null)
 			throw new Error("Can't find type for field: "
 				+ getFieldKey(classMapping, fieldMapping));
-
+		
 		// hack in the new field type
 		Field field = fieldMapping.getClass().getDeclaredField("m_obfType");
 		field.setAccessible(true);

@@ -26,10 +26,10 @@ import cuchaz.enigma.mapping.ClassEntry;
 
 public class TestInnerClasses
 {
-
+	
 	private JarIndex m_index;
 	private Deobfuscator m_deobfuscator;
-
+	
 	private static final ClassEntry AnonymousOuter = newClass("none/a");
 	private static final ClassEntry AnonymousInner = newClass("none/a$1");
 	private static final ClassEntry SimpleOuter = newClass("none/d");
@@ -48,7 +48,7 @@ public class TestInnerClasses
 	private static final ClassEntry ClassTreeLevel1 = newClass("none/f$a");
 	private static final ClassEntry ClassTreeLevel2 = newClass("none/f$a$a");
 	private static final ClassEntry ClassTreeLevel3 = newClass("none/f$a$a$a");
-
+	
 	public TestInnerClasses() throws Exception
 	{
 		m_index = new JarIndex();
@@ -56,7 +56,7 @@ public class TestInnerClasses
 		m_index.indexJar(jar, true);
 		m_deobfuscator = new Deobfuscator(jar);
 	}
-
+	
 	@Test
 	public void simple()
 	{
@@ -66,7 +66,7 @@ public class TestInnerClasses
 		assertThat(m_index.isAnonymousClass(SimpleInner), is(false));
 		decompile(SimpleOuter);
 	}
-
+	
 	@Test
 	public void anonymous()
 	{
@@ -76,7 +76,7 @@ public class TestInnerClasses
 		assertThat(m_index.isAnonymousClass(AnonymousInner), is(true));
 		decompile(AnonymousOuter);
 	}
-
+	
 	@Test
 	public void constructorArgs()
 	{
@@ -87,7 +87,7 @@ public class TestInnerClasses
 		assertThat(m_index.isAnonymousClass(ConstructorArgsInner), is(false));
 		decompile(ConstructorArgsOuter);
 	}
-
+	
 	@Test
 	public void anonymousWithScopeArgs()
 	{
@@ -99,7 +99,7 @@ public class TestInnerClasses
 			is(true));
 		decompile(AnonymousWithScopeArgsOuter);
 	}
-
+	
 	@Test
 	public void anonymousWithOuterAccess()
 	{
@@ -111,17 +111,17 @@ public class TestInnerClasses
 			is(true));
 		decompile(AnonymousWithOuterAccessOuter);
 	}
-
+	
 	@Test
 	public void classTree()
 	{
-
+		
 		// root level
 		assertThat(m_index.containsObfClass(ClassTreeRoot), is(true));
 		assertThat(m_index.getOuterClass(ClassTreeRoot), is(nullValue()));
 		assertThat(m_index.getInnerClasses(ClassTreeRoot),
 			containsInAnyOrder(ClassTreeLevel1));
-
+		
 		// level 1
 		ClassEntry fullClassEntry =
 			new ClassEntry(ClassTreeRoot.getName() + "$"
@@ -130,7 +130,7 @@ public class TestInnerClasses
 		assertThat(m_index.getOuterClass(ClassTreeLevel1), is(ClassTreeRoot));
 		assertThat(m_index.getInnerClasses(ClassTreeLevel1),
 			containsInAnyOrder(ClassTreeLevel2));
-
+		
 		// level 2
 		fullClassEntry =
 			new ClassEntry(ClassTreeRoot.getName() + "$"
@@ -140,7 +140,7 @@ public class TestInnerClasses
 		assertThat(m_index.getOuterClass(ClassTreeLevel2), is(ClassTreeLevel1));
 		assertThat(m_index.getInnerClasses(ClassTreeLevel2),
 			containsInAnyOrder(ClassTreeLevel3));
-
+		
 		// level 3
 		fullClassEntry =
 			new ClassEntry(ClassTreeRoot.getName() + "$"
@@ -151,7 +151,7 @@ public class TestInnerClasses
 		assertThat(m_index.getOuterClass(ClassTreeLevel3), is(ClassTreeLevel2));
 		assertThat(m_index.getInnerClasses(ClassTreeLevel3), is(empty()));
 	}
-
+	
 	private void decompile(ClassEntry classEntry)
 	{
 		m_deobfuscator.getSourceTree(classEntry.getName());

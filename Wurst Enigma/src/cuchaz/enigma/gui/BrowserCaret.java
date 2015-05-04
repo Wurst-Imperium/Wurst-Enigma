@@ -19,9 +19,9 @@ import javax.swing.text.JTextComponent;
 
 public class BrowserCaret extends DefaultCaret
 {
-
+	
 	private static final long serialVersionUID = 1158977422507969940L;
-
+	
 	private static final Highlighter.HighlightPainter m_selectionPainter =
 		new Highlighter.HighlightPainter()
 		{
@@ -32,19 +32,19 @@ public class BrowserCaret extends DefaultCaret
 				// don't paint anything
 			}
 		};
-
+	
 	@Override
 	public boolean isSelectionVisible()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public boolean isVisible()
 	{
 		return true;
 	}
-
+	
 	@Override
 	public Highlighter.HighlightPainter getSelectionPainter()
 	{

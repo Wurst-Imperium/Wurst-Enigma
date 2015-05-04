@@ -17,21 +17,21 @@ import javassist.CtField;
 
 public enum Access
 {
-
+	
 	Public,
 	Protected,
 	Private;
-
+	
 	public static Access get(CtBehavior behavior)
 	{
 		return get(behavior.getModifiers());
 	}
-
+	
 	public static Access get(CtField field)
 	{
 		return get(field.getModifiers());
 	}
-
+	
 	public static Access get(int modifiers)
 	{
 		if(Modifier.isPublic(modifiers))

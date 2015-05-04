@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.File;
@@ -762,7 +763,7 @@ public class Gui
 		pane.doLayout();
 		m_frame.setSize(1024, 576);
 		m_frame.setMinimumSize(new Dimension(640, 480));
-		m_frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		m_frame.setVisible(true);
 		m_frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}

@@ -25,22 +25,22 @@ import cuchaz.enigma.analysis.TranslationIndex;
 
 public class Mappings implements Serializable
 {
-
+	
 	private static final long serialVersionUID = 4649790259460259026L;
-
+	
 	protected Map<String, ClassMapping> m_classesByObf;
 	protected Map<String, ClassMapping> m_classesByDeobf;
-
+	
 	public Mappings()
 	{
 		m_classesByObf = Maps.newHashMap();
 		m_classesByDeobf = Maps.newHashMap();
 	}
-
+	
 	public Mappings(Iterable<ClassMapping> classes)
 	{
 		this();
-
+		
 		for(ClassMapping classMapping : classes)
 		{
 			m_classesByObf.put(classMapping.getObfFullName(), classMapping);
@@ -48,13 +48,13 @@ public class Mappings implements Serializable
 				m_classesByDeobf.put(classMapping.getDeobfName(), classMapping);
 		}
 	}
-
+	
 	public Collection<ClassMapping> classes()
 	{
 		assert m_classesByObf.size() >= m_classesByDeobf.size();
 		return m_classesByObf.values();
 	}
-
+	
 	public void addClassMapping(ClassMapping classMapping)
 	{
 		if(m_classesByObf.containsKey(classMapping.getObfFullName()))
@@ -73,7 +73,7 @@ public class Mappings implements Serializable
 			assert deobfWasAdded;
 		}
 	}
-
+	
 	public void removeClassMapping(ClassMapping classMapping)
 	{
 		boolean obfWasRemoved =
@@ -86,27 +86,27 @@ public class Mappings implements Serializable
 			assert deobfWasRemoved;
 		}
 	}
-
+	
 	public ClassMapping getClassByObf(ClassEntry entry)
 	{
 		return getClassByObf(entry.getName());
 	}
-
+	
 	public ClassMapping getClassByObf(String obfName)
 	{
 		return m_classesByObf.get(obfName);
 	}
-
+	
 	public ClassMapping getClassByDeobf(ClassEntry entry)
 	{
 		return getClassByDeobf(entry.getName());
 	}
-
+	
 	public ClassMapping getClassByDeobf(String deobfName)
 	{
 		return m_classesByDeobf.get(deobfName);
 	}
-
+	
 	public void setClassDeobfName(ClassMapping classMapping, String deobfName)
 	{
 		if(classMapping.getDeobfName() != null)
@@ -123,18 +123,18 @@ public class Mappings implements Serializable
 			assert wasAdded;
 		}
 	}
-
+	
 	public Translator getTranslator(TranslationDirection direction,
 		TranslationIndex index)
 	{
 		switch(direction)
 		{
 			case Deobfuscating:
-
+				
 				return new Translator(direction, m_classesByObf, index);
-
+				
 			case Obfuscating:
-
+				
 				// fill in the missing deobf class entries with obf entries
 				Map<String, ClassMapping> classes = Maps.newHashMap();
 				for(ClassMapping classMapping : classes())
@@ -143,20 +143,20 @@ public class Mappings implements Serializable
 					else
 						classes
 							.put(classMapping.getObfFullName(), classMapping);
-
+				
 				// translate the translation index
 				// NOTE: this isn't actually recursive
 				TranslationIndex deobfIndex =
 					new TranslationIndex(index, getTranslator(
 						TranslationDirection.Deobfuscating, index));
-
+				
 				return new Translator(direction, classes, deobfIndex);
-
+				
 			default:
 				throw new Error("Invalid translation direction!");
 		}
 	}
-
+	
 	@Override
 	public String toString()
 	{
@@ -168,7 +168,7 @@ public class Mappings implements Serializable
 		}
 		return buf.toString();
 	}
-
+	
 	public void renameObfClass(String oldObfName, String newObfName)
 	{
 		for(ClassMapping classMapping : new ArrayList<ClassMapping>(classes()))
@@ -181,16 +181,16 @@ public class Mappings implements Serializable
 				assert wasAdded;
 			}
 	}
-
+	
 	public Set<String> getAllObfClassNames()
 	{
 		final Set<String> classNames = Sets.newHashSet();
 		for(ClassMapping classMapping : classes())
 		{
-
+			
 			// add the class name
 			classNames.add(classMapping.getObfFullName());
-
+			
 			// add classes from method signatures
 			for(MethodMapping methodMapping : classMapping.methods())
 				for(Type type : methodMapping.getObfSignature().types())
@@ -199,12 +199,12 @@ public class Mappings implements Serializable
 		}
 		return classNames;
 	}
-
+	
 	public boolean containsDeobfClass(String deobfName)
 	{
 		return m_classesByDeobf.containsKey(deobfName);
 	}
-
+	
 	public boolean containsDeobfField(ClassEntry obfClassEntry,
 		String deobfName, Type obfType)
 	{
@@ -213,7 +213,7 @@ public class Mappings implements Serializable
 			return classMapping.containsDeobfField(deobfName, obfType);
 		return false;
 	}
-
+	
 	public boolean containsDeobfMethod(ClassEntry obfClassEntry,
 		String deobfName, Signature deobfSignature)
 	{
@@ -222,7 +222,7 @@ public class Mappings implements Serializable
 			return classMapping.containsDeobfMethod(deobfName, deobfSignature);
 		return false;
 	}
-
+	
 	public boolean containsArgument(BehaviorEntry obfBehaviorEntry, String name)
 	{
 		ClassMapping classMapping =
@@ -231,7 +231,7 @@ public class Mappings implements Serializable
 			return classMapping.containsArgument(obfBehaviorEntry, name);
 		return false;
 	}
-
+	
 	public List<ClassMapping> getClassMappingChain(ClassEntry obfClass)
 	{
 		List<ClassMapping> mappingChain = Lists.newArrayList();

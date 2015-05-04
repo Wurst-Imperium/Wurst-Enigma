@@ -42,12 +42,12 @@ import de.sciss.syntaxpane.DefaultSyntaxKit;
 
 public class MemberMatchingGui<T extends Entry>
 {
-
+	
 	private static enum SourceType
 	{
 		Matched
 		{
-
+			
 			@Override
 			public <T extends Entry> Collection<ClassEntry> getObfSourceClasses(
 				MemberMatches<T> matches)
@@ -57,7 +57,7 @@ public class MemberMatchingGui<T extends Entry>
 		},
 		Unmatched
 		{
-
+			
 			@Override
 			public <T extends Entry> Collection<ClassEntry> getObfSourceClasses(
 				MemberMatches<T> matches)
@@ -65,7 +65,7 @@ public class MemberMatchingGui<T extends Entry>
 				return matches.getSourceClassesWithUnmatchedEntries();
 			}
 		};
-
+		
 		public JRadioButton newRadio(ActionListener listener, ButtonGroup group)
 		{
 			JRadioButton button =
@@ -75,21 +75,21 @@ public class MemberMatchingGui<T extends Entry>
 			group.add(button);
 			return button;
 		}
-
+		
 		public abstract <T extends Entry> Collection<ClassEntry> getObfSourceClasses(
 			MemberMatches<T> matches);
-
+		
 		public static SourceType getDefault()
 		{
 			return values()[0];
 		}
 	}
-
+	
 	public static interface SaveListener<T extends Entry>
 	{
 		public void save(MemberMatches<T> matches);
 	}
-
+	
 	// controls
 	private JFrame m_frame;
 	private Map<SourceType, JRadioButton> m_sourceTypeButtons;
@@ -118,17 +118,17 @@ public class MemberMatchingGui<T extends Entry>
 		MemberMatches<T> fieldMatches, Deobfuscator sourceDeobfuscator,
 		Deobfuscator destDeobfuscator)
 	{
-
+		
 		m_classMatches = classMatches;
 		m_memberMatches = fieldMatches;
 		m_sourceDeobfuscator = sourceDeobfuscator;
 		m_destDeobfuscator = destDeobfuscator;
-
+		
 		// init frame
 		m_frame = new JFrame(Constants.Name + " - Member Matcher");
 		final Container pane = m_frame.getContentPane();
 		pane.setLayout(new BorderLayout());
-
+		
 		// init classes side
 		JPanel classesPanel = new JPanel();
 		classesPanel
@@ -136,7 +136,7 @@ public class MemberMatchingGui<T extends Entry>
 		classesPanel.setPreferredSize(new Dimension(200, 0));
 		pane.add(classesPanel, BorderLayout.WEST);
 		classesPanel.add(new JLabel("Classes"));
-
+		
 		// init source type radios
 		JPanel sourceTypePanel = new JPanel();
 		classesPanel.add(sourceTypePanel);
@@ -159,7 +159,7 @@ public class MemberMatchingGui<T extends Entry>
 			m_sourceTypeButtons.put(sourceType, button);
 			sourceTypePanel.add(button);
 		}
-
+		
 		m_sourceClasses =
 			new ClassSelector(ClassSelector.DeobfuscatedClassEntryComparator);
 		m_sourceClasses.setListener(new ClassSelectionListener()
@@ -199,7 +199,7 @@ public class MemberMatchingGui<T extends Entry>
 					onSelectDest(null);
 			}
 		});
-
+		
 		// add key bindings
 		KeyAdapter keyListener = new KeyAdapter()
 		{
@@ -228,15 +228,15 @@ public class MemberMatchingGui<T extends Entry>
 		splitLeft.setResizeWeight(0); // let the right side take all the slack
 		pane.add(splitLeft, BorderLayout.CENTER);
 		splitLeft.resetToPreferredSizes();
-
+		
 		// init bottom panel
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout());
 		pane.add(bottomPanel, BorderLayout.SOUTH);
-
+		
 		m_matchButton = new JButton();
 		m_unmatchableButton = new JButton();
-
+		
 		m_sourceLabel = new JLabel();
 		bottomPanel.add(m_sourceLabel);
 		bottomPanel.add(m_matchButton);
@@ -250,7 +250,7 @@ public class MemberMatchingGui<T extends Entry>
 		m_frame.setMinimumSize(new Dimension(640, 480));
 		m_frame.setVisible(true);
 		m_frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+		
 		m_unmatchedHighlightPainter = new ObfuscatedHighlightPainter();
 		m_matchedHighlightPainter = new DeobfuscatedHighlightPainter();
 		
@@ -274,37 +274,37 @@ public class MemberMatchingGui<T extends Entry>
 	{
 		m_saveListener = val;
 	}
-
+	
 	private void updateSourceClasses()
 	{
-
+		
 		String selectedPackage = m_sourceClasses.getSelectedPackage();
-
+		
 		List<ClassEntry> deobfClassEntries = Lists.newArrayList();
 		for(ClassEntry entry : m_sourceType
 			.getObfSourceClasses(m_memberMatches))
 			deobfClassEntries.add(m_sourceDeobfuscator.deobfuscateEntry(entry));
 		m_sourceClasses.setClasses(deobfClassEntries);
-
+		
 		if(selectedPackage != null)
 			m_sourceClasses.expandPackage(selectedPackage);
-
+		
 		for(SourceType sourceType : SourceType.values())
 			m_sourceTypeButtons.get(sourceType).setText(
 				String.format("%s (%d)", sourceType.name(), sourceType
 					.getObfSourceClasses(m_memberMatches).size()));
 	}
-
+	
 	protected void setSourceClass(ClassEntry sourceClass)
 	{
-
+		
 		m_obfSourceClass = m_sourceDeobfuscator.obfuscateEntry(sourceClass);
 		m_obfDestClass =
 			m_classMatches.getUniqueMatches().get(m_obfSourceClass);
 		if(m_obfDestClass == null)
 			throw new Error("No matching dest class for source class: "
 				+ m_obfSourceClass);
-
+		
 		m_sourceReader.decompileClass(m_obfSourceClass, m_sourceDeobfuscator,
 			false, new Runnable()
 			{
@@ -324,7 +324,7 @@ public class MemberMatchingGui<T extends Entry>
 				}
 			});
 	}
-
+	
 	protected void updateSourceHighlights()
 	{
 		highlightEntries(m_sourceReader, m_sourceDeobfuscator, m_memberMatches
@@ -336,13 +336,13 @@ public class MemberMatchingGui<T extends Entry>
 		highlightEntries(m_destReader, m_destDeobfuscator, m_memberMatches
 			.matches().values(), m_memberMatches.getUnmatchedDestEntries());
 	}
-
+	
 	private void highlightEntries(CodeReader reader, Deobfuscator deobfuscator,
 		Collection<T> obfMatchedEntries, Collection<T> obfUnmatchedEntries)
 	{
 		reader.clearHighlights();
 		SourceIndex index = reader.getSourceIndex();
-
+		
 		// matched fields
 		for(T obfT : obfMatchedEntries)
 		{
@@ -351,7 +351,7 @@ public class MemberMatchingGui<T extends Entry>
 			if(token != null)
 				reader.setHighlightedToken(token, m_matchedHighlightPainter);
 		}
-
+		
 		// unmatched fields
 		for(T obfT : obfUnmatchedEntries)
 		{
@@ -361,13 +361,13 @@ public class MemberMatchingGui<T extends Entry>
 				reader.setHighlightedToken(token, m_unmatchedHighlightPainter);
 		}
 	}
-
+	
 	private boolean isSelectionMatched()
 	{
 		return m_obfSourceEntry != null && m_obfDestEntry != null
 			&& m_memberMatches.isMatched(m_obfSourceEntry, m_obfDestEntry);
 	}
-
+	
 	protected void onSelectSource(Entry source)
 	{
 		
@@ -375,11 +375,11 @@ public class MemberMatchingGui<T extends Entry>
 		if(isSelectionMatched())
 			setDest(null);
 		setSource(null);
-
+		
 		// then look for a valid source selection
 		if(source != null)
 		{
-
+			
 			// this looks really scary, but it's actually ok
 			// Deobfuscator.obfuscateEntry can handle all implementations of
 			// Entry
@@ -392,20 +392,20 @@ public class MemberMatchingGui<T extends Entry>
 			if(m_memberMatches.hasSource(obfSourceEntry))
 			{
 				setSource(obfSourceEntry);
-
+				
 				// look for a matched dest too
 				T obfDestEntry = m_memberMatches.matches().get(obfSourceEntry);
 				if(obfDestEntry != null)
 					setDest(obfDestEntry);
 			}
 		}
-
+		
 		updateButtons();
 	}
 	
 	protected void onSelectDest(Entry dest)
 	{
-
+		
 		// start with no selection
 		if(isSelectionMatched())
 			setSource(null);
@@ -414,7 +414,7 @@ public class MemberMatchingGui<T extends Entry>
 		// then look for a valid dest selection
 		if(dest != null)
 		{
-
+			
 			// this looks really scary, but it's actually ok
 			// Deobfuscator.obfuscateEntry can handle all implementations of
 			// Entry
@@ -422,7 +422,7 @@ public class MemberMatchingGui<T extends Entry>
 			// actually match T
 			@SuppressWarnings("unchecked")
 			T destEntry = (T)dest;
-
+			
 			T obfDestEntry = m_destDeobfuscator.obfuscateEntry(destEntry);
 			if(m_memberMatches.hasDest(obfDestEntry))
 			{
@@ -435,10 +435,10 @@ public class MemberMatchingGui<T extends Entry>
 					setSource(obfSourceEntry);
 			}
 		}
-
+		
 		updateButtons();
 	}
-
+	
 	private void setSource(T obfEntry)
 	{
 		if(obfEntry == null)
@@ -452,7 +452,7 @@ public class MemberMatchingGui<T extends Entry>
 				.setText(getEntryLabel(obfEntry, m_sourceDeobfuscator));
 		}
 	}
-
+	
 	private void setDest(T obfEntry)
 	{
 		if(obfEntry == null)
@@ -476,10 +476,10 @@ public class MemberMatchingGui<T extends Entry>
 	
 	private void updateButtons()
 	{
-
+		
 		GuiTricks.deactivateButton(m_matchButton);
 		GuiTricks.deactivateButton(m_unmatchableButton);
-
+		
 		if(m_obfSourceEntry != null && m_obfDestEntry != null)
 		{
 			if(m_memberMatches.isMatched(m_obfSourceEntry, m_obfDestEntry))
@@ -514,10 +514,10 @@ public class MemberMatchingGui<T extends Entry>
 					}
 				});
 	}
-
+	
 	protected void match()
 	{
-
+		
 		// update the field matches
 		m_memberMatches.makeMatch(m_obfSourceEntry, m_obfDestEntry);
 		save();
@@ -529,10 +529,10 @@ public class MemberMatchingGui<T extends Entry>
 		updateDestHighlights();
 		updateSourceClasses();
 	}
-
+	
 	protected void unmatch()
 	{
-
+		
 		// update the field matches
 		m_memberMatches.unmakeMatch(m_obfSourceEntry, m_obfDestEntry);
 		save();
@@ -544,14 +544,14 @@ public class MemberMatchingGui<T extends Entry>
 		updateDestHighlights();
 		updateSourceClasses();
 	}
-
+	
 	protected void unmatchable()
 	{
-
+		
 		// update the field matches
 		m_memberMatches.makeSourceUnmatchable(m_obfSourceEntry);
 		save();
-
+		
 		// update the ui
 		onSelectSource(null);
 		onSelectDest(null);

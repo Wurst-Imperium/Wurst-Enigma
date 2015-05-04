@@ -14,10 +14,10 @@ import java.lang.reflect.Field;
 
 public class MethodTypeInfoAccessor
 {
-
+	
 	private static Class<?> m_class;
 	private static Field m_descriptorIndex;
-
+	
 	static
 	{
 		try
@@ -30,19 +30,19 @@ public class MethodTypeInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public static boolean isType(ConstInfoAccessor accessor)
 	{
 		return m_class.isAssignableFrom(accessor.getItem().getClass());
 	}
-
+	
 	private Object m_item;
-
+	
 	public MethodTypeInfoAccessor(Object item)
 	{
 		m_item = item;
 	}
-
+	
 	public int getTypeIndex()
 	{
 		try
@@ -53,7 +53,7 @@ public class MethodTypeInfoAccessor
 			throw new Error(ex);
 		}
 	}
-
+	
 	public void setTypeIndex(int val)
 	{
 		try
