@@ -10,6 +10,7 @@
  ******************************************************************************/
 package cuchaz.enigma.gui;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,6 +26,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 import tk.wurst_client.enigma.regexlist.RegexListEntry;
 import tk.wurst_client.enigma.regexlist.RegexListReader;
@@ -180,8 +182,11 @@ public class GuiController
 		}catch(IOException e)
 		{
 			e.printStackTrace();
+			JTextArea message = new JTextArea(e.getLocalizedMessage());
+			message.setEditable(false);
+			message.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 			JOptionPane.showMessageDialog(m_gui.getFrame(),
-				e.getLocalizedMessage(), "File could not be read",
+				message, "File could not be read",
 				JOptionPane.ERROR_MESSAGE);
 		}
 	}

@@ -37,7 +37,8 @@ public class RegexListReader
 				regexList.add(new RegexListEntry(data[0], data[1]));
 			}catch(PatternSyntaxException e)
 			{
-				throw new IOException("Invalid regex on line " + (i + 1));
+				throw new IOException("Invalid regex on line " + (i + 1)
+					+ ":\n" + e.getMessage());
 			}
 		}
 		return regexList;
