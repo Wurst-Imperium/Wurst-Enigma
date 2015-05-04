@@ -54,9 +54,9 @@ public class GuiController
 	private static final AtomicInteger counter = new AtomicInteger();
 	/**
 	 * <p>
-	 * <img src="https://www.debuggex.com/i/zOLO5P3CAfbCECb4.png">
+	 * <img src="https://www.debuggex.com/i/l2IVvEmQvol11QAf.png">
 	 * <p>
-	 * <a href="https://www.debuggex.com/r/zOLO5P3CAfbCECb4">View on
+	 * <a href="https://www.debuggex.com/r/l2IVvEmQvol11QAf">View on
 	 * Debuggex</a>
 	 * <p>
 	 * Fixes generic types by converting things like
@@ -69,7 +69,7 @@ public class GuiController
 	 */
 	private Pattern generics =
 		Pattern
-			.compile("\\((?:\\w+)\\<((?:\\w{2,}(?:\\<(?:\\w+|\\?(?: extends \\w+)?)\\>|(?:\\[\\])+|)|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
+			.compile("\\((?:\\w+)\\<((?:\\w{2,}(?:\\<(?:\\w+|\\?(?: extends \\w+)?|, )+\\>|(?:\\[\\])+|)|, |\\.)+)\\>\\)(\\w+)\\.(\\w+)");
 	/**
 	 * <p>
 	 * <img src="https://www.debuggex.com/i/ojlBdjjZhnfH5FwU.png">
