@@ -185,9 +185,8 @@ public class GuiController
 			JTextArea message = new JTextArea(e.getLocalizedMessage());
 			message.setEditable(false);
 			message.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-			JOptionPane.showMessageDialog(m_gui.getFrame(),
-				message, "File could not be read",
-				JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(m_gui.getFrame(), message,
+				"File could not be read", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -309,7 +308,8 @@ public class GuiController
 						try
 						{
 							for(RegexListEntry entry : regexList)
-								source = entry.replaceAll(source);
+								if(entry.isTarget(obfClassEntry.getName()))
+									source = entry.replaceAll(source);
 						}catch(IllegalArgumentException e)
 						{
 							e.printStackTrace();
