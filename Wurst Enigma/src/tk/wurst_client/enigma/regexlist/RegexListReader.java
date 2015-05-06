@@ -31,7 +31,7 @@ public class RegexListReader
 		{
 			String[] data = lines[i].split("\t");
 			if(data.length < 2)
-				throw new IOException("Missing data on line " + (i + 1));
+				continue;
 			try
 			{
 				regexList.add(new RegexListEntry(data[0], data[1]));
