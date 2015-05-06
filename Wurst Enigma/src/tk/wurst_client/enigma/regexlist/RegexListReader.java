@@ -30,11 +30,15 @@ public class RegexListReader
 		for(int i = 0; i < lines.length; i++)
 		{
 			String[] data = lines[i].split("\t");
-			if(data.length < 2)
+			if(data.length < 3)
 				continue;
 			try
 			{
-				regexList.add(new RegexListEntry(data[0], data[1]));
+				if(data[0].equals("*"))
+					regexList.add(new RegexListEntry(data[1], data[2]));
+				else
+					regexList.add(new RegexListEntry(data[0].split("|"),
+						data[1], data[2]));
 			}catch(PatternSyntaxException e)
 			{
 				throw new IOException("Invalid regex on line " + (i + 1)
